@@ -1,0 +1,103 @@
+image:
+  repository: "harbor.chenwx.top/quay.io/cilium/cilium"
+  useDigest: false
+envoy:
+  image:
+    repository: "harbor.chenwx.top/quay.io/cilium/cilium-envoy"
+    useDigest: false
+  # prometheus:
+  #   enabled: false
+operator:
+  image:
+    repository: "harbor.chenwx.top/quay.io/cilium/operator"
+    useDigest: false
+  # prometheus:
+  #   enabled: true
+routingMode: "native"
+k8sServiceHost: "192.168.5.22"
+k8sServicePort: "6443"
+kubeProxyReplacement: true
+localRedirectPolicy: true
+ipam:
+  mode: kubernetes
+  operator:
+    clusterPoolIPv4PodCIDRList: 10.12.0.0/16
+    clusterPoolIPv4MaskSize: 24
+ipv4NativeRoutingCIDR: 10.12.0.0/16
+autoDirectNodeRoutes: true
+bpf:
+  lbExternalClusterIP: true
+  masquerade: true
+
+enableIPv4Masquerade: true
+enableIPv6Masquerade: true
+loadBalancer:
+  mode: dsr
+  algorithm: maglev
+  acceleration: native
+maglev:
+  tableSize: 65521
+  hashSeed: "6DXnnvXRI47wjvNt"
+bandwidthManager:
+  enabled: true
+  bbr: true
+hubble:
+  relay:
+    enabled: true
+    image:
+      repository: "harbor.chenwx.top/quay.io/cilium/hubble-relay"
+      useDigest: false
+  ui:
+    enabled: true
+    backend:
+      image:
+        repository: "harbor.chenwx.top/quay.io/cilium/hubble-ui-backend"
+        useDigest: false
+    frontend:
+      image:
+        repository: "harbor.chenwx.top/quay.io/cilium/hubble-ui"
+        useDigest: false
+  metrics:
+    enabled: [dns,drop,tcp,flow,port-distribution,icmp,http]
+prometheus:
+  enabled: true
+socketLB:
+  enabled: true
+  hostNamespaceOnly: true
+l2announcements:
+  enabled: true
+  leaseDuration: 3s
+  leaseRenewDeadline: 1s
+  leaseRetryPeriod: 500ms
+externalIPs:
+  enabled: true
+devices: enp+,eth+
+
+# 开启 l2pod通告
+l2podAnnouncements:
+  enabled: true
+  # interface: "enp6s18"
+  # 新版本只支持 interfacePattern 字段
+  interfacePattern: "enp6s18,eth0"
+
+gatewayAPI:
+  enabled: true
+
+# authentication:
+#   mutual:
+#     spire:
+#       install:
+#         server:
+#           image:
+#             repository: "harbor.chenwx.top/ghcr.io/spiffe/spire-server"
+#         initImage:
+#           repository: "harbor.chenwx.top/docker.io/library/busybox"
+
+# certgen:
+#   image:
+#     repository: "harbor.chenwx.top/quay.io/cilium/certgen"
+
+# clustermesh:
+#   apiserver:
+#     image:
+#       repository: "harbor.chenwx.top/quay.io/cilium/clustermesh-apiserver"

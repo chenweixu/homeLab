@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - name: cilium
+    repo: https://helm.cilium.io/helm-charts
+    version: 1.19.2
+    namespace: kube-system
+    releaseName: cilium
+    includeCRDs: true
+
+resources:
+  - Gateway.yaml
+  - L2-Announcement-Policy.yaml
+  - LoadBalancer-IP-Pool.yaml

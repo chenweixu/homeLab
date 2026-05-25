@@ -1,0 +1,34 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: cilium-gateway
+  namespace: cwx
+spec:
+  # 传递给服务
+  infrastructure:
+    labels:
+      lbip: cwx
+    annotations:
+      io.cilium/lb-ipam-ips: "192.168.5.32"
+
+  gatewayClassName: cilium
+  listeners:
+  - protocol: HTTP
+    port: 80
+    name: web-gateway
+    allowedRoutes:
+      namespaces:
+        from: Same
+
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: "*.chenwx.top"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: chenwx-top-online-tls
+        group: ""
+        namespace: cwx

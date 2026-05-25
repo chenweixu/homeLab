@@ -1,0 +1,20 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: cwx-local
+spec:
+  serviceSelector:
+    matchLabels:
+      lbip: cwx
+
+  nodeSelector:
+    matchExpressions:
+      - key: node-role.kubernetes.io/control-plane
+        operator: DoesNotExist
+
+  interfaces:
+    - enp6s18
+    - eth0
+
+  loadBalancerIPs: true
+  externalIPs: true
