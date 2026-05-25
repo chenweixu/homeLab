@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gatus
+  template:
+    metadata:
+      labels:
+        app: gatus
+    spec:
+      containers:
+      - name: gatus
+        image: harbor.chenwx.top/docker.io/twinproduction/gatus:v5.17.0
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+          - mountPath: /config/config.yaml
+            name: gatus-config
+            subPath: config.yaml
+            readOnly: true
+
+      volumes:
+        - name: gatus-config
+          secret:
+            secretName: gatus-secret
