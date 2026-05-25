@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cwx
+
+resources:
+  - Deployment.yml
+  - IngressRoute.yml
+  - Service.yml
+
+
+configMapGenerator:
+- name: jaeger-config
+  files:
+    - config/config.yaml

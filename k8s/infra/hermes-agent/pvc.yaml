@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hermes-data-pvc
+  namespace: cwx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs-home-sc
+  resources:
+    requests:
+      storage: 10Gi

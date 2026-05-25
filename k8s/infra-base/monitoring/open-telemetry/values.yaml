@@ -1,0 +1,9 @@
+
+manager:
+  image:
+    repository: harbor.chenwx.top/ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator
+    tag: "0.148.0"
+    imagePullPolicy: IfNotPresent
+  collectorImage:
+    repository: harbor.chenwx.top/ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
+    tag: 0.148.0

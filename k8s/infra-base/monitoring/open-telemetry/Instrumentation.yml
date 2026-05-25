@@ -1,0 +1,47 @@
+# 创建 Instrumentation 实例
+
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: cwx-instrumentation
+  namespace: cwx
+spec:
+
+  # 默认 endpoint
+  exporter:
+    endpoint: http://collector-gateway-collector.opentelemetry.svc.cluster.local:4317
+
+  # 传播器, 用于传递追踪上下文(必填, 默认 tracecontext+baggage)
+  propagators:
+    - tracecontext
+    - baggage
+    - b3
+
+  # 采样规则(控制数据量, 可选)
+  sampler:
+    # always_on 全部
+    # parentbased_traceidratio 基于父 span 的采样比例
+    type: parentbased_traceidratio
+
+    # 采样率(1=100%, 0.5=50%)
+    argument: "1"
+
+  java:
+    image: harbor.chenwx.top/ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:2.27.0
+    env:
+      # 默认用 HTTP 4317 端口
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://collector-gateway-collector.opentelemetry.svc.cluster.local:4317
+
+      - name: OTEL_EXPORTER_OTLP_PROTOCOL
+        value: grpc
+
+      - name: OTEL_LOGS_EXPORTER
+        value: none
+
+
+
+
+      # 禁用特定库
+      #- name: OTEL_INSTRUMENTATION_KAFKA_ENABLED
+      #value: "false"

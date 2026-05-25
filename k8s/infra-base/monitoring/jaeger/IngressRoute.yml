@@ -1,0 +1,88 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jaeger
+  namespace: cwx
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`jaeger.chenwx.top`)
+      kind: Rule
+      services:
+        - name: jaeger
+          namespace: cwx
+          port: 16686
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jaeger-otlp-grpc
+  namespace: cwx
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`jaeger-grpc.chenwx.top`)
+      services:
+        - name: jaeger
+          namespace: cwx
+          port: 4317
+          scheme: h2c  # 关键
+  # tls:
+  #   secretName: chenwx-top-online-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jaeger-otlp-http
+  namespace: cwx
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`jaeger-otlp-http.chenwx.top`)
+      kind: Rule
+      services:
+        - name: jaeger
+          namespace: cwx
+          port: 4318
+
+
+# ---
+# apiVersion: traefik.io/v1alpha1
+# kind: IngressRouteTCP
+# metadata:
+#   name: jaeger-otlp-grpc
+#   namespace: cwx
+# spec:
+#   entryPoints:
+#     - websecure
+#   # TCP 路由规则
+#   routes:
+#   - match: HostSNI(`jaeger-grpc.chenwx.top`)
+#     services:
+#     - name: jaeger
+#       port: 4317
+
+#   # 需要显式配置证书
+#   tls:
+#     secretName: chenwx-top-online-tls
+#     # 如果后端 Jaeger 自己没有 TLS, 保持 passthrough: false
+#     passthrough: false
+# ---
+# 让给了 otel-gateway-http
+# apiVersion: traefik.io/v1alpha1
+# kind: IngressRouteTCP
+# metadata:
+#   name: jaeger-otlp-grpc-plain
+#   namespace: cwx
+# spec:
+#   entryPoints:
+#     - otel-grpc
+#   routes:
+#   - match: HostSNI(`*`)
+#     services:
+#     - name: jaeger
+#       port: 4317

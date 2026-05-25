@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+  namespace: cwx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+      - name: jaeger
+        image: harbor.chenwx.top/public/cr.jaegertracing.io/jaegertracing/jaeger:2.17.0
+        imagePullPolicy: IfNotPresent
+        restartPolicy: Always
+
+        ports:
+        - containerPort: 16686
+          name: query
+        - containerPort: 4317
+          name: otlp-grpc
+        - containerPort: 4318
+          name: otlp-http
+        - containerPort: 5778
+          name: agent
+          protocol: TCP
+        - containerPort: 9411
+          name: zipkin
+
+        args:
+          - "--config=file:/config.yaml"
+
+        # env:
+        # - name: COLLECTOR_OTLP_ENABLED
+        #   value: "true"
+        # - name: SPAN_STORAGE_TYPE
+        #   value: "elasticsearch"
+
+        volumeMounts:
+          - name: config
+            mountPath: /config.yaml
+            subPath: config.yaml
+
+      volumes:
+        - name: config
+          configMap:
+            name: jaeger-config

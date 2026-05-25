@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hermes
+  namespace: cwx
+spec:
+  selector:
+    app: hermes
+  clusterIP: None
+  ports:
+  - port: 8642
+    name: gateway
+    targetPort: 8642
+  - port: 9119
+    name: dashboard
+    targetPort: 9119

@@ -1,0 +1,135 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: collector-gateway
+  namespace: opentelemetry
+spec:
+  mode: deployment
+  replicas: 1
+  # image: "harbor.chenwx.top/docker.io/otel/opentelemetry-collector-contrib:0.148.0"
+
+  config:
+
+    receivers:
+      otlp/pod:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+      otlp/host:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:14317
+
+    processors:
+
+      # 统一添加集群标识
+      attributes:
+        actions:
+          - key: cluster_name
+            value: home-lab
+            action: upsert
+
+      # 附加当前主机gateway的信息
+      # resourcedetection:
+      #   detectors: [env, system]
+      #   timeout: 5s
+      #   override: false
+
+      # Pod 日志的处理器, 添加 Kubernetes 元数据
+      k8sattributes:
+        auth_type: "serviceAccount"
+        # 配置关联规则：告诉处理器从哪里获取 Pod 标识
+        pod_association:
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.uid          # 从 resource attributes 中读取 uid
+
+        extract:
+          # 附加属性
+          metadata:
+            - k8s.namespace.name
+            - k8s.pod.name
+            - k8s.container.name
+            - k8s.node.name
+            - k8s.deployment.name
+        passthrough: false
+
+      # 内存限制 + 批处理
+      memory_limiter:
+        check_interval: 5s
+        limit_mib: 512
+        spike_limit_mib: 128
+
+      batch:
+        timeout: 10s
+        send_batch_size: 2048
+
+      # 可选: 采样或过滤
+      # filter:
+      #   logs:
+      #     log_record:
+      #       - 'attributes["log.file.path"] == "/var/log/syslog"'
+
+    exporters:
+      otlphttp/victorialogs:
+        endpoint: "http://192.168.5.9:9428/insert/opentelemetry"
+        tls:
+          insecure: true
+        compression: gzip
+        headers:
+          # 控制哪些字段作为筛选条件
+          VL-Stream-Fields: "k8s.namespace.name,k8s.pod.name,log_type, host.name"
+          X-Scope-OrgID: "homelab"
+
+      # 可选: debug 用于测试
+      debug:
+        verbosity: detailed
+        sampling_initial: 2
+        sampling_thereafter: 10
+
+      otlphttp/victoriametrics:
+        compression: gzip
+        encoding: proto
+        metrics_endpoint: http://192.168.5.9:8428/opentelemetry/v1/metrics
+
+
+      otlp/jaeger:
+        endpoint: jaeger.cwx.svc.cluster.local:4317
+        tls:
+          insecure: true
+
+      otlp/tempo:
+        endpoint: 192.168.5.11:4317
+        tls:
+          insecure: true
+
+      otlphttp/loki:
+        endpoint: http://192.168.5.9:3100/otlp
+
+    service:
+      pipelines:
+
+        # Pod 日志 pipeline
+        logs/pods:
+          receivers: [otlp/pod]
+          processors: [k8sattributes, attributes, memory_limiter, batch]
+          exporters: [debug, otlphttp/victorialogs, otlphttp/loki]
+
+        # 主机日志 pipeline
+        logs/host:
+          receivers: [otlp/host]
+          processors: [attributes, memory_limiter, batch]
+          exporters: [otlphttp/victorialogs]
+
+        metrics:
+          receivers: [otlp/pod]
+          processors: [attributes, memory_limiter, batch]
+          exporters: [otlphttp/victoriametrics]
+
+        traces:
+          receivers: [otlp/pod]
+          processors: [attributes, memory_limiter, batch]
+          exporters: [otlp/jaeger, otlp/tempo]

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermes
+  namespace: cwx
+  labels:
+    app: hermes
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app: hermes
+  template:
+    metadata:
+      labels:
+        app: hermes
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: hermes
+          image: harbor.chenwx.top/docker.io/nousresearch/hermes-agent:main
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8642
+              name: gateway
+            - containerPort: 9119
+              name: dashboard
+          args:
+            - gateway
+            - run
+
+          envFrom:
+          - secretRef:
+              name: hermes-secret
+
+          volumeMounts:
+          - name: hermes-data
+            mountPath: /opt/data
+
+          resources:
+
+            limits:
+              memory: "5Gi"
+              cpu: "1000m"
+
+      volumes:
+      - name: hermes-data
+        persistentVolumeClaim:
+          claimName: hermes-data-pvc

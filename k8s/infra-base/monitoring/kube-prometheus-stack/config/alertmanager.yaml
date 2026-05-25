@@ -3,10 +3,10 @@ global:
   # 全局配置, 收到告警后, 如果持续 10 分钟都没再收到告警, 就把告警状态标记为 resolved(已解决)
   resolve_timeout: 10m
 
-  smtp_from: 'chenwx@wait.wait'             # 发件人邮箱
+  smtp_from: 'chenwx@wait.wait'               # 发件人邮箱
   # smtp_smarthost: '192.168.5.8:1025'        # SMTP 服务器及端口
   smtp_smarthost: 'maildev.cwx.svc.cluster.local:1025'        # SMTP 服务器及端口
-  smtp_auth_username: 'chenwx@wait.wait'    # 登录用户名
+  smtp_auth_username: 'chenwx@wait.wait'      # 登录用户名
   smtp_auth_password: 'password'
   smtp_require_tls: false
 

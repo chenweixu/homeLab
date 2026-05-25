@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pve-exporter
+  namespace: monitoring
+spec:
+  selector:
+    app: pve-exporter
+  ports:
+  - port: 80
+    targetPort: 9221
+    protocol: TCP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pve-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pve-exporter
+  template:
+    metadata:
+      labels:
+        app: pve-exporter
+    spec:
+      containers:
+      - name: pve-exporter
+        image: harbor.chenwx.top/docker.io/prompve/prometheus-pve-exporter:3.5.4
+        env:
+          - name: TZ
+            value: Asia/Shanghai
+          - name: PVE_USER
+            valueFrom:
+              secretKeyRef:
+                name: exporter-secret
+                key: PVE_USER
+          - name: PVE_TOKEN_NAME
+            valueFrom:
+              secretKeyRef:
+                name: exporter-secret
+                key: PVE_TOKEN_NAME
+          - name: PVE_TOKEN_VALUE
+            valueFrom:
+              secretKeyRef:
+                name: exporter-secret
+                key: PVE_TOKEN_VALUE
+          - name: PVE_VERIFY_SSL
+            valueFrom:
+              secretKeyRef:
+                name: exporter-secret
+                key: PVE_VERIFY_SSL
+        ports:
+        - name: http
+          containerPort: 9221
+          protocol: TCP
+        resources: {}

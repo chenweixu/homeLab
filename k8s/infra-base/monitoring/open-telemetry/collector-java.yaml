@@ -1,0 +1,119 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: collector-agent-java
+  namespace: opentelemetry
+spec:
+  mode: deployment
+
+  podSecurityContext:
+    runAsUser: 0
+    runAsGroup: 0
+  # nodeName: h21
+
+  nodeSelector:
+    kubernetes.io/hostname: h21
+
+  # 添加主机路径挂载
+  volumes:
+    - name: varlogcontainers
+      hostPath:
+        path: /var/log/pods
+
+    # - name: var-lib-otelcol
+    #   hostPath:
+    #     path: /var/lib/otelcol
+    #     type: DirectoryOrCreate
+
+  volumeMounts:
+    - name: varlogcontainers
+      mountPath: /var/log/pods
+      readOnly: true
+    # - name: var-lib-otelcol
+    #   mountPath: /var/lib/otelcol
+
+  env:
+    - name: NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: OTEL_RESOURCE_ATTRIBUTES
+      value: "host.name=$(NODE_NAME),host.type=k8s-node"
+
+  config:
+    # extensions:
+    #   file_storage:
+    #     directory: /var/lib/otelcol/storage
+    #     create_directory: true
+
+    receivers:
+
+      filelog/java:
+        include:
+          - /var/log/pods/cwx_web6-*/*/*.log
+
+        encoding: utf-8
+        poll_interval: 300ms
+
+        include_file_path: true
+
+        start_at: end
+        # storage: file_storage
+
+        include_file_name: false
+
+        preserve_trailing_whitespaces: true
+        preserve_leading_whitespaces: false
+
+        operators:
+          # 自动解析不同格式的日志
+          - id: container-parser
+            type: container
+
+          # java 堆栈合并
+          - type: recombine
+            combine_field: body
+            # 如果日志行以非空白字符开头, 判定为新日志的第一行
+            is_first_entry: body matches "^[^\\s]"
+            source_identifier: attributes["log.file.path"]
+
+    processors:
+      # 只做基础的内存限制, 不做过重处理
+      memory_limiter:
+        check_interval: 5s
+        limit_mib: 256
+      batch:
+        timeout: 2s
+        send_batch_size: 256
+        send_batch_max_size: 512
+
+      resourcedetection:
+        detectors: [env]
+        timeout: 5s
+
+    exporters:
+      debug/java:
+        verbosity: detailed
+
+      otlphttp/loki:
+        endpoint: http://192.168.5.9:3100/otlp
+
+      otlphttp/victorialogs:
+        endpoint: "http://192.168.5.9:9428/insert/opentelemetry"
+        tls:
+          insecure: true
+        compression: gzip
+        headers:
+          # 控制哪些字段作为筛选条件
+          VL-Stream-Fields: "k8s.namespace.name,k8s.pod.name,log_type"
+          X-Scope-OrgID: "homelab"
+
+    service:
+      # extensions: [file_storage]
+      pipelines:
+        logs/java:
+          receivers: [filelog/java]
+          processors: [memory_limiter, batch]
+          exporters: [otlphttp/loki, otlphttp/victorialogs]
+          # exporters: [debug/java, otlphttp/loki, otlphttp/victorialogs]
+          # exporters: [debug/java]
