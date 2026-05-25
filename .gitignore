@@ -1,0 +1,13 @@
+
+private-README.md
+
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+terraform.tfvars
+backend.hcl
+
+keys/
+tmp/
+
+CLAUDE.md

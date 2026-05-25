@@ -1,0 +1,32 @@
+#cloud-config
+
+users:
+  # 管理员：固定配置
+  - name: root
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ${ssh_public_key_admin}
+
+  - name: ubuntu
+    lock_passwd: true
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${ssh_public_key_ubuntu}
+
+
+disable_root: false     # 启用 root 用户登录
+packages:
+  - qemu-guest-agent
+
+
+runcmd:
+  # 针对 24.04 的新格式 .sources 文件进行替换
+  - sed -i 's|http://archive.ubuntu.com/ubuntu|https://mirrors.tuna.tsinghua.edu.cn/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources
+  - sed -i 's|http://security.ubuntu.com/ubuntu|https://mirrors.tuna.tsinghua.edu.cn/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources
+
+  - apt-get update
+  - systemctl enable --now qemu-guest-agent
+
+  - [ cloud-init, clean, --logs ]
