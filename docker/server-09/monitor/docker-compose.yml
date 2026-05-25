@@ -1,0 +1,21 @@
+networks:
+  core:
+    external: true
+
+services:
+  cadvisor:
+    restart: unless-stopped
+    image: harbor.chenwx.top/ghcr.io/google/cadvisor:0.56.2
+    networks:
+      - core
+    privileged: true
+    devices:
+      - "/dev/kmsg"
+    ports:
+      - "9110:8080/tcp"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro

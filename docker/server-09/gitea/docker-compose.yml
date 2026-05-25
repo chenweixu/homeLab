@@ -1,0 +1,56 @@
+networks:
+  core:
+    name: core
+    external: true
+
+services:
+  gitea:
+    container_name: gitea
+    image: gitea/gitea:1.25.3
+    restart: unless-stopped
+    networks:
+      - core
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - DB_TYPE=mysql
+      - DB_HOST=${DB_HOST:?The is value env no found}
+      - DB_NAME=${DB_NAME:?The is value env no found}
+      - DB_USER=${DB_USER:?The is value env no found}
+      - DB_PASSWD=${DB_PASSWD:?The is value env no found}
+
+      - APP_NAME=WaitCode
+      - RUN_MODE=prod
+      - DOMAIN=git.chenwx.top
+      - SSH_DOMAIN=git.chenwx.top
+      - SSH_PORT=10022
+      - DISABLE_REGISTRATION=true     # 禁止注册
+      - REQUIRE_SIGNIN_VIEW=true      # 需要登陆
+      # - HTTP_PORT=80                # 无效
+      - ROOT_URL=https://git.chenwx.top/   # 最终实际的 http 服务地址
+      - OFFLINE_MODE=true
+      - HTTPS_PROXY=http://192.168.5.253:7890
+      - HTTP_PROXY=http://192.168.5.253:7890
+      - ALL_PROXY=socks5://192.168.5.253:7890
+      - NO_PROXY=localhost,192.168.5.0/24,127.0.0.0/8,chenwx.top
+
+    volumes:
+      - /data/volumes/gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    # ports:
+      # - "3000:3000"
+      # - "10022:10022"
+    labels:
+      - "service_name=gitea"
+      - "traefik.enable=true"
+      - "traefik.http.routers.giteaHttps.entrypoints=https"
+      - "traefik.http.routers.giteaHttps.service=giteaWeb"
+      - "traefik.http.routers.giteaHttps.rule=Host(`git.chenwx.top`)"
+      - "traefik.http.routers.giteaHttps.tls=true"
+      - "traefik.http.services.giteaWeb.loadbalancer.server.port=3000"
+
+      - "traefik.tcp.routers.giteaSSH.entrypoints=port10022"
+      - "traefik.tcp.routers.giteaSSH.service=giteaSSH"
+      - "traefik.tcp.routers.giteaSSH.rule=HostSNI(`*`)"
+      - "traefik.tcp.services.giteaSSH.loadbalancer.server.port=10022"

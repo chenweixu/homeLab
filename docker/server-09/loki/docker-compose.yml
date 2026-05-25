@@ -1,0 +1,25 @@
+networks:
+  core:
+    external: true
+
+volumes:
+  loki_volume:
+    name: loki_volume
+
+services:
+  loki:
+    image: harbor.chenwx.top/docker.io/grafana/loki:main-fc33fde
+    networks:
+      - core
+    ports:
+      - "3100:3100"
+    command: "-config.file=/etc/loki/local-config.yaml -target=all"
+    volumes:
+      - "./loki-config.yaml:/etc/loki/local-config.yaml"
+      - loki_volume:/loki
+    healthcheck:
+      test: [ "CMD", "/usr/bin/loki", "-health" ]
+      start_period: 30s
+      interval: 10s
+      timeout: 5s
+      retries: 5

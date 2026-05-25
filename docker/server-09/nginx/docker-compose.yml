@@ -1,0 +1,33 @@
+networks:
+  core:
+    name: core
+    external: true
+
+services:
+  nginx:
+    restart: always
+    image: nginx:1.29.4-alpine
+    networks:
+      - core
+    # ports:
+    #   - "80:80"
+    command:
+      ["nginx", "-g", "daemon off;"]
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /data/share/files:/files:ro
+      - ./logs:/logs
+
+    environment:
+      # 关闭启动初始化脚本的日志输出
+      NGINX_ENTRYPOINT_QUIET_LOGS: off
+
+    labels:
+      - "service_name=nginx"
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.nginx.entrypoints=https"
+      - "traefik.http.routers.nginx.service=nginx"
+      - "traefik.http.routers.nginx.rule=Host(`files.chenwx.top`)"
+      - "traefik.http.routers.nginx.tls=true"
+      - "traefik.http.services.nginx.loadbalancer.server.port=80"

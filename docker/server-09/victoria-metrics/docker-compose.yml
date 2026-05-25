@@ -1,0 +1,18 @@
+networks:
+  core:
+    name: core
+    external: true
+
+volumes:
+  victoria-metrics-data:
+
+services:
+  victoria:
+    restart: unless-stopped
+    image: harbor.chenwx.top/docker.io/victoriametrics/victoria-metrics:v1.140.0
+    networks:
+      - core
+    ports:
+      - "8428:8428/tcp"
+    volumes:
+      - victoria-metrics-data:/victoria-metrics-data

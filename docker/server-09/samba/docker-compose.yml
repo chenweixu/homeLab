@@ -1,0 +1,21 @@
+networks:
+  core:
+    external: true
+
+services:
+
+  samba:
+    image: dockurr/samba:4.21.4
+    restart: always
+    container_name: samba
+    networks:
+      - core
+    environment:
+      NAME: "share_wait"
+      USER: ${USER}
+      PASS: ${PASS}
+    ports:
+      - 445:445
+    volumes:
+      - /data/share:/storage
+      - ./smb.conf:/etc/samba/smb.conf

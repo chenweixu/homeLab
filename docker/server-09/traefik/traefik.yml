@@ -1,0 +1,61 @@
+
+api:
+  insecure: true
+
+log:
+  level: INFO   # DEBUG
+
+accessLog:
+  format: json
+
+  bufferingSize: 0
+
+ping: true
+
+
+entryPoints:
+  http:
+    address: :80
+  https:
+    address: :443
+
+    transport:
+      respondingTimeouts:
+        readTimeout: 120
+
+  metrics:
+    address: :8081
+
+  port10022:
+    address: :10022
+
+
+providers:
+  docker:
+    exposedbydefault: false
+
+  file:
+    directory: /etc/traefik/dynamic_conf
+    watch: true
+
+
+metrics:
+  prometheus:
+    buckets:
+      - 0.1
+      - 0.3
+      - 1.2
+      - 5.0
+    addEntryPointsLabels: true
+    addServicesLabels: true
+
+
+tracing:
+  serviceName: "traefix-09"
+  # otlp:
+  #   http:
+  #     endpoint: http://192.168.5.8:4318/v1/traces
+
+  otlp:
+    http:
+      endpoint: https://jaeger-otlp-http.chenwx.top/v1/traces

@@ -1,0 +1,39 @@
+networks:
+  core:
+    external: true
+    name: core
+
+services:
+  traefik:
+    container_name: traefik
+    restart: always
+    image: traefik:v3.3.6
+    networks:
+      - core
+    command:
+      - "--configfile=/etc/traefik/traefik.yml"
+
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+      - "8081:8081"
+      - "10022:10022" # gitea ssh
+    volumes:
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dynamic_conf:/etc/traefik/dynamic_conf:ro
+      - ./secrets:/etc/traefik/secrets:ro
+      - ./ssl/:/ssl/:ro
+
+    labels:
+      - "service_name=traefik"
+
+    logging:
+      options:
+        labels: "service_name"
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider --proxy off localhost:8080/ping || exit 1"]
+      interval: 3s
+      timeout: 5s

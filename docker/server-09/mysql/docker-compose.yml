@@ -1,0 +1,36 @@
+networks:
+  core:
+    name: core
+    external: true
+
+services:
+  mysql:
+    image: mysql:8.0.40
+    container_name: mysql
+    restart: always
+    networks:
+      - core
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: wait
+      MYSQL_USER: wait
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+    ports:
+      - 3306:3306/tcp
+    volumes:
+      - /data/volumes/mysql:/var/lib/mysql
+      - /home/wait/tmp:/tmpdata
+    command:
+      - --innodb_buffer_pool_size=128M
+      - --default-authentication-plugin=caching_sha2_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --explicit_defaults_for_timestamp=true
+      - --max_connections=500
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
+      retries: 5
+      start_period: 30s

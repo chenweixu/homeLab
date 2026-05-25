@@ -1,0 +1,33 @@
+networks:
+  core:
+    name: core
+    external: true
+
+volumes:
+  victorialogs:
+
+
+services:
+
+  victorialogs:
+    image: harbor.chenwx.top/docker.io/victoriametrics/victoria-logs:v1.50.0
+    volumes:
+      - victorialogs:/victoria-logs-data
+    networks:
+      - core
+    ports:
+      - '9428:9428'
+    command:
+      - -storageDataPath=/victoria-logs-data
+      - -loggerFormat=json
+      - -delete.enable
+
+    labels:
+      - "service_name=victorialogs"
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.victorialogs.entrypoints=https"
+      - "traefik.http.routers.victorialogs.service=victorialogs"
+      - "traefik.http.routers.victorialogs.rule=Host(`victorialogs.chenwx.top`)"
+      - "traefik.http.routers.victorialogs.tls=true"
+      - "traefik.http.services.victorialogs.loadbalancer.server.port=9428"

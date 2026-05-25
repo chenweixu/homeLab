@@ -1,0 +1,26 @@
+volumes:
+  etcd_db:
+    name: etcd_db
+    external: true
+
+networks:
+  core:
+    name: core
+    external: true
+
+services:
+  etcd1:
+    container_name: etcd1
+    image: quay.io/coreos/etcd:v3.6.2
+    restart: always
+    networks:
+      - core
+    environment:
+      - ETCD_NAME=etcd-1
+      - ETCD_DATA_DIR=/etcd_data
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+    ports:
+      - 2379:2379
+    volumes:
+      - etcd_db:/etcd_data

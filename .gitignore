@@ -8,6 +8,9 @@ terraform.tfvars
 backend.hcl
 
 keys/
+secrets/
 tmp/
 
 CLAUDE.md
+
+.env

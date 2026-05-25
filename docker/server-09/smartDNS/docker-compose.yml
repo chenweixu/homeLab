@@ -1,0 +1,17 @@
+networks:
+  core:
+    external: true
+    name: core
+
+services:
+  smart-dns:
+    restart: always
+    image: pymumu/smartdns:latest
+    networks:
+      - core
+    volumes:
+      - ./config:/etc/smartdns
+      - ./logs:/var/log/smartdns
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"

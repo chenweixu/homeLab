@@ -1,0 +1,36 @@
+networks:
+  core:
+    external: true
+
+services:
+  vault:
+    image: hashicorp/vault:1.21
+    container_name: vault
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+      VAULT_API_ADDR: "https://vault.chenwx.top"
+      VAULT_CONFIG_PATH: "/vault/config/config.hcl"
+    cap_add:
+      - IPC_LOCK
+
+    command: server
+
+    networks:
+      - core
+    ports:
+      - 8200:8200/tcp
+    volumes:
+      - ./data:/vault/data
+      - ./config.hcl:/vault/config/config.hcl:ro
+
+    labels:
+      - "service_name=vault"
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.vault.entrypoints=https"
+      - "traefik.http.routers.vault.service=vault"
+      - "traefik.http.routers.vault.rule=Host(`vault.chenwx.top`)"
+      - "traefik.http.routers.vault.tls=true"
+      - "traefik.http.services.vault.loadbalancer.server.port=8200"
