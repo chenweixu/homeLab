@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: cwx
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      securityContext:
+        fsGroup: 999    # 关键: 让 Pod 的组权限与 PostgreSQL 用户组匹配
+        runAsUser: 999  # 以 postgres 用户 (UID 999) 的身份运行容器
+        runAsGroup: 999 # 以 postgres 组 (GID 999) 的身份运行容器
+      containers:
+      - name: postgres
+        image: harbor.chenwx.top/docker.io/postgres:18.3
+        imagePullPolicy: IfNotPresent
+
+        envFrom:
+          - secretRef:
+              name: postgres-secret
+        env:
+          - name: TZ
+            value: Asia/Shanghai
+
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql
+          subPath: postgresql
+
+        ports:
+        - containerPort: 5432
+          name: postgres
+
+        command:
+          - "postgres"
+          - "-c"
+          - "shared_buffers=256MB"
+          - "-c"
+          - "max_connections=200"
+          - "-c"
+          - "work_mem=16MB"
+          - "-c"
+          - "shared_preload_libraries=pg_stat_statements"
+
+        livenessProbe:
+          exec:
+            command: ["pg_isready", "-h", "localhost", "-U", "postgres"]
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-h", "localhost", "-U", "postgres"]
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: cwx-nfs-k8s

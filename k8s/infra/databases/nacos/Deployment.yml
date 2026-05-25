@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos
+  namespace: cwx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      labels:
+        app: nacos
+    spec:
+      containers:
+      - name: nacos
+        image: harbor.chenwx.top/docker.io/nacos/nacos-server:v2.4.3
+        env:
+          - name: MODE
+            value: standalone
+          - name: PREFER_HOST_MODE
+            value: hostname
+          - name: SPRING_DATASOURCE_PLATFORM
+            value: mysql
+          - name: MYSQL_SERVICE_HOST
+            value: 192.168.5.9
+          - name: MYSQL_SERVICE_DB_NAME
+            value: nacos
+          - name: MYSQL_SERVICE_PORT
+            value: "3306"
+          - name: MYSQL_SERVICE_USER
+            valueFrom:
+              secretKeyRef:
+                name: nacos-secret
+                key: MYSQL_SERVICE_USER
+          - name: MYSQL_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: nacos-secret
+                key: MYSQL_SERVICE_PASSWORD
+
+          - name: MYSQL_SERVICE_DB_PARAM
+            value: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+          - name: NACOS_AUTH_ENABLE
+            value: "false"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "800m"
+        ports:
+          - containerPort: 8848
+            name: client
+          - containerPort: 9848
+            name: client-rpc
+          - containerPort: 9849
+            name: raft-rpc

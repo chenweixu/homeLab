@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos
+  namespace: cwx
+  labels:
+    kubernetes.io/cluster-service: 'true'
+    kubernetes.io/name: nacos
+spec:
+  selector:
+    app: nacos
+  ports:
+  - port: 80
+    name: client
+    targetPort: 8848

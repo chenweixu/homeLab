@@ -1,0 +1,113 @@
+image:
+  registry: harbor.chenwx.top
+  repository: docker.io/traefik
+  tag: v3.6.11
+  # pullSecrets:
+  #   - name: harbor
+
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`traefik-k8s.chenwx.top`)
+    entryPoints:
+      - websecure
+providers:
+  kubernetesGateway:
+    enabled: true
+    experimentalChannel: true
+
+service:
+  type: LoadBalancer
+  loadBalancerClass: io.cilium/l2-announcer
+  externalTrafficPolicy: Cluster
+  labels:
+    lbip: cwx
+  annotations:
+    "lbipam.cilium.io/ips": "192.168.5.30"
+
+gateway:
+  listeners:
+    web:
+      port: 80
+      protocol: HTTP
+      namespacePolicy:
+        from: All
+    websecure:
+      port: 443
+      protocol: HTTPS
+      namespacePolicy:
+        from: All
+      certificateRefs:
+      - group: ""
+        kind: Secret
+        name: key-services-wait
+      - group: ""
+        kind: Secret
+        name: chenwx-top-online-tls
+
+      mode: Terminate
+    postgres:
+      port: 5432
+      protocol: TCP
+
+ports:
+  web:
+    port: 80
+  websecure:
+    port: 443
+  metrics:
+    port: 9100
+    expose:
+      default: true
+  postgres:
+    port: 5432
+    protocol: TCP
+    expose:
+      default: true
+  otel-grpc:
+    port: 4317
+    protocol: TCP
+    expose:
+      default: true
+    # # 核心修复 1：防止该端口被加入默认的 HTTP 转发组
+    # asDefault: false
+    # # 核心修复 2：显式声明它是纯 TCP，不要尝试 HTTP 协议探测
+    # appProtocol: tcp
+
+logs:
+  access:
+    enabled: true
+    # bufferingSize: 10
+  general:
+    format: json
+    otlp:
+      enabled: true
+      serviceName: "traefix-k8s"
+      grpc:
+        enabled: true
+        endpoint: "collector-gateway-collector.opentelemetry.svc:4317"
+        insecure: true
+
+
+experimental:
+  otlpLogs: true
+  kubernetesGateway:
+    enabled: true
+
+tracing:
+  serviceName: "traefix-k8s"
+  otlp:
+    enabled: true
+    grpc:
+      enabled: true
+      endpoint: "collector-gateway-collector.opentelemetry.svc:4317"
+      insecure: true
+
+
+    # http:
+    #   enabled: true
+    #   # endpoint: http://192.168.5.9:4318
+    #   # endpoint: http://192.168.5.8:4318/v1/traces
+    #   # endpoint: http://192.168.5.11:4318/v1/traces
+    #   endpoint: http://collector-gateway-collector.opentelemetry.svc:4318/v1/traces

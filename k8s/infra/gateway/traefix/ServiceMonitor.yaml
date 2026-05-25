@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: traefik-cwx
+  namespace: monitoring
+  labels:
+    release: prometheus-stack
+spec:
+  endpoints:
+  - interval: 20s
+    port: "metrics"
+    path: /metrics
+  namespaceSelector:
+    matchNames:
+    - cwx
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+      app.kubernetes.io/instance: traefik-cwx

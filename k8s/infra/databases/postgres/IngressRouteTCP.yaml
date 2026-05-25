@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: postgres
+  namespace: cwx
+spec:
+  entryPoints:
+    - postgres
+  routes:
+  - match: HostSNI(`*`)
+    services:
+    - name: postgres-lb
+      port: 5432

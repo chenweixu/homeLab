@@ -1,0 +1,13 @@
+global:
+  local: true
+
+higress-core:
+  gateway:
+    labels:
+      lbip: cwx
+    service:
+      type: LoadBalancer
+      annotations:
+        "lbipam.cilium.io/ips": "192.168.5.31"
+      loadBalancerClass: "io.cilium/l2-announcer"
+      externalTrafficPolicy: "Cluster"

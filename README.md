@@ -80,6 +80,6 @@ kubeseal --scope namespace-wide --format yaml < file.yml > secret-crypto.yaml
 
 deploy service
 ```sh
-kubectl apply -k /home/wait/git/homeLab/k8s/sets
+kubectl apply -k k8s/sets
 
 ```

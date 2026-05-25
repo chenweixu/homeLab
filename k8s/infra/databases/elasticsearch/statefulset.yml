@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: cwx
+spec:
+  selector:
+    matchLabels:
+      app: elasticsearch
+  serviceName: elasticsearch
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: harbor.chenwx.top/docker.io/elasticsearch:8.19.14
+        imagePullPolicy: IfNotPresent
+
+        env:
+          - name: TZ
+            value: Asia/Shanghai
+          - name: node.name
+            value: "node01"
+          - name: bootstrap.memory_lock
+            value: "true"
+          - name: xpack.security.enabled
+            value: "false"
+          - name: discovery.type
+            value: "single-node"
+          - name: xpack.monitoring.collection.enabled
+            value: "false"
+          - name: ES_JAVA_OPTS
+            value: "-Xms2048m -Xmx2048m -Des.allow_insecure_settings=true"
+
+        resources:
+          requests:
+            memory: "3Gi"
+          limits:
+            memory: "3Gi"
+
+        ports:
+        - containerPort: 9200
+          name: elasticsearch
+
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/elasticsearch/data
+          subPath: elasticsearch_esdata01
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: cwx-nfs-k8s

@@ -38,7 +38,7 @@ kubectl apply -f certificate-chenwx/alidns-letsencrypt-clusterissuer.yaml
 kubectl apply -f certificate-chenwx/chenwx-certificate.yaml
 
 # 合并操作
-kubectl apply -k /home/wait/git/homeLab/k8s/infra-base/controllers/certificate-chenwx
+kubectl apply -k k8s/infra-base/controllers/certificate-chenwx
 
 # 查看申请下来的证书
 kubectl -n cwx get secrets chenwx-top-online-tls -o yaml
