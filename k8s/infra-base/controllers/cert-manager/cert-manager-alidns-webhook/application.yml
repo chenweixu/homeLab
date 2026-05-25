@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-alidns-webhook
+  namespace: argocd
+spec:
+  project: controllers
+
+  sources:
+    - repoURL: "ssh://git@git.chenwx.top:10022/chenwx/homeLab.git"
+      targetRevision: HEAD
+      ref: values
+
+    - repoURL: "harbor.chenwx.top/public"
+      chart: alidns-webhook
+      targetRevision: 0.8.3
+      helm:
+        valueFiles:
+          - $values/k8s/infra/controllers/cert-manager-alidns-webhook/values.yaml
+
+  destination:
+    namespace: cert-manager
+    server: in-cluster
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

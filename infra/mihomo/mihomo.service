@@ -1,0 +1,13 @@
+# /etc/systemd/system/mihomo.service
+[Unit]
+Description=Mihomo Daemon, A rule-based tunnel in Go.
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/mihomo -d /etc/mihomo
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

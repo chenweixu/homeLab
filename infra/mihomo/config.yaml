@@ -1,0 +1,79 @@
+# 1. 基础配置
+allow-lan: true
+mixed-port: 7890
+allow-left-to-right: true
+log-level: info
+ipv6: false
+routing-mark: 666
+
+external-controller: 0.0.0.0:9090
+
+
+# 2. TUN 模式(接管所有流量, 自动处理转发)
+tun:
+  enable: true
+  stack: system
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+  mtu: 1400
+  exclude-package:      # 排除内网网段(可选)
+    - 192.168.0.0/16
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+
+
+sniffer:
+  enable: true
+  sniff:
+    TLS:
+      ports: [443, 8443]
+    HTTP:
+      ports: [80, 8080-8888]
+      # 关键: 将嗅探到的域名覆盖目标地址进行规则匹配
+      override-destination: true
+
+# 定义代理出口(SOCKS5 地址)
+proxies:
+  - name: "SOCKS5_OUT"
+    type: socks5
+    server: 192.168.5.4
+    # port: 20011
+    port: 15732
+
+# DNS 分流
+dns:
+  enable: true
+  listen: 0.0.0.0:53
+
+  # 解决 DNS 污染和填表性能
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+
+  # 默认 DNS 服务器(用于解析国内域名)
+  nameserver:
+    - 223.5.5.5
+
+  # 策略分流解析(你的内网域名需求)
+  nameserver-policy:
+    "chenwx.top": "192.168.5.9"  # 内网域名走特定解析器
+
+# 5. 分流规则(需求 2 & 3)
+rules:
+  # 内网域名直连
+  - DOMAIN-SUFFIX,chenwx.top,DIRECT
+
+  # - IP-CIDR,192.168.5.4/32,DIRECT,no-resolve
+  - IP-CIDR,192.168.5.0/24,DIRECT,no-resolve
+  #- DOMAIN-SUFFIX,ipify.org,SOCKS5_OUT
+
+  # 指定域名走 SOCKS5 出口
+  - DOMAIN-SUFFIX,docker.io,SOCKS5_OUT
+  - DOMAIN-SUFFIX,google.com,SOCKS5_OUT
+  - DOMAIN-SUFFIX,github.com,SOCKS5_OUT
+  - DOMAIN-SUFFIX,githubusercontent.com,SOCKS5_OUT
+  - DOMAIN-SUFFIX,ghcr.io,SOCKS5_OUT
+  - DOMAIN-SUFFIX,trackip.net,SOCKS5_OUT
+
+  # 其它流量正常出网(直连)
+  - MATCH,DIRECT

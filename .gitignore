@@ -14,3 +14,4 @@ tmp/
 CLAUDE.md
 
 .env
+secret-plaintext.yaml

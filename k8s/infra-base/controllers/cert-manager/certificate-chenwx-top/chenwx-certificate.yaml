@@ -1,0 +1,19 @@
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: chenwx-top-cert
+  namespace: cwx          # 证书所在命名空间
+spec:
+  # 存储证书的 Secret 名(后续服务引用此名)
+  secretName: chenwx-top-online-tls
+
+  dnsNames:
+    - "chenwx.top"
+    - "*.chenwx.top"
+  issuerRef:
+    # 创建的 ClusterIssuer 名
+    name: alidns-letsencrypt-clusterissuer
+    kind: ClusterIssuer
+  privateKey:
+    rotationPolicy: Always

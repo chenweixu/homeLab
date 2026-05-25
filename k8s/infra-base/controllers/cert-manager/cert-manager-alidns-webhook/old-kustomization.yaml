@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cert-manager
+
+
+# helmGlobals:
+#   chartHome: /tmp/charts
+
+helmCharts:
+  - name: alidns-webhook
+    # repo: oci://harbor.chenwx.top/public
+    repo: harbor.chenwx.top/public
+    releaseName: alidns-webhook
+    namespace: cert-manager
+    version: 0.8.3
+    valuesFile: values.yaml

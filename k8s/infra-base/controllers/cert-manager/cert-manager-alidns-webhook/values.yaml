@@ -1,0 +1,11 @@
+
+groupName: alidns
+
+certManager:
+  namespace: cert-manager
+  serviceAccountName: cert-manager
+
+image:
+  # repository: ghcr.io/devmachine-fr/cert-manager-alidns-webhook/cert-manager-alidns-webhook
+  repository: harbor.chenwx.top/ghcr.io/devmachine-fr/cert-manager-alidns-webhook/cert-manager-alidns-webhook
+  tag: 0.3.1

@@ -1,0 +1,35 @@
+global:
+  image:
+    repository: harbor.chenwx.top/quay.io/argoproj/argocd
+
+configs:
+  params:
+    # 参数 不生成自己https ui证书
+    server.insecure: true
+
+  cm:
+    # 关键配置：kustomize 启用 helm 支持
+    kustomize.buildOptions: "--enable-helm"
+
+  # cmp:
+  #   create: true
+  #   plugins:
+  #     # 增加 helm 支持
+  #     kustomize-build-with-helm:
+  #       generate:
+  #         command: [ sh, -c ]
+  #         args: [ kustomize build --enable-helm ]
+
+redis:
+  image:
+    repository: ecr-public.aws.com/docker/library/redis
+
+dex:
+  image:
+    repository: harbor.chenwx.top/ghcr.io/dexidp/dex
+  metrics:
+    enabled: true
+
+server:
+  metrics:
+    enabled: true

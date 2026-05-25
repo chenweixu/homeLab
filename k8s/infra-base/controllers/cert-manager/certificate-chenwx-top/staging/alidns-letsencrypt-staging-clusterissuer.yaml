@@ -1,0 +1,33 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: alidns-letsencrypt-staging-clusterissuer
+spec:
+  acme:
+    # 接收证书过期提醒的邮箱
+    email: chenwx716@163.com
+    # staging 测试环境服务器
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # 正式环境地址
+    # server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      # 存储 ACME 账户私钥的 Secret 名
+      name: letsencrypt-staging-private-key
+    solvers:
+    - dns01:
+        webhook:
+          config:
+            accessTokenSecretRef:
+              # 存储阿里云ak/sk的 secret 名字
+              name: aliyun-dns-secret
+              key: access-key-id
+            secretKeySecretRef:
+              name: aliyun-dns-secret
+              key: access-key-secret
+
+          # 需与阿里云 DNS Webhook 的 groupName 一致
+          groupName: alidns
+
+          # 阿里云 DNS Webhook 的 solver 名称
+          # Webhook 组件在 Kubernetes 集群中注册的唯一标识符
+          solverName: alidns-solver

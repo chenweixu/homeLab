@@ -1,0 +1,25 @@
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: chenwx-top-cert
+  # 证书所在命名空间
+  namespace: cert-manager
+spec:
+  # 存储证书的 Secret 名(后续服务引用此名)
+  secretName: chenwx-top-online-tls-staging
+
+  # dnsNames 是域名列表, 可以是多个; commonName 即"公用名(CN)", 从域名列表里挑一个写入即可
+  # commonName: chenwx.top
+  # commonName 已经弃用
+
+  dnsNames:
+    - "*.chenwx.top"  # 泛域名
+    # - "chenwx.top"    # 如果指定了 commonName, 则这里必须要写
+  issuerRef:
+    # 创建的 ClusterIssuer 名
+    name: alidns-letsencrypt-staging-clusterissuer
+    # 类型为 ClusterIssuer(若用 Issuer 则改为 Issuer)
+    kind: ClusterIssuer
+  privateKey:
+    rotationPolicy: Always
