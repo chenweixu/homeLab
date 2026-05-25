@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: maildev
+  namespace: cwx
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`maildev.chenwx.top`)
+      kind: Rule
+      services:
+        - name: maildev
+          namespace: cwx
+          port: 80

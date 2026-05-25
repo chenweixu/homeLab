@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docs-service
+  namespace: cwx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docs-service
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: docs-service
+    spec:
+      restartPolicy: Always
+      containers:
+
+      - image: harbor.chenwx.top/docker.io/nginx:1.29.2
+        name: docs-service
+        ports:
+          - containerPort: 80
+            protocol: TCP
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "50m"
+          limits:
+            memory: "300Mi"
+            cpu: "200m"
+        env:
+          - name: NGINX_ENTRYPOINT_QUIET_LOGS
+            value: "off"
+        volumeMounts:
+          - name: conf-map
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+            readOnly: true
+
+          - name: nfs-storage
+            mountPath: /data
+            subPath: blog-web-data
+            readOnly: true
+
+      volumes:
+        - name: conf-map
+          configMap:
+            name: docs-config-nginx
+
+        - name: nfs-storage
+          persistentVolumeClaim:
+            claimName: cwx-nfs-k8s

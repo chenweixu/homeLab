@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: maildev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maildev
+  template:
+    metadata:
+      labels:
+        app: maildev
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: maildev
+          image: harbor.chenwx.top/docker.io/maildev/maildev:2.2.1
+          ports:
+            - containerPort: 1080
+              protocol: TCP
+              name: "web"
+            - containerPort: 1025
+              protocol: TCP
+              name: "smtp"

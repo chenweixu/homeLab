@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: localhome-2
+  namespace: argocd
+
+spec:
+  sourceRepos:
+    - 'https://git.chenwx.top/chenwx/homeLab.git'
+    - 'ssh://git@git.chenwx.top:10022/chenwx/homeLab.git'
+
+  destinations:
+    - namespace: 'argocd'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

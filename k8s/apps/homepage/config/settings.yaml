@@ -1,0 +1,29 @@
+# providers:
+#   openweathermap: openweathermapapikey
+#   weatherapi: weatherapiapikey
+
+title: 陈 Homepage
+
+theme: dark # or light
+
+layout:
+  监控系统:
+    style: row
+    columns: 4
+
+  应用:
+    style: row
+    columns: 4
+
+  系统管理:
+    style: row
+    columns: 4
+
+
+  基础设施:
+    style: row
+    columns: 4
+
+  物理设备:
+    style: row
+    columns: 4

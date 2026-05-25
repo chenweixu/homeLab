@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web5
+  namespace: cwx
+  labels:
+    app: web5
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web5
+  template:
+    metadata:
+      labels:
+        app: web5
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-chenwx-secret
+      containers:
+        - name: web5
+          image: harbor.chenwx.top/chenwx/web5:v0.0.0
+          imagePullPolicy: IfNotPresent
+          envFrom:
+          - secretRef:
+              name: web5-secret
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: config
+              mountPath: /root/config.yaml
+              subPath: config.yaml
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: config
+          configMap:
+            name: web5-config

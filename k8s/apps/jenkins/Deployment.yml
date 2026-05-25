@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: cwx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: harbor.chenwx.top/docker.io/jenkins/jenkins:2.521-jdk17
+        imagePullPolicy: IfNotPresent
+        restartPolicy: Always
+
+        ports:
+        - containerPort: 8080
+          name: http
+
+        volumeMounts:
+
+          - name: data
+            mountPath: /var/jenkins_home
+            subPath: jenkins/jenkins_home
+
+          - name: data
+            mountPath: /var/jenkins_tools
+            subPath: jenkins/jenkins_tools
+
+          - name: ca
+            mountPath: "/etc/ssl/certs/cwxCA.pem"
+            readOnly: true
+            subPath: cwxCA.pem
+
+      volumes:
+        - name: ca
+          secret:
+            secretName: cwx-ca-pem
+            defaultMode: 0400
+        - name: data
+          persistentVolumeClaim:
+            claimName: cwx-nfs-k8s

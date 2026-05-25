@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web6
+  namespace: cwx
+  labels:
+    app: web6
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web6
+  template:
+    metadata:
+      labels:
+        app: web6
+      # annotations:
+      #   instrumentation.opentelemetry.io/inject-java: "true"
+
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-chenwx-secret
+      containers:
+        - name: web6
+          image: harbor.chenwx.top/chenwx/test-springweb:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9011
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9011
+              scheme: HTTP
+            initialDelaySeconds: 10
+            failureThreshold: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9011
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9011
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "384Mi"
+              # cpu: "128m"
+            limits:
+              memory: "512Mi"
+              # cpu: "256m"

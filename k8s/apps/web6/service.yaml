@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web6
+  namespace: cwx
+spec:
+  selector:
+    app: web6
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9011
+  type: ClusterIP

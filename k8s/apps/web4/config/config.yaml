@@ -1,0 +1,28 @@
+server:
+  port: 8080
+redis:
+  host: 192.168.5.9
+  port: 6379
+  db: 0
+backend:
+  url: "http://web5"
+
+
+otel:
+  enabled: true
+  service_name: "web4"
+  service_version: "1.0.0"
+  environment: "development"
+  exporter:
+    type: "grpc"
+    grpc:
+      enabled: true
+      endpoint: "collector-gateway-collector.opentelemetry.svc:4317"
+      insecure: true
+      headers: {}
+    http:
+      enabled: false
+      endpoint: "192.168.5.9:4318"
+      insecure: true
+      url_path: "/v1/traces"
+      headers: {}

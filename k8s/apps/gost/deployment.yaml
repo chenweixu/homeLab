@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: gogost
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gogost
+  template:
+    metadata:
+      labels:
+        app: gogost
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: gogost
+          image: harbor.chenwx.top/docker.io/gogost/gost:3.2.6
+          ports:
+            - containerPort: 12001
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /etc/gost/gost.yaml
+              subPath: config.yaml
+              readOnly: true
+
+      volumes:
+        - name: config
+          configMap:
+            name: gost-config

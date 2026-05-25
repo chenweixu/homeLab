@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: openclaw
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app: openclaw
+
+  template:
+    metadata:
+      labels:
+        app: openclaw
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: openclaw
+          image: harbor.chenwx.top/ghcr.io/openclaw/openclaw:2026.5.12-slim
+          ports:
+            - containerPort: 18789
+              protocol: TCP
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: NPM_CONFIG_REGISTRY
+              value: "https://registry.npmmirror.com"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://jaeger.cwx.svc.cluster.local:4317"
+            - name: OTEL_SERVICE_NAME
+              value: "openclaw"
+            - name: PATH
+              value: "/home/node/.openclaw/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+          volumeMounts:
+            - name: data
+              mountPath: /home/node/.openclaw
+              subPath: openclaw-workspae
+
+          resources:
+            # requests:
+            #   memory: "2Gi"
+            limits:
+              memory: "2Gi"
+
+          livenessProbe:
+            exec:
+              command: ["node", "-e", "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+            initialDelaySeconds: 30
+            timeoutSeconds: 2
+            periodSeconds: 30
+            failureThreshold: 3
+
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: cwx-nfs-k8s

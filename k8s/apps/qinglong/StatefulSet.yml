@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: qinglong
+  namespace: cwx
+spec:
+  # 声明属于哪个 Headless Service
+  serviceName: "qinglong-headless"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qinglong
+  template:
+    metadata:
+      labels:
+        app: qinglong
+    spec:
+      containers:
+      - name: qinglong
+        image: harbor.chenwx.top/docker.io/whyour/qinglong:2.19
+        env:
+          - name: QlBaseUrl
+            value: '/'
+        ports:
+          - containerPort: 5700
+            protocol: TCP
+        volumeMounts:
+          - name: data
+            mountPath: /ql/data
+            subPath: qinglong
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: cwx-nfs-k8s
+
+  # volumeClaimTemplates:
+  #   - metadata:
+  #       name: nfs-qinglong-pvc
+  #     spec:
+  #       storageClassName: "nfs-home-sc"
+  #       accessModes: [ "ReadWriteOnce" ]
+  #       resources:
+  #         requests:
+  #           storage: 1Gi

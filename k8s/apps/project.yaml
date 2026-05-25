@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  description: "cwx apps Project"
+
+  destinations:
+  - namespace: argocd
+    server: '*'
+  - namespace: cwx
+    server: '*'
+  - namespace: monitoring
+    server: '*'
+
+  sourceRepos:
+  - https://git.chenwx.top/chenwx/homeLab.git
+  - ssh://git@git.chenwx.top:10022/chenwx/homeLab.git
+  - oci://harbor.chenwx.top/public
+  - harbor.chenwx.top/public
+
+  # 项目角色
+  roles:
+  - name: developer
+    policies:
+    - p, proj:my-app:developer, applications, get, my-app-*, allow
+    groups:
+    - dev-team
+
+  # 部署限制
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'

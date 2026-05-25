@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omni-tools
+  namespace: cwx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: omni-tools
+  template:
+    metadata:
+      labels:
+        app: omni-tools
+    spec:
+      containers:
+      - name: omni-tools
+        image: harbor.chenwx.top/docker.io/iib0011/omni-tools:latest
+        env:
+          - name: TZ
+            value: "Asia/Shanghai"
+        ports:
+          - containerPort: 80
+            protocol: TCP

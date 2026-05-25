@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: web5-route
+  namespace: cwx
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`web5.services.wait`)
+      kind: Rule
+      services:
+        - name: web5
+          namespace: cwx
+          port: 80

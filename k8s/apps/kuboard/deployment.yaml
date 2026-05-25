@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: kuboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kuboard
+  template:
+    metadata:
+      labels:
+        app: kuboard
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: kuboard
+          image: harbor.chenwx.top/public/kuboard:v4.1.0.2
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: DB_DRIVER
+              value: "com.mysql.cj.jdbc.Driver"
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: kuboard-secret
+                  key: DB_URL
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: kuboard-secret
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kuboard-secret
+                  key: DB_PASSWORD
+
+          ports:
+            - containerPort: 80
+              protocol: TCP

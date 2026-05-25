@@ -1,0 +1,21 @@
+services:
+- name: in-tcp-service-0
+  addr: ":12001"
+  handler:
+    type: auto
+    chain: chain-out
+  listener:
+    type: tcp
+
+chains:
+  # 转发链：统一转发到固定 IP:端口
+  - name: chain-out
+    hops:
+      - name: hop-1
+        nodes:
+          - name: target
+            addr: 192.168.5.253:7890
+            connector:
+              type: socks5
+            dialer:
+              type: tcp

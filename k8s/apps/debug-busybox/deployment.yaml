@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: busybox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+      labels:
+        app: busybox
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: busybox
+          image: harbor.chenwx.top/docker.io/library/busybox:1.37.0
+          # 覆盖启动参数
+          command: ["sleep", "360000"]
+          resources:
+            limits:
+              # cpu: "50m"
+              memory: "100Mi"

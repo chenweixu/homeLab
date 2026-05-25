@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qinglong-headless
+  namespace: cwx
+  labels:
+    app: qinglong
+spec:
+  clusterIP: None          # Headless
+  ports:
+  - port: 80
+    targetPort: 5700
+    name: web
+  selector:
+    app: qinglong
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qinglong
+  namespace: cwx
+spec:
+  ports:
+  - port: 80
+    targetPort: 5700
+  selector:
+    app: qinglong

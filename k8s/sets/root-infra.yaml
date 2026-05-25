@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-infra
+  namespace: argocd
+  finalizers:
+    - argocd.argoproj.io/resources-finalizer
+
+spec:
+  project: localhome-2
+  source:
+    path: k8s/infra
+    repoURL: ssh://git@git.chenwx.top:10022/chenwx/homeLab.git
+    targetRevision: HEAD
+  destination:
+    namespace: argocd
+    name: in-cluster
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true

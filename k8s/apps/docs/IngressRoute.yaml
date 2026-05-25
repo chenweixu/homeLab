@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: docs-service
+  namespace: cwx
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`docs2.chenwx.top`)
+      kind: Rule
+      services:
+        - name: docs-service
+          namespace: cwx
+          port: 80

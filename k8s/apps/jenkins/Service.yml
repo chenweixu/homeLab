@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+  namespace: cwx
+spec:
+  selector:
+    app: jenkins
+  ports:
+  - name: web
+    port: 80
+    targetPort: 8080

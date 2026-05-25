@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: metacubexd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metacubexd
+  template:
+    metadata:
+      labels:
+        app: metacubexd
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: metacubexd
+          image: harbor.chenwx.top/ghcr.io/metacubex/metacubexd:latest
+          env:
+            - name: DEFAULT_BACKEND_URL
+              value: "http://192.168.5.253:9090"
+          ports:
+            - containerPort: 80
+              protocol: TCP

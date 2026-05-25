@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps
+  namespace: argocd
+  labels:
+    dev.stonegarden: application
+spec:
+  generators:
+    - git:
+        repoURL: ssh://git@git.chenwx.top:10022/chenwx/homeLab.git
+        revision: HEAD
+        directories:
+          - path: k8s/apps/*
+
+  syncPolicy:
+    applicationsSync: create-delete
+    preserveResourcesOnDeletion: false
+  template:
+    metadata:
+      name: '{{ path.basename }}'
+      labels:
+        deploy-tools: argocd
+      annotations:
+        notifications.argoproj.io/subscribe.on-sync-succeeded.feishu: ""
+        notifications.argoproj.io/subscribe.on-sync-failed.feishu: ""
+    spec:
+      project: apps
+      source:
+        repoURL: ssh://git@git.chenwx.top:10022/chenwx/homeLab.git
+        targetRevision: HEAD
+        path: '{{ path }}'
+      destination:
+        name: in-cluster
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=false
+        # 先创建新资源，再删除旧的
+        - PruneLast=true

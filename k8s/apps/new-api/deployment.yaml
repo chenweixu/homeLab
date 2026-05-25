@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: new-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: new-api
+  template:
+    metadata:
+      labels:
+        app: new-api
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: new-api
+          image: harbor.chenwx.top/public/new-api:v0.13.1-patch.1
+          env:
+            - name: SQL_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: new-api-secret
+                  key: SQL_DSN
+            - name: REDIS_CONN_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: new-api-secret
+                  key: REDIS_CONN_STRING
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: ERROR_LOG_ENABLED
+              value: "true"
+            - name: BATCH_UPDATE_ENABLED
+              value: "true"
+            - name: OTEL_SERVICE_NAME
+              value: "new-api-local"
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: new-api-secret
+                  key: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            - name: OTEL_METRICS_EXPORTER
+              value: "none"
+
+          ports:
+            - containerPort: 3000
+              protocol: TCP

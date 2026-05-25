@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: moto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moto
+  template:
+    metadata:
+      labels:
+        app: moto
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: moto
+          image: harbor.chenwx.top/ghcr.io/getmoto/motoserver:5.2.1
+          env:
+            - name: MOTO_PORT
+              value: "3000"
+          ports:
+            - containerPort: 3000
+              protocol: TCP

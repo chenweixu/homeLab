@@ -1,0 +1,18 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: web4-route
+  namespace: cwx
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`web4.chenwx.top`)
+      kind: Rule
+      middlewares:
+        - name: authelia
+          namespace: cwx
+      services:
+        - name: web4
+          namespace: cwx
+          port: 80

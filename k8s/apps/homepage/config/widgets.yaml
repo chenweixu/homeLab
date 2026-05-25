@@ -1,0 +1,6 @@
+# https://gethomepage.dev/latest/widgets/
+
+- resources:
+    cpu: true
+    memory: true
+    disk: /

@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kuboard
+  namespace: cwx
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`kuboard.chenwx.top`)
+      kind: Rule
+      services:
+        - name: kuboard
+          namespace: cwx
+          port: 80

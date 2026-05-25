@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blogweb
+  namespace: cwx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blogweb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: blogweb
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-chenwx-secret
+
+      restartPolicy: Always
+      containers:
+
+      - image: harbor.chenwx.top/chenwx/nginx:1.29.8
+        name: blogweb
+        ports:
+          - containerPort: 80
+            protocol: TCP
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "50m"
+          limits:
+            memory: "300Mi"
+            cpu: "200m"
+        env:
+          - name: NGINX_ENTRYPOINT_QUIET_LOGS
+            value: "off"
+        volumeMounts:
+          - name: conf-map
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+            readOnly: true
+
+          - name: data
+            mountPath: /data
+            subPath: blog-web-data
+
+      volumes:
+        - name: conf-map
+          configMap:
+            name: blog-config-nginx
+        - name: data
+          persistentVolumeClaim:
+            claimName: cwx-nfs-k8s

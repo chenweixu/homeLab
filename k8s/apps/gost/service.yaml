@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gost
+  namespace: cwx
+spec:
+  ports:
+    - port: 80
+      targetPort: 12001
+  selector:
+    app: gost

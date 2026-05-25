@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: web4-route
+  namespace: cwx
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      sectionName: websecure
+  hostnames:
+    - "web4.chenwx.top"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: traefik.io
+            kind: Middleware
+            name: authelia
+            # namespace: cwx
+
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: web4
+          port: 80
+          weight: 1

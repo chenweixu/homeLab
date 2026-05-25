@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web4
+  namespace: cwx
+  labels:
+    app: web4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web4
+  template:
+    metadata:
+      labels:
+        app: web4
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-chenwx-secret
+      containers:
+        - name: web4
+          image: harbor.chenwx.top/chenwx/web4:v0.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+          - secretRef:
+              name: web4-secret
+          volumeMounts:
+            - name: config
+              mountPath: /root/config.yaml
+              subPath: config.yaml
+          startupProbe:
+            httpGet:
+              path: /live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            failureThreshold: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "128m"
+            limits:
+              memory: "256Mi"
+              cpu: "256m"
+      volumes:
+        - name: config
+          configMap:
+            name: web4-config

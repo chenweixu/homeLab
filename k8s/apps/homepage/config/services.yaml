@@ -1,0 +1,100 @@
+# https://gethomepage.dev/latest/configs/services/
+
+- 监控系统:
+  - Grafana:
+      href: https://grafana.chenwx.top/
+      description: 监控面板
+  - prometheus:
+      href: https://prometheus.chenwx.top/query
+      description: 监控prometheus
+
+  - gatus:
+      href: https://gatus.chenwx.top/
+      description: 监控探针
+  - signoz:
+      href: https://signoz.chenwx.top/home
+      description: 链路跟踪
+
+- 应用:
+  - 网站:
+      href: https://chenwx.top/
+      description: 主站
+  - 网站(本地):
+      href: https://blog.chenwx.top/
+      description: 本地站点
+  - homepage:
+      href: https://homepage.chenwx.top/
+      description: 主页
+
+  - download:
+      href: https://gopeed.chenwx.top/
+      description: 下载页
+
+  - tmpfiles:
+      href: http://192.168.5.9:3010/
+      description: 临时文件页
+
+
+
+- 系统管理:
+  - argocd:
+      href: https://argocd.chenwx.top/applications
+      description: ArgoCD
+
+  - jenkins:
+      href: https://jenkins.chenwx.top/
+      description: CICD
+
+  - qinglong:
+      href: https://qinglong.chenwx.top/crontab
+      description: 定时任务
+
+  - kite:
+      href: https://kite.chenwx.top/
+      description: k8s面版
+
+  - kuboard:
+      href: https://kuboard.chenwx.top/home/index
+      description: k8s面版
+
+
+- 物理设备:
+  - pve-1:
+      href: https://192.168.5.9:8006/
+      description: j6412
+  - pve-2:
+      href: https://192.168.5.10:8006/
+      description: ser6
+  - route:
+      href: https://192.168.5.1/
+      description: 路由器
+
+- 基础设施:
+
+  - minio:
+      href: https://miniowebconsole.chenwx.top/browser
+      description: 对象存储
+
+  - nacos:
+      href: https://nacos.chenwx.top/nacos/index.html
+      description: 配置中心
+
+  - traefik-08:
+      href: https://dashboard.chenwx.top/#/
+      description: 基础设施网关
+
+  - traefik-k8s:
+      href: https://dashboard-traefik.chenwx.top/dashboard/
+      description: k8s应用网关
+
+  - git:
+      href: https://git.chenwx.top/
+      description: 代码仓库
+
+  - harbor:
+      href: https://harbor.chenwx.top/
+      description: 镜像仓库
+
+  - nexus:
+      href: https://nexus.chenwx.top/
+      description: nexus 缓存站

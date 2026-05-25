@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swaggerapi
+  namespace: cwx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: swaggerapi
+  template:
+    metadata:
+      labels:
+        app: swaggerapi
+    spec:
+      containers:
+      - name: swaggerapi
+        image: harbor.chenwx.top/docker.io/swaggerapi/swagger-editor:v5.0.3
+        env:
+          - name: TZ
+            value: "Asia/Shanghai"
+        ports:
+          - containerPort: 80
+            protocol: TCP
