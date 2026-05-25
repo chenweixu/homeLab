@@ -28,7 +28,11 @@ The is homeLab env
 ```
 ansible/            # play 任务
 docker/             # 使用 docker-compose 部署在集群外的应用
+infra/              # 集群无关的外部基础设施
 terraform/          # terraform 管理的工程
+k8s/app/            # argocd 管理的应用
+k8s/infra/          # 基础设施-偏业务
+k8s/infra-base/     # 基础设施-偏底层
 ```
 
 ## 关键应用

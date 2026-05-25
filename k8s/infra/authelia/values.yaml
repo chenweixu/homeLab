@@ -1,0 +1,116 @@
+
+image:
+  registry: 'harbor.chenwx.top'
+  repository: 'docker.io/authelia/authelia'
+  tag: release-v4.39.20
+  pullPolicy: IfNotPresent
+
+service:
+  type: 'ClusterIP'
+
+pod:
+  kind: 'Deployment'
+  replicas: 1
+  env:
+    - name: TZ
+      value: Asia/Shanghai
+  extraVolumeMounts:
+    - name: users-data
+      mountPath: /config/users_database.yml
+      subPath: users_database.yml
+
+  extraVolumes:
+    - name: users-data
+      configMap:
+        defaultMode: 0644
+        name: users-data
+
+# certificates:
+#   existingSecret: stonegarden-ca-bundle
+
+configMap:
+  default_2fa_method: totp
+  theme: dark
+  log:
+    level: info
+
+  telemetry:
+    metrics:
+      enabled: true
+      port: 9959
+      serviceMonitor:
+        enabled: true
+
+  identity_validation:
+    reset_password:
+      secret:
+        secret_name: "authelia-secret"
+        path: 'identity_validation.reset_password.jwt.hmac.key'
+
+  access_control:
+    default_policy: deny
+    rules:
+      - domain_regex: ^.*\.chenwx.top$
+        policy: one_factor
+        # policy: two_factor
+
+  session:
+    encryption_key:
+      secret_name: "authelia-secret"
+      path: "session.encryption.key"
+
+    cookies:
+      - name: 'authelia_session'
+        subdomain: 'auth'
+        domain: 'chenwx.top'
+        expiration: '6 hour'
+        inactivity: '30 minutes'
+
+    redis:
+      enabled: true
+      deploy: false
+      host: 192.168.5.9
+      port: 6379
+      database_index: 0
+      maximum_active_connections: 8
+      minimum_idle_connections: 0
+      password:
+        disabled: true
+
+  storage:
+    encryption_key:
+      secret_name: "authelia-secret"
+      path: 'storage.encryption.key'
+
+    postgres:
+      enabled: true
+      deploy: false
+      address: tcp://192.168.5.9:5432
+      database: authelia
+      username: authelia
+      password:
+        secret_name: authelia-secret
+        path: "postgres.passwd"
+
+  notifier:
+    smtp:
+      enabled: true
+      address: smtp://maildev.cwx.svc.cluster.local:1025
+      sender: Authelia <auth@chenwx.top>
+      # disable_html_emails: false
+      # password: { secret_name: smtp-credentials }
+      password: { disabled: true }
+      disable_require_tls: true
+      disable_starttls: true
+
+  authentication_backend:
+    file:
+      enabled: true
+      watch: true
+      path: '/config/users_database.yml'
+
+secret:
+  existingSecret: authelia-secret
+  additionalSecrets:
+    authelia-secret:
+      path: ''

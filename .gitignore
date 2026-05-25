@@ -15,3 +15,5 @@ CLAUDE.md
 
 .env
 secret-plaintext.yaml
+
+default-values.yaml

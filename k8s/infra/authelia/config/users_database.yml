@@ -1,0 +1,10 @@
+users:
+  admin:
+    disabled: false
+    displayname: 'Authelia User'
+    # Password is authelia
+    password: '$argon2id$v=19$m=65536,t=3,p=4$BcGr9fejFr8bjl+4F3shag$cfY4wf9SKgtP1JUG1WczfT6Tq1fwUI7XMqSPI1KHsX8'
+    email: 'admin@chenwx.top'
+    groups:
+      - 'admins'
+      - 'dev'
