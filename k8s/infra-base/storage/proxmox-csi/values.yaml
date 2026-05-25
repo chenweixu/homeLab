@@ -1,0 +1,10 @@
+storageClass:
+  - name: proxmox-csi
+    cache: writethrough
+    fstype: ext4
+    reclaimPolicy: Retain
+    ssd: true
+    # 是 pve 上的存储名称
+    storage: data
+    mountOptions:
+      - noatime

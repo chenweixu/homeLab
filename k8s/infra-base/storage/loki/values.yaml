@@ -1,0 +1,46 @@
+
+global:
+  imageRegistry: harbor.chenwx.top/docker.io
+  extraArgs:
+    - -config.expand-env=true
+  extraEnvFrom:
+    - secretRef:
+        name: loki-s3-credentials
+
+# SingleBinary /SimpleScalable / Distributed
+deploymentMode: SingleBinary
+
+loki:
+  storage:
+    bucketNames:
+      chunks: loki
+      ruler: loki
+      admin: loki
+
+    type: s3
+    s3:
+      endpoint: https://minio.chenwx.top
+      region: us-east-1
+      secretAccessKey: ${S3_SECRET_ACCESS_KEY}
+      accessKeyId: ${S3_ACCESS_KEY_ID}
+      s3ForcePathStyle: true
+
+  schemaConfig:
+    configs:
+      - from: "2024-04-01"
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+
+singleBinary:
+  persistence:
+    storageClass: nfs-home-sc
+
+lokiCanary:
+  enabled: false
+
+memcached:
+  enabled: false

@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cwx-nfs-k8s
+  labels:
+    name: cwx-nfs-k8s
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  # 保留数据
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: /data/nfs/k8s
+    server: 192.168.5.9
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cwx-nfs-k8s
+  namespace: cwx
+spec:
+  # 静态指定需要绑定的 pv
+  volumeName: cwx-nfs-k8s
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
