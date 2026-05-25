@@ -1,0 +1,8 @@
+---
+k8s: # 对应 [k8s] 组
+  vars:
+    ansible_user: ubuntu
+    ansible_ssh_private_key_file: ../keys/ssh/cwx_id_ed25519
+
+    # 跳过首次连接的确认
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'

@@ -1,0 +1,13 @@
+
+# 第二阶段: 用 root 身份执行
+- name: Phase 2 - Standard Host Init
+  hosts: all
+  # 注意: 此时因为上一步 set_fact, 或者你手动在这里指定 remote_user: root
+  remote_user: root
+  become: yes
+  roles:
+    - host_init
+    - containerd
+    - k8s_node_work
+
+    # - tmp

@@ -1,0 +1,21 @@
+---
+
+# 使用 ubuntu 用户解锁 root
+- name: Phase 1 - Bootstrap Root Access
+  hosts: all
+  remote_user: ubuntu  # 覆盖 static_vars 里的用户
+  become: yes          # 需要 sudo 来改 root 的文件
+  gather_facts: no
+  tasks:
+    - name: Overwrite root authorized_keys with clean pubkey
+      copy:
+        src: ../keys/ssh/cwx_id_ed25519.pub
+        dest: /root/.ssh/authorized_keys
+        owner: root
+        group: root
+        mode: '0600'
+
+    # 动态修改当前内存中的变量, 让接下来的 Play 自动切换身份
+    - name: Switch ansible_user to root for subsequent plays
+      set_fact:
+        ansible_user: root

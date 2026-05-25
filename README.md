@@ -26,6 +26,7 @@ The is homeLab env
 ## 项目结构
 ```
 ansible/            # play 任务
+docker/             # 使用 docker-compose 部署在集群外的应用
 terraform/          # terraform 管理的工程
 ```
 

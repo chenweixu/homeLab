@@ -1,0 +1,68 @@
+---
+- name: 下载 kubeadm 二进制包
+  get_url:
+    url: "https://files.chenwx.top/soft/kubernetes-1.35.2/kubeadm"
+    dest: /usr/local/bin/kubeadm
+    owner: root
+    group: root
+    mode: '0755'
+    timeout: 30
+
+- name: 下载 kubectl 二进制包
+  get_url:
+    url: "https://files.chenwx.top/soft/kubernetes-1.35.2/kubectl"
+    dest: /usr/local/bin/kubectl
+    owner: root
+    group: root
+    mode: '0755'
+    timeout: 30
+
+- name: 下载 kubelet 二进制包
+  get_url:
+    url: "https://files.chenwx.top/soft/kubernetes-1.35.2/kubelet"
+    dest: /usr/local/bin/kubelet
+    owner: root
+    group: root
+    mode: '0755'
+    timeout: 30
+
+
+- name: 上传 systemd 单元文件
+  copy:
+    src: kubelet.service
+    dest: /etc/systemd/system/kubelet.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: 创建 Kubernetes Manifests 目录
+  file:
+    path: /etc/kubernetes/manifests
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+    recurse: yes
+
+- name: 创建 kubelet.service.d 目录
+  file:
+    path: /usr/lib/systemd/system/kubelet.service.d
+    state: directory
+
+- name: 下发二进制安装必备的 10-kubeadm.conf
+  copy:
+    dest: /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+    src: 10-kubeadm.conf
+    owner: root
+    group: root
+    mode: '0644'
+  register: kubelet_config
+
+
+- name: reload kubelet service
+  systemd:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+  when: kubelet_config.changed
