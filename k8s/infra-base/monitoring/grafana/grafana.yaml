@@ -1,0 +1,50 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+spec:
+  disableDefaultAdminSecret: true
+  config:
+    log:
+      mode: console
+    server:
+      root_url: https://grafana.chenwx.top
+
+  # harbor.chenwx.top/docker.io/grafana/grafana:13.1.0-24866141508-ubuntu
+  version: 13.1.0
+  deployment:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: grafana
+              image: harbor.chenwx.top/docker.io/grafana/grafana:13.1.0-24866141508-ubuntu
+              env:
+                - name: GF_SECURITY_ADMIN_USER
+                  valueFrom:
+                    secretKeyRef: { key: username, name: grafana-secret }
+                - name: GF_SECURITY_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef: { key: password, name: grafana-secret }
+                - name: GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES
+                  value: "false"
+
+              volumeMounts:
+                - name: grafana-storage
+                  mountPath: /var/lib/grafana
+
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "200m"
+                limits:
+                  memory: "512Mi"
+                  cpu: "500m"
+
+          volumes:
+            - name: grafana-storage
+              persistentVolumeClaim:
+                claimName: nfs-grafana

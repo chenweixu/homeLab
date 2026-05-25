@@ -1,0 +1,23 @@
+# https://github.com/grafana/grafana-operator/blob/master/deploy/helm/grafana-operator/values.yaml
+
+
+global:
+  imageRegistry: "harbor.chenwx.top/ghcr.io"
+
+replicas: 1
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: prometheus-stack
+
+dashboard:
+  enabled: true
+
+
+# image:
+#   # -- grafana operator image registry
+#   registry: ghcr.io
+#   # -- grafana operator image repository
+#   repository: grafana/grafana-operator
+#   tag: ""

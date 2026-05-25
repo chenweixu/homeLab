@@ -1,0 +1,178 @@
+
+- job_name: 'pve'
+  static_configs:
+    - targets: ["192.168.5.9"]
+      labels: {zone: 'home', name: 'pve-home'}
+    - targets: ["192.168.5.10"]
+      labels: {zone: 'home', name: 'pve-ser6'}
+  metrics_path: /pve
+  params:
+    module: [default]
+    cluster: ['1']
+    node: ['1']
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: '([0-9.]+):[0-9]+'
+      target_label: "node_ip"
+      replacement: "${1}"
+      action: replace
+
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: pve-exporter.cwx.svc.cluster.local:80
+
+#===================================================================
+- job_name: "server"
+  scrape_interval: 15s
+  static_configs:
+    - targets: ["192.168.5.5:9100"]
+      labels: {zone: 'home', name: 'h5'}
+    - targets: ["192.168.5.6:9100"]
+      labels: {zone: 'home', name: 'h6'}
+    - targets: ["192.168.5.9:9100"]
+      labels: {zone: 'home', name: 'pve-1'}
+    - targets: ["192.168.5.10:9100"]
+      labels: {zone: 'home', name: 'pve-2'}
+    - targets: ["192.168.5.25:9100"]
+      labels: {zone: 'home', name: 'h25'}
+
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: '([0-9.]+):[0-9]+'
+      target_label: "node_ip"
+      replacement: "${1}"
+      action: replace
+
+
+#===================================================================
+- job_name: "traefik"
+  scrape_interval: 15s
+  static_configs:
+    - targets: ["192.168.5.9:8080"]
+
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: '([0-9.]+):[0-9]+'
+      target_label: "node_ip"
+      replacement: "${1}"
+      action: replace
+
+#===================================================================
+- job_name: postgres
+  metrics_path: /probe
+  static_configs:
+    - targets: ["192.168.5.9:5432"]
+      labels: {zone: 'home', name: 'postgres', auth: "auth1"}
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: '([0-9.]+):[0-9]+'
+      target_label: "node_ip"
+      replacement: "${1}"
+      action: replace
+
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - source_labels: [auth]
+      target_label: __param_auth_module
+    - target_label: __address__
+      replacement: postgres-exporter.cwx.svc.cluster.local:80
+
+#===================================================================
+
+- job_name: mysql
+  metrics_path: /probe
+  static_configs:
+    - targets: ["192.168.5.9:3306"]
+      labels: {zone: 'home', name: 'mysql', auth: "auth1"}
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: '([0-9.]+):[0-9]+'
+      target_label: "node_ip"
+      replacement: "${1}"
+      action: replace
+
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - source_labels: [auth]
+      target_label: __param_auth_module
+    - target_label: __address__
+      replacement: mysql-exporter.cwx.svc.cluster.local:80
+
+#===================================================================
+
+- job_name: container
+  static_configs:
+    - targets: ['192.168.5.9:9110']
+      labels: {zone: 'home', host: 'pve-1'}
+
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: '([0-9.]+):[0-9]+'
+      target_label: "node_ip"
+      replacement: "${1}"
+      action: replace
+
+#===================================================================
+- job_name: elasticsearch
+  metrics_path: /probe
+  static_configs:
+    - targets: ["elasticsearch-0.elasticsearch.cwx.svc.cluster.local:9200"]
+      labels: {zone: 'home'}
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: '([0-9.]+):[0-9]+'
+      target_label: "node_ip"
+      replacement: "${1}"
+      action: replace
+
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+
+    - target_label: __address__
+      replacement: elasticsearch-exporter.cwx.svc.cluster.local:80
+
+#===================================================================
+- job_name: nginx
+  static_configs:
+    - targets: ['192.168.5.9:80']
+      labels: {zone: 'home', node_ip: "192.168.5.9"}
+
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: instance
+    - target_label: __address__
+      replacement: nginx-exporter.cwx.svc.cluster.local:80
+#===================================================================
+
+- job_name: redis
+  metrics_path: /scrape
+  static_configs:
+    - targets:
+      - redis://192.168.5.9:6379
+
+      labels: {zone: 'home'}
+  relabel_configs:
+    - source_labels: [__address__]
+      regex: '([0-9.]+):[0-9]+'
+      target_label: "node_ip"
+      replacement: "${1}"
+      action: replace
+
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+
+    - target_label: __address__
+      replacement: redis-exporter.cwx.svc.cluster.local:80
+
+#===================================================================

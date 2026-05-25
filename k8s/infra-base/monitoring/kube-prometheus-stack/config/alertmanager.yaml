@@ -1,0 +1,75 @@
+
+global:
+  # 全局配置, 收到告警后, 如果持续 10 分钟都没再收到告警, 就把告警状态标记为 resolved(已解决)
+  resolve_timeout: 10m
+
+  smtp_from: 'chenwx@wait.wait'             # 发件人邮箱
+  # smtp_smarthost: '192.168.5.8:1025'        # SMTP 服务器及端口
+  smtp_smarthost: 'maildev.cwx.svc.cluster.local:1025'        # SMTP 服务器及端口
+  smtp_auth_username: 'chenwx@wait.wait'    # 登录用户名
+  smtp_auth_password: 'password'
+  smtp_require_tls: false
+
+templates:
+  - '/etc/alertmanager/config/*.tmpl'
+
+# 路由配置
+route:
+  # 告警分组, 处于同一组的告警会被合并为同一个通知
+  group_by: ['alertname']
+  group_wait: 20s   # 合并告警的窗口时间
+
+  # 同一个分组发送一次合并消息之后, 每隔 1 分钟检查一次告警, 判断是否要继续对此告警做操作
+  # 目的是筛取故障桶中已经恢复的事件
+  group_interval: 1m
+
+  # 重复告警间隔, 当每隔 group_interval 时间检查一次后, 如果某故障存在时间大于 repeat_interval, 将继续告警
+  repeat_interval: 2h
+
+  # receiver: 'web.hook'
+  receiver: 'email-me'    # 默认接收器
+
+# 接受者配置
+receivers:
+  - name: 'web.hook'
+    webhook_configs:
+      - url: 'http://10.1.1.4:9000/hooks/alertmanager'
+        send_resolved: true   # 发送恢复告警通知
+
+  - name: 'email-me'
+    email_configs:
+    - to: 'admin@services.wait'
+      send_resolved: true                     # 故障恢复后也发送通知 [citation:9]
+      # html: '{{ template "email.default.html" . }}' # 可选, 使用更美观的邮件模板
+
+      headers:
+        Subject: '{{ template "email.subject" . }}'
+      html: '{{ template "email.body" . }}'
+
+
+# 抑制
+inhibit_rules:
+  # 当收到 critical 级别的告警,
+  # 就抑制 这个告警 的低级别(warning)的告警
+  # 抑制的条件是 alertname 和 instance 必须源告警相同
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+
+
+  # 高级别告警后, 抑制这个主机上的低级别全部告警
+  # - source_match:
+  #     severity: 'critical'
+  #   target_match:
+  #     severity: 'warning'
+  #   equal: ['instance']
+
+
+  # 节点 Down , 抑制该节点上所有 PodCrashLooping 的告警
+  - source_match:
+      alertname: NodeDown
+    target_match:
+      alertname: PodCrashLooping
+    equal: ['instance']

@@ -1,0 +1,96 @@
+global:
+  imageRegistry: "harbor.chenwx.top/public"
+
+grafana:
+  enabled: false
+
+alertmanager:
+  enabled: true
+  route:
+    main:
+      enabled: true
+      kind: HTTPRoute
+      hostnames: ["alertmanager.chenwx.top"]
+      parentRefs:
+        - name: traefik-gateway
+          kind: Gateway
+          group: gateway.networking.k8s.io
+          namespace: cwx
+          sectionName: websecure
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+
+  config: {}
+  alertmanagerSpec:
+    configSecret: alertmanager-secret
+
+kubeEtcd:
+  enabled: true
+  endpoints:
+  - 192.168.5.9
+  service:
+    enabled: true
+    port: 2379
+    targetPort: 2379
+
+
+kubeProxy:
+  # Cilium replaces Kube Proxy
+  enabled: false
+
+defaultRules:
+  # 关闭预制的告警规则
+  create: false
+
+prometheus:
+  route:
+    main:
+      enabled: true
+      kind: HTTPRoute
+      hostnames: ["prometheus.chenwx.top"]
+      parentRefs:
+        - name: traefik-gateway
+          kind: Gateway
+          group: gateway.networking.k8s.io
+          namespace: cwx
+          sectionName: websecure
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+
+  prometheusSpec:
+    retention: 60d
+
+    # remoteWrite:
+    #   - url: "http://prometheus.cwx.svc.cluster.local/api/v1/write"
+    #     remoteTimeout: 10000ms
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 500m
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+          storageClassName: nfs-home-sc
+
+    # 附加抓取配置
+    additionalScrapeConfigsSecret:
+      enabled: true
+      name: prometheus-conf-job-secret
+      key: job.yaml
+
+    # additionalAlertManagerConfigsSecret: {}
+    #   # name:
+    #   # key:
+    #   # optional: false

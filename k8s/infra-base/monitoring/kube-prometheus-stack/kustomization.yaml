@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+
+resources:
+  - ns.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+  - name: alertmanager-secret
+    files:
+    - config/alertmanager.yaml
+    - config/email-zh.tmpl
+
+  - name: prometheus-conf-job-secret
+    files:
+    - config/job.yaml

@@ -12,6 +12,7 @@ The is homeLab env
 | cloud-2 | 2c4g40G   |
 
 **逻辑架构**
+
 物理平台: pve
 基础设施: docker + k8s
 

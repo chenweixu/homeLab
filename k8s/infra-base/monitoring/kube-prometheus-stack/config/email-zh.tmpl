@@ -1,0 +1,134 @@
+{{/* /etc/alertmanager/templates/email-zh.tmpl */}}
+
+{{ define "email.subject" -}}
+{{ if eq .Status "firing" }}【告警中】{{ else }}【已恢复】{{ end }}{{ if (index .Alerts 0).Annotations.summary }}{{ (index .Alerts 0).Annotations.summary }}{{ else }}{{ (index .Alerts 0).Labels.alertname }}{{ end }} | {{ if (index .Alerts 0).Labels.instance }}{{ (index .Alerts 0).Labels.instance }}{{ else }}全局{{ end }}
+{{- end }}
+
+{{ define "email.body" -}}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+  .container { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+
+  .header { padding: 20px 24px; color: #fff; }
+  .header.firing { background: #e53935; }
+  .header.resolved { background: #43a047; }
+  .status-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.2); }
+  .header-title { font-size: 18px; font-weight: 600; margin-top: 8px; }
+  .header-meta { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+
+  .content { padding: 24px; }
+  .section { margin-bottom: 24px; }
+  .section-title { font-size: 14px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #f0f0f0; }
+
+  .alert-card { background: #fafafa; border-radius: 6px; padding: 16px; margin-bottom: 12px; border-left: 4px solid; }
+  .alert-card.firing { border-left-color: #e53935; }
+  .alert-card.resolved { border-left-color: #43a047; }
+  .alert-name { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 8px; }
+  .alert-desc { font-size: 13px; color: #666; line-height: 1.6; }
+
+  .info-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .info-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+  .info-table td:first-child { width: 100px; color: #888; font-weight: 500; background: #fafafa; }
+  .info-table td:last-child { color: #333; font-family: "SF Mono", Monaco, monospace; word-break: break-all; }
+
+  .labels-toggle { color: #1976d2; font-size: 12px; cursor: pointer; text-decoration: none; }
+  .labels-content { display: none; margin-top: 8px; }
+  .labels-content.show { display: block; }
+  .label-tag { display: inline-block; background: #e3f2fd; color: #1565c0; padding: 2px 8px; border-radius: 3px; font-size: 11px; margin: 2px; font-family: monospace; }
+
+  .footer { padding: 16px 24px; background: #fafafa; font-size: 12px; color: #999; text-align: center; border-top: 1px solid #f0f0f0; }
+
+  .severity-critical { color: #c62828; font-weight: 600; }
+  .severity-warning { color: #f9a825; font-weight: 600; }
+  .severity-info { color: #1565c0; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header {{ .Status }}">
+    <span class="status-badge">
+      {{ if eq .Status "firing" }}🔥 告警触发{{ else }}✅ 已恢复{{ end }}
+    </span>
+    <div class="header-title">{{ if (index .Alerts 0).Annotations.summary }}{{ (index .Alerts 0).Annotations.summary }}{{ else }}系统告警{{ end }}</div>
+    <div class="header-meta">
+      告警组：{{ if .GroupLabels.alertname }}{{ .GroupLabels.alertname }}{{ else }}未分组{{ end }} |
+      共 {{ len .Alerts }} 条告警
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="section">
+      <div class="section-title">告警详情</div>
+      {{ range .Alerts }}
+      <div class="alert-card {{ .Status }}">
+        <div class="alert-name">
+          {{ .Labels.alertname }}
+          {{ if .Labels.severity }}
+            <span class="severity-{{ .Labels.severity }}">[{{ .Labels.severity | toUpper }}]</span>
+          {{ end }}
+        </div>
+        <div class="alert-desc">
+          {{ if .Annotations.description }}{{ .Annotations.description }}{{ else if .Annotations.summary }}{{ .Annotations.summary }}{{ else }}暂无详细描述{{ end }}
+        </div>
+
+        <table class="info-table" style="margin-top: 12px;">
+          {{ if .Labels.instance }}<tr><td>实例</td><td>{{ .Labels.instance }}</td></tr>{{ end }}
+          {{ if .Labels.job }}<tr><td>任务</td><td>{{ .Labels.job }}</td></tr>{{ end }}
+          {{ if .Labels.namespace }}<tr><td>命名空间</td><td>{{ .Labels.namespace }}</td></tr>{{ end }}
+          {{ if .Labels.pod }}<tr><td>Pod</td><td>{{ .Labels.pod }}</td></tr>{{ end }}
+          <tr><td>开始时间</td><td>{{ .StartsAt.Format "2006-01-02 15:04:05" }}</td></tr>
+          {{ if .EndsAt }}<tr><td>恢复时间</td><td>{{ .EndsAt.Format "2006-01-02 15:04:05" }}</td></tr>{{ end }}
+          <tr><td>持续时间</td><td>{{ .StartsAt | since }}</td></tr>
+        </table>
+
+        <div style="margin-top: 10px;">
+          <a href="#" class="labels-toggle" onclick="this.nextElementSibling.classList.toggle('show'); return false;">
+            📎 查看全部标签 ({{ .Labels | len }}个)
+          </a>
+          <div class="labels-content">
+            {{ range .Labels.SortedPairs }}
+            <span class="label-tag">{{ .Name }}={{ .Value }}</span>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+
+    {{ if gt (len .GroupLabels) 0 }}
+    <div class="section">
+      <div class="section-title">分组条件</div>
+      <table class="info-table">
+        {{ range .GroupLabels.SortedPairs }}
+        <tr><td>{{ .Name }}</td><td>{{ .Value }}</td></tr>
+        {{ end }}
+      </table>
+    </div>
+    {{ end }}
+
+    {{ if .CommonAnnotations.dashboard_url }}
+    <div class="section">
+      <div class="section-title">相关链接</div>
+      <a href="{{ .CommonAnnotations.dashboard_url }}" style="color: #1976d2; font-size: 13px;">📊 查看 Grafana 仪表盘</a>
+      {{ if .CommonAnnotations.runbook_url }} |
+      <a href="{{ .CommonAnnotations.runbook_url }}" style="color: #1976d2; font-size: 13px;">📖 查看运维手册</a>
+      {{ end }}
+    </div>
+    {{ end }}
+
+  </div>
+
+  <div class="footer">
+    由 Prometheus Alertmanager 发送 | {{ .ExternalURL }}
+  </div>
+</div>
+
+</body>
+</html>
+{{- end }}
