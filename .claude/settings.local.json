@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(kubectl *)",
+      "WebSearch",
+      "Bash(python3 -c ' *)",
+      "Bash(ssh *)",
+      "Bash(kubeseal *)",
+      "Bash(python3 -m json.tool)",
+      "Bash(kill %1)",
+      "Bash(curl *)"
+    ]
+  }
+}

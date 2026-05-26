@@ -31,6 +31,7 @@ docker/             # 使用 docker-compose 部署在集群外的应用
 infra/              # 集群无关的外部基础设施
 terraform/          # terraform 管理的工程
 k8s/app/            # argocd 管理的应用
+k8s/sets/           # argocd app-of-apps 的入口
 k8s/infra/          # 基础设施-偏业务
 k8s/infra-base/     # 基础设施-偏底层
 ```
@@ -73,17 +74,36 @@ k8s/infra-base/     # 基础设施-偏底层
 
 
 ## 其它事项
+
 sealed-secrets 加密方式
 
 ```sh
+# 生成 secret-crypto.yaml 加密文件
 kubeseal-file secret-plaintext.yaml
 # or
 kubeseal --scope namespace-wide --format yaml < file.yml > secret-crypto.yaml
 
+
+# pre 准备密钥
+mkdir /home/wait/.kubeseal
+cp keys/sealed-secrets/sealed-secrets.key ~/.kubeseal/cert.pem
+
 ```
+
+
 
 deploy service
 ```sh
 kubectl apply -k k8s/sets
+
+```
+
+创建私有仓库认证secret
+```sh
+
+kubectl create secret docker-registry harbor-registry-chenwx-secret \
+    --docker-server=harbor.chenwx.top \
+    --docker-username=${USERNAME} \
+    --docker-password=${PASSWORD} -n cwx --dry-run=client -o yaml > secret-plaintext.yaml
 
 ```

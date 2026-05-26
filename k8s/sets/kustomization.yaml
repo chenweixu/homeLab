@@ -5,4 +5,4 @@ namespace: argocd
 resources:
   - project.yaml
   - root-app.yaml
-  - root-infra.yaml
+  # - root-infra.yaml

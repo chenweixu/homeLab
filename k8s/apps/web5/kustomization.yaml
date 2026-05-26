@@ -5,7 +5,7 @@ namespace: cwx
 
 images:
 - name: harbor.chenwx.top/chenwx/web5
-  newTag: "202605131651"
+  newTag: "202605260640"
 
 resources:
 - secret-crypto.yaml
