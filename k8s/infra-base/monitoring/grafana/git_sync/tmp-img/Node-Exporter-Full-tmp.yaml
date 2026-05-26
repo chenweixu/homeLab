@@ -2,7 +2,7 @@ apiVersion: dashboard.grafana.app/v1
 kind: Dashboard
 metadata:
   labels: {}
-  name: Node-Exporter-Full2
+  name: Node-Exporter-Full-tmp
   namespace: default
 spec:
   annotations:
@@ -12406,5 +12406,5 @@ spec:
     - 2h
     - 1d
   timezone: browser
-  title: Node Exporter Full
+  title: Node Exporter Full2
   weekStart: ""

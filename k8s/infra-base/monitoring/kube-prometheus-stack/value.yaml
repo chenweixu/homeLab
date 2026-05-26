@@ -40,6 +40,9 @@ kubeProxy:
   # Cilium replaces Kube Proxy
   enabled: false
 
+kubeStateMetrics:
+  enabled: false
+
 defaultRules:
   # 关闭预制的告警规则
   create: false
