@@ -1,0 +1,136 @@
+apiVersion: dashboard.grafana.app/v2
+kind: Dashboard
+metadata:
+  name: global-img
+spec:
+  title: cwx-global-img
+  cursorSync: "Off"       # 鼠标悬停时，各面板不联动
+  description: ""         # 仪表盘描述
+  editable: true          # 可以编辑此仪表盘
+  elements:               # 所有面板的集合
+    panel-1:              # 一张图
+      kind: Panel         # 类型：图表面板
+      spec:
+        description: 服务器在线数量
+        id: 1
+        links: []
+        title: 服务器在线数量
+
+        # 数据查询配置
+        data:
+          kind: QueryGroup
+          spec:
+            queries:      # 查询列表
+              - kind: PanelQuery
+                spec:
+                  hidden: false     # 不隐藏查询
+                  query:
+                    datasource:
+                      name: ${datasource}
+                    group: prometheus
+                    kind: DataQuery
+                    spec:
+                      editorMode: code
+                      expr: sum(up{job="server"})     # 查询条件
+                      legendFormat: __auto            # 图例自动生成
+                      range: true                     # 支持时间范围查询
+                    version: v0
+                  refId: A                            # 查询引用ID
+            queryOptions: {}
+            transformations: []
+
+        # 可视化配置
+        vizConfig:
+          group: stat       # 使用 Stat 图表
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  mode: thresholds    # 使用阈值决定颜色
+                thresholds:
+                  mode: absolute
+                  steps:
+                    - color: red
+                      value: 0
+                    - color: green    # >10 绿
+                      value: 10
+              overrides: []
+            options:
+              colorMode: value        # 根据值改变颜色
+              graphMode: area         # 显示面积图背景
+              justifyMode: auto
+              orientation: auto
+              percentChangeColorMode: standard
+              reduceOptions:
+                calcs:
+                  - lastNotNull       # 显示最后一个非空值
+                fields: ""
+                values: false
+              showPercentChange: false
+              textMode: auto          # 自动显示文字
+              wideLayout: true
+          version: 13.1.0-24866141508
+
+  # 布局
+  layout:
+    kind: GridLayout        # 网格布局
+    spec:
+      items:
+        - kind: GridLayoutItem
+          spec:
+            element:
+              kind: ElementReference
+              name: panel-1
+            height: 3
+            width: 5
+            x: 0
+            "y": 0
+  links: []
+  liveNow: false
+  preferences:
+    layout:
+      kind: GridLayout
+      spec:
+        items: []
+  preload: false
+  tags: []
+
+  # 时间设定
+  timeSettings:
+    autoRefresh: ""             # 不自动刷新
+    fiscalYearStartMonth: 0
+    from: now-2h                # 默认显示的开始时间
+    to: now                     # 默认显示的结束时间
+    hideTimepicker: false
+    timezone: browser           # 使用浏览器时区
+    autoRefreshIntervals:       # 可选自动刷新间隔
+      - 5s
+      - 10s
+      - 30s
+      - 1m
+      - 5m
+      - 15m
+      - 30m
+      - 1h
+      - 2h
+      - 1d
+
+  # 变量定义
+  variables:
+  - kind: DatasourceVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: default
+        value: default
+      hide: dontHide
+      includeAll: false
+      label: Data source
+      multi: false
+      name: datasource
+      options: []
+      pluginId: prometheus
+      refresh: never
+      regex: ""
+      skipUrlSync: false

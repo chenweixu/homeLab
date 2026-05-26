@@ -55,8 +55,7 @@ spec:
     title: Quick CPU / Mem / Disk
     type: row
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: Resource pressure via PSI
     fieldConfig:
       defaults:
@@ -106,8 +105,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: irate(node_pressure_cpu_waiting_seconds_total{instance="$node",job="$job"}[$__rate_interval])
@@ -119,8 +117,7 @@ spec:
       refId: A
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: irate(node_pressure_memory_waiting_seconds_total{instance="$node",job="$job"}[$__rate_interval])
@@ -132,8 +129,7 @@ spec:
       refId: B
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: irate(node_pressure_io_waiting_seconds_total{instance="$node",job="$job"}[$__rate_interval])
@@ -145,8 +141,7 @@ spec:
       refId: C
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: irate(node_pressure_irq_stalled_seconds_total{instance="$node",job="$job"}[$__rate_interval])
@@ -160,8 +155,7 @@ spec:
     title: Pressure
     type: bargauge
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: Overall CPU busy percentage (averaged across all cores)
     fieldConfig:
       defaults:
@@ -220,8 +214,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\", instance=\"$node\"}[$__rate_interval])))"
@@ -234,8 +227,7 @@ spec:
     title: CPU Busy
     type: gauge
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: System load  over all CPU cores together
     fieldConfig:
       defaults:
@@ -294,8 +286,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: scalar(node_load1{instance="$node",job="$job"}) * 100 / count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu))
@@ -308,8 +299,7 @@ spec:
     title: Sys Load
     type: gauge
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: Real RAM usage excluding cache and reclaimable memory
     fieldConfig:
       defaults:
@@ -362,8 +352,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: "(1 - (node_memory_MemAvailable_bytes{instance=\"$node\", job=\"$job\"} / node_memory_MemTotal_bytes{instance=\"$node\", job=\"$job\"})) * 100"
@@ -376,8 +365,7 @@ spec:
     title: RAM Used
     type: gauge
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: Percentage of swap space currently used by the system
     fieldConfig:
       defaults:
@@ -436,8 +424,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: "((node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"}) / (node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"})) * 100"
@@ -449,8 +436,7 @@ spec:
     title: SWAP Used
     type: gauge
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: Used Root FS
     fieldConfig:
       defaults:
@@ -509,8 +495,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: "(\n  (node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", mountpoint=\"/\", fstype!=\"rootfs\"}\n   - node_filesystem_avail_bytes{instance=\"$node\", job=\"$job\", mountpoint=\"/\", fstype!=\"rootfs\"})\n  / node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", mountpoint=\"/\", fstype!=\"rootfs\"}\n) * 100\n"
@@ -523,8 +508,7 @@ spec:
     title: Root FS Used
     type: gauge
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     fieldConfig:
       defaults:
         color:
@@ -566,8 +550,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu))
@@ -578,8 +561,7 @@ spec:
     title: CPU Cores
     type: stat
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     fieldConfig:
       defaults:
         color:
@@ -622,8 +604,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: node_reboot_required{instance="$node",job="$job"}
@@ -635,8 +616,7 @@ spec:
     title: Reboot Required
     type: stat
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     fieldConfig:
       defaults:
         color:
@@ -681,8 +661,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: "node_time_seconds{instance=\"$node\",job=\"$job\"} - node_boot_time_seconds{instance=\"$node\",job=\"$job\"}"
@@ -694,8 +673,7 @@ spec:
     title: Uptime
     type: stat
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     fieldConfig:
       defaults:
         color:
@@ -742,8 +720,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: node_filesystem_size_bytes{instance="$node",job="$job",mountpoint="/",fstype!="rootfs"}
@@ -756,8 +733,7 @@ spec:
     title: RootFS Total
     type: stat
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     fieldConfig:
       defaults:
         color:
@@ -802,8 +778,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: node_memory_MemTotal_bytes{instance="$node",job="$job"}
@@ -815,8 +790,7 @@ spec:
     title: RAM Total
     type: stat
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     fieldConfig:
       defaults:
         color:
@@ -861,8 +835,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: node_memory_SwapTotal_bytes{instance="$node",job="$job"}
@@ -883,8 +856,7 @@ spec:
     title: Basic CPU / Mem / Net / Disk
     type: row
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: CPU time spent busy vs idle, split by activity type
     fieldConfig:
       defaults:
@@ -990,8 +962,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       exemplar: false
       expr: sum(irate(node_cpu_seconds_total{instance="$node",job="$job", mode="system"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
@@ -1003,8 +974,7 @@ spec:
       refId: A
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: sum(irate(node_cpu_seconds_total{instance="$node",job="$job", mode="user"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
       format: time_series
@@ -1014,8 +984,7 @@ spec:
       refId: B
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: sum(irate(node_cpu_seconds_total{instance="$node",job="$job", mode="iowait"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
       format: time_series
@@ -1025,8 +994,7 @@ spec:
       refId: C
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: sum(irate(node_cpu_seconds_total{instance="$node",job="$job", mode=~".*irq"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
       format: time_series
@@ -1036,8 +1004,7 @@ spec:
       refId: D
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: sum(irate(node_cpu_seconds_total{instance="$node",job="$job",  mode!='idle',mode!='user',mode!='system',mode!='iowait',mode!='irq',mode!='softirq'}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
       format: time_series
@@ -1047,8 +1014,7 @@ spec:
       refId: E
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: sum(irate(node_cpu_seconds_total{instance="$node",job="$job", mode="idle"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
       format: time_series
@@ -1060,8 +1026,7 @@ spec:
     title: CPU Basic
     type: timeseries
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: RAM and swap usage overview, including caches
     fieldConfig:
       defaults:
@@ -1165,8 +1130,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: node_memory_MemTotal_bytes{instance="$node",job="$job"}
       format: time_series
@@ -1176,8 +1140,7 @@ spec:
       refId: A
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"} - (node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"})"
       format: time_series
@@ -1187,8 +1150,7 @@ spec:
       refId: B
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: node_memory_Cached_bytes{instance="$node",job="$job"} + node_memory_Buffers_bytes{instance="$node",job="$job"} + node_memory_SReclaimable_bytes{instance="$node",job="$job"}
       format: time_series
@@ -1198,8 +1160,7 @@ spec:
       refId: C
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: node_memory_MemFree_bytes{instance="$node",job="$job"}
       format: time_series
@@ -1209,8 +1170,7 @@ spec:
       refId: D
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: "(node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"})"
       format: time_series
@@ -1222,8 +1182,7 @@ spec:
     title: Memory Basic
     type: timeseries
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: Per-interface network traffic (receive and transmit) in bits per second
     fieldConfig:
       defaults:
@@ -1293,8 +1252,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: rate(node_network_receive_bytes_total{instance="$node",job="$job"}[$__rate_interval])*8
       format: time_series
@@ -1304,8 +1262,7 @@ spec:
       refId: A
       step: 240
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: rate(node_network_transmit_bytes_total{instance="$node",job="$job"}[$__rate_interval])*8
       format: time_series
@@ -1317,8 +1274,7 @@ spec:
     title: Network Traffic Basic
     type: timeseries
   - datasource:
-      type: prometheus
-      uid: 884da007-4124-4bc9-86fc-978fe586e325
+      name: ${datasource}
     description: Percentage of filesystem space used for each mounted device
     fieldConfig:
       defaults:
@@ -1384,8 +1340,7 @@ spec:
     pluginVersion: 13.1.0-24866141508
     targets:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       editorMode: code
       expr: "((node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"} - node_filesystem_avail_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"}) / node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"}) * 100"
       format: time_series
@@ -1405,8 +1360,7 @@ spec:
     id: 341
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: CPU time usage split by state, normalized across all CPU cores
       fieldConfig:
         defaults:
@@ -1550,8 +1504,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum(irate(node_cpu_seconds_total{mode="system",instance="$node",job="$job"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
         format: time_series
@@ -1562,8 +1515,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum(irate(node_cpu_seconds_total{mode="user",instance="$node",job="$job"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
         format: time_series
@@ -1573,8 +1525,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum(irate(node_cpu_seconds_total{mode="nice",instance="$node",job="$job"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
         format: time_series
@@ -1584,8 +1535,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum(irate(node_cpu_seconds_total{mode="iowait",instance="$node",job="$job"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
         format: time_series
@@ -1595,8 +1545,7 @@ spec:
         refId: D
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum(irate(node_cpu_seconds_total{mode="irq",instance="$node",job="$job"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
         format: time_series
@@ -1606,8 +1555,7 @@ spec:
         refId: E
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum(irate(node_cpu_seconds_total{mode="softirq",instance="$node",job="$job"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
         format: time_series
@@ -1617,8 +1565,7 @@ spec:
         refId: F
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum(irate(node_cpu_seconds_total{mode="steal",instance="$node",job="$job"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
         format: time_series
@@ -1628,8 +1575,7 @@ spec:
         refId: G
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum(irate(node_cpu_seconds_total{mode="idle",instance="$node",job="$job"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu)))
         format: time_series
@@ -1639,8 +1585,7 @@ spec:
         refId: H
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: sum by(instance) (irate(node_cpu_guest_seconds_total{instance="$node",job="$job"}[$__rate_interval])) / on(instance) group_left sum by (instance)((irate(node_cpu_seconds_total{instance="$node",job="$job"}[$__rate_interval]))) > 0
         format: time_series
@@ -1652,8 +1597,7 @@ spec:
       title: CPU
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Breakdown of physical memory and swap usage. Hardware-detected memory errors are also displayed
       fieldConfig:
         defaults:
@@ -1877,8 +1821,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"} - node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} - node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} - node_memory_Slab_bytes{instance=\"$node\",job=\"$job\"} - node_memory_PageTables_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapCached_bytes{instance=\"$node\",job=\"$job\"}"
         format: time_series
@@ -1888,8 +1831,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_PageTables_bytes{instance="$node",job="$job"}
         format: time_series
@@ -1899,8 +1841,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_SwapCached_bytes{instance="$node",job="$job"}
         format: time_series
@@ -1910,8 +1851,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Slab_bytes{instance="$node",job="$job"}
         format: time_series
@@ -1921,8 +1861,7 @@ spec:
         refId: D
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Cached_bytes{instance="$node",job="$job"}
         format: time_series
@@ -1932,8 +1871,7 @@ spec:
         refId: E
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Buffers_bytes{instance="$node",job="$job"}
         format: time_series
@@ -1943,8 +1881,7 @@ spec:
         refId: F
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_MemFree_bytes{instance="$node",job="$job"}
         format: time_series
@@ -1954,8 +1891,7 @@ spec:
         refId: G
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: "(node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"})"
         format: time_series
@@ -1965,8 +1901,7 @@ spec:
         refId: H
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_HardwareCorrupted_bytes{instance="$node",job="$job"}
         format: time_series
@@ -1978,8 +1913,7 @@ spec:
       title: Memory
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Incoming and outgoing network traffic per interface
       fieldConfig:
         defaults:
@@ -2047,8 +1981,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_bytes_total{instance="$node",job="$job"}[$__rate_interval])*8
         format: time_series
@@ -2058,8 +1991,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_transmit_bytes_total{instance="$node",job="$job"}[$__rate_interval])*8
         format: time_series
@@ -2071,8 +2003,7 @@ spec:
       title: Network Traffic
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Network interface utilization as a percentage of its maximum capacity
       fieldConfig:
         defaults:
@@ -2140,8 +2071,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: |-
           (rate(node_network_receive_bytes_total{instance="$node",job="$job"}[$__rate_interval])
@@ -2153,8 +2083,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: |-
           (rate(node_network_transmit_bytes_total{instance="$node",job="$job"}[$__rate_interval])
@@ -2168,8 +2097,7 @@ spec:
       title: Network Saturation
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Disk I/O operations per second for each device
       fieldConfig:
         defaults:
@@ -2237,8 +2165,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_reads_completed_total{instance="$node",job="$job",device=~"$diskdevices"}[$__rate_interval])
         intervalFactor: 4
@@ -2247,8 +2174,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_writes_completed_total{instance="$node",job="$job",device=~"$diskdevices"}[$__rate_interval])
         intervalFactor: 1
@@ -2259,8 +2185,7 @@ spec:
       title: Disk IOps
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Disk I/O throughput per device
       fieldConfig:
         defaults:
@@ -2328,8 +2253,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_read_bytes_total{instance="$node",job="$job",device=~"$diskdevices"}[$__rate_interval])
         format: time_series
@@ -2339,8 +2263,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_written_bytes_total{instance="$node",job="$job",device=~"$diskdevices"}[$__rate_interval])
         format: time_series
@@ -2352,8 +2275,7 @@ spec:
       title: Disk Throughput
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Amount of available disk space per mounted filesystem, excluding rootfs. Based on block availability to non-root users
       fieldConfig:
         defaults:
@@ -2415,8 +2337,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filesystem_avail_bytes{instance="$node",job="$job",device!~'rootfs'}
         format: time_series
@@ -2427,8 +2348,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filesystem_free_bytes{instance="$node",job="$job",device!~'rootfs'}
         format: time_series
@@ -2439,8 +2359,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filesystem_size_bytes{instance="$node",job="$job",device!~'rootfs'}
         format: time_series
@@ -2453,8 +2372,7 @@ spec:
       title: Filesystem Space Available
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: "Disk usage (used = total - available) per mountpoint"
       fieldConfig:
         defaults:
@@ -2516,8 +2434,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: "node_filesystem_size_bytes{instance=\"$node\",job=\"$job\",device!~'rootfs'} - node_filesystem_avail_bytes{instance=\"$node\",job=\"$job\",device!~'rootfs'}"
         format: time_series
@@ -2529,8 +2446,7 @@ spec:
       title: Filesystem Used
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Percentage of time the disk was actively processing I/O operations
       fieldConfig:
         defaults:
@@ -2592,8 +2508,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_io_time_seconds_total{instance="$node",job="$job",device=~"$diskdevices"} [$__rate_interval])
         format: time_series
@@ -2606,8 +2521,7 @@ spec:
       title: Disk I/O Utilization
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: |-
         How often tasks experience CPU, memory, or I/O delays. “Some” indicates partial slowdown; “Full” indicates all tasks are stalled. Based on Linux PSI metrics:
         https://docs.kernel.org/accounting/psi.html
@@ -2683,8 +2597,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_pressure_cpu_waiting_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -2694,8 +2607,7 @@ spec:
         refId: CPU some
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_pressure_memory_waiting_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -2705,8 +2617,7 @@ spec:
         refId: Memory some
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_pressure_memory_stalled_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -2716,8 +2627,7 @@ spec:
         refId: Memory full
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_pressure_io_waiting_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -2727,8 +2637,7 @@ spec:
         refId: I/O some
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_pressure_io_stalled_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -2738,8 +2647,7 @@ spec:
         refId: I/O full
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_pressure_irq_stalled_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -2761,8 +2669,7 @@ spec:
     id: 342
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Displays committed memory usage versus the system's commit limit. Exceeding the limit is allowed under Linux overcommit policies but may increase OOM risks under high load
       fieldConfig:
         defaults:
@@ -2836,8 +2743,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Committed_AS_bytes{instance="$node",job="$job"}
         format: time_series
@@ -2847,8 +2753,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_CommitLimit_bytes{instance="$node",job="$job"}
         format: time_series
@@ -2860,8 +2765,7 @@ spec:
       title: Memory Committed
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Memory currently dirty (modified but not yet written to disk), being actively written back, or held by writeback buffers. High dirty or writeback memory may indicate disk I/O pressure or delayed flushing
       fieldConfig:
         defaults:
@@ -2923,8 +2827,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Writeback_bytes{instance="$node",job="$job"}
         format: time_series
@@ -2934,8 +2837,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_WritebackTmp_bytes{instance="$node",job="$job"}
         format: time_series
@@ -2945,8 +2847,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Dirty_bytes{instance="$node",job="$job"}
         format: time_series
@@ -2956,8 +2857,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_NFS_Unstable_bytes{instance="$node",job="$job"}
         format: time_series
@@ -2969,8 +2869,7 @@ spec:
       title: Memory Writeback and Dirty
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Kernel slab memory usage, separated into reclaimable and non-reclaimable categories. Reclaimable memory can be freed under memory pressure (e.g., caches), while unreclaimable memory is locked by the kernel for core functions
       fieldConfig:
         defaults:
@@ -3032,8 +2931,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_SUnreclaim_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3043,8 +2941,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_SReclaimable_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3056,8 +2953,7 @@ spec:
       title: Memory Slab
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Memory used for mapped files (such as libraries) and shared memory (shmem and tmpfs), including variants backed by huge pages
       fieldConfig:
         defaults:
@@ -3120,8 +3016,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Mapped_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3131,8 +3026,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Shmem_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3142,8 +3036,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_ShmemHugePages_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3154,8 +3047,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_ShmemPmdMapped_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3168,8 +3060,7 @@ spec:
       title: Memory Shared and Mapped
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Proportion of memory pages in the kernel's active and inactive LRU lists relative to total RAM. Active pages have been recently used, while inactive pages are less recently accessed but still resident in memory
       fieldConfig:
         defaults:
@@ -3249,8 +3140,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: |-
           (node_memory_Inactive_bytes{instance="$node",job="$job"})
@@ -3263,8 +3153,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: |
           (node_memory_Active_bytes{instance="$node",job="$job"})
@@ -3279,8 +3168,7 @@ spec:
       title: Memory LRU Active / Inactive (%)
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Breakdown of memory pages in the kernel's active and inactive LRU lists, separated by anonymous (heap, tmpfs) and file-backed (caches, mmap) pages.
       fieldConfig:
         defaults:
@@ -3343,8 +3231,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Inactive_file_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3354,8 +3241,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Inactive_anon_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3365,8 +3251,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Active_file_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3376,8 +3261,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Active_anon_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3389,8 +3273,7 @@ spec:
       title: Memory LRU Active / Inactive Detail
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Tracks kernel memory used for CPU-local structures, per-thread stacks, and bounce buffers used for I/O on DMA-limited devices. These areas are typically small but critical for low-level operations
       fieldConfig:
         defaults:
@@ -3453,8 +3336,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_KernelStack_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3464,8 +3346,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Percpu_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3476,8 +3357,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Bounce_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3490,8 +3370,7 @@ spec:
       title: Memory Kernel / CPU / IO
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Usage of the kernel's vmalloc area, which provides virtual memory allocations for kernel modules and drivers. Includes total, used, and largest free block sizes
       fieldConfig:
         defaults:
@@ -3570,8 +3449,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_VmallocChunk_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3581,8 +3459,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_VmallocTotal_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3592,8 +3469,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_VmallocUsed_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3605,8 +3481,7 @@ spec:
       title: Memory Vmalloc
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Memory used by anonymous pages (not backed by files), including standard and huge page allocations. Includes heap, stack, and memory-mapped anonymous regions
       fieldConfig:
         defaults:
@@ -3668,8 +3543,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_AnonHugePages_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3679,8 +3553,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_AnonPages_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3692,8 +3565,7 @@ spec:
       title: Memory Anonymous
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Memory that is locked in RAM and cannot be swapped out. Includes both kernel-unevictable memory and user-level memory locked with mlock()
       fieldConfig:
         defaults:
@@ -3765,8 +3637,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Unevictable_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3776,8 +3647,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_Mlocked_bytes{instance="$node",job="$job"}
         format: time_series
@@ -3789,8 +3659,7 @@ spec:
       title: Memory Unevictable and MLocked
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: How much memory is directly mapped in the kernel using different page sizes (4K, 2M, 1G). Helps monitor large page utilization in the direct map region
       fieldConfig:
         defaults:
@@ -3999,8 +3868,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_DirectMap1G_bytes{instance="$node",job="$job"}
         format: time_series
@@ -4010,8 +3878,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_DirectMap2M_bytes{instance="$node",job="$job"}
         format: time_series
@@ -4022,8 +3889,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_DirectMap4k_bytes{instance="$node",job="$job"}
         format: time_series
@@ -4036,8 +3902,7 @@ spec:
       title: Memory DirectMap
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Displays HugePages memory usage in bytes, including allocated, free, reserved, and surplus memory. All values are calculated based on the number of huge pages multiplied by their configured size
       fieldConfig:
         defaults:
@@ -4099,8 +3964,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_HugePages_Free{instance="$node",job="$job"} * node_memory_Hugepagesize_bytes{instance="$node",job="$job"}
         format: time_series
@@ -4110,8 +3974,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_HugePages_Rsvd{instance="$node",job="$job"} * node_memory_Hugepagesize_bytes{instance="$node",job="$job"}
         format: time_series
@@ -4121,8 +3984,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_HugePages_Surp{instance="$node",job="$job"} * node_memory_Hugepagesize_bytes{instance="$node",job="$job"}
         format: time_series
@@ -4132,8 +3994,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_memory_HugePages_Total{instance="$node",job="$job"} * node_memory_Hugepagesize_bytes{instance="$node",job="$job"}
         format: time_series
@@ -4155,8 +4016,7 @@ spec:
     id: 343
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of memory pages being read from or written to disk (page-in and page-out operations). High page-out may indicate memory pressure or swapping activity
       fieldConfig:
         defaults:
@@ -4224,8 +4084,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_vmstat_pgpgin{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -4235,8 +4094,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_vmstat_pgpgout{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -4248,8 +4106,7 @@ spec:
       title: Memory Pages In / Out
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate at which memory pages are being swapped in from or out to disk. High swap-out activity may indicate memory pressure
       fieldConfig:
         defaults:
@@ -4317,8 +4174,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_vmstat_pswpin{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -4328,8 +4184,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_vmstat_pswpout{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -4341,8 +4196,7 @@ spec:
       title: Memory Pages Swap In / Out
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of memory page faults, split into total, major (disk-backed), and derived minor (non-disk) faults. High major fault rates may indicate memory pressure or insufficient RAM
       fieldConfig:
         defaults:
@@ -4426,8 +4280,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_vmstat_pgfault{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -4437,8 +4290,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_vmstat_pgmajfault{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -4448,8 +4300,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: "irate(node_vmstat_pgfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])  - irate(node_vmstat_pgmajfault{instance=\"$node\",job=\"$job\"}[$__rate_interval])"
         format: time_series
@@ -4461,8 +4312,7 @@ spec:
       title: Memory Page Faults
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of Out-of-Memory (OOM) kill events. A non-zero value indicates the kernel has terminated one or more processes due to memory exhaustion
       fieldConfig:
         defaults:
@@ -4533,8 +4383,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_vmstat_oom_kill{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -4557,8 +4406,7 @@ spec:
     id: 344
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Tracks the system clock's estimated and maximum error, as well as its offset from the reference clock (e.g., via NTP). Useful for detecting synchronization drift
       fieldConfig:
         defaults:
@@ -4619,8 +4467,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_estimated_error_seconds{instance="$node",job="$job"}
         format: time_series
@@ -4631,8 +4478,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_offset_seconds{instance="$node",job="$job"}
         format: time_series
@@ -4643,8 +4489,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_maxerror_seconds{instance="$node",job="$job"}
         format: time_series
@@ -4657,8 +4502,7 @@ spec:
       title: Time Synchronized Drift
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: NTP phase-locked loop (PLL) time constant used by the kernel to control time adjustments. Lower values mean faster correction but less stability
       fieldConfig:
         defaults:
@@ -4719,8 +4563,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_loop_time_constant{instance="$node",job="$job"}
         format: time_series
@@ -4733,8 +4576,7 @@ spec:
       title: Time PLL Adjust
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Shows whether the system clock is synchronized to a reliable time source, and the current frequency correction ratio applied by the kernel to maintain synchronization
       fieldConfig:
         defaults:
@@ -4795,8 +4637,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_sync_status{instance="$node",job="$job"}
         format: time_series
@@ -4807,8 +4648,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_frequency_adjustment_ratio{instance="$node",job="$job"}
         format: time_series
@@ -4819,8 +4659,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_tick_seconds{instance="$node",job="$job"}
         format: time_series
@@ -4832,8 +4671,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_tai_offset_seconds{instance="$node",job="$job"}
         format: time_series
@@ -4847,8 +4685,7 @@ spec:
       title: Time Synchronized Status
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Displays the PPS signal's frequency offset and stability (jitter) in hertz. Useful for monitoring high-precision time sources like GPS or atomic clocks
       fieldConfig:
         defaults:
@@ -4909,8 +4746,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_pps_frequency_hertz{instance="$node",job="$job"}
         format: time_series
@@ -4921,8 +4757,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_pps_stability_hertz{instance="$node",job="$job"}
         format: time_series
@@ -4935,8 +4770,7 @@ spec:
       title: PPS Frequency / Stability
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Tracks PPS signal timing jitter and shift compared to system clock
       fieldConfig:
         defaults:
@@ -4997,8 +4831,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_pps_jitter_seconds{instance="$node",job="$job"}
         format: time_series
@@ -5009,8 +4842,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_timex_pps_shift_seconds{instance="$node",job="$job"}
         format: time_series
@@ -5023,8 +4855,7 @@ spec:
       title: PPS Time Accuracy
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of PPS synchronization diagnostics including calibration events, jitter violations, errors, and frequency stability exceedances
       fieldConfig:
         defaults:
@@ -5087,8 +4918,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_timex_pps_calibration_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5099,8 +4929,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_timex_pps_error_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5111,8 +4940,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_timex_pps_stability_exceeded_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5123,8 +4951,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_timex_pps_jitter_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5147,8 +4974,7 @@ spec:
     id: 345
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Processes currently in runnable or blocked states. Helps identify CPU contention or I/O wait bottlenecks.
       fieldConfig:
         defaults:
@@ -5212,8 +5038,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_procs_blocked{instance="$node",job="$job"}
         format: time_series
@@ -5223,8 +5048,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_procs_running{instance="$node",job="$job"}
         format: time_series
@@ -5236,8 +5060,7 @@ spec:
       title: Processes Status
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Current number of processes in each state (e.g., running, sleeping, zombie). Requires --collector.processes to be enabled in node_exporter
       fieldConfig:
         defaults:
@@ -5342,8 +5165,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_processes_state{instance="$node",job="$job"}
         format: time_series
@@ -5356,8 +5178,7 @@ spec:
       title: Processes Detailed States
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of new processes being created on the system (forks/sec).
       fieldConfig:
         defaults:
@@ -5419,8 +5240,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_forks_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5432,8 +5252,7 @@ spec:
       title: Processes Forks
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Shows CPU saturation per core, calculated as the proportion of time spent waiting to run relative to total time demanded (running + waiting).
       fieldConfig:
         defaults:
@@ -5503,8 +5322,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_schedstat_running_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5516,8 +5334,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_schedstat_waiting_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5529,8 +5346,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: |
           irate(node_schedstat_waiting_seconds_total{instance="$node",job="$job"}[$__rate_interval])
@@ -5546,8 +5362,7 @@ spec:
       title: CPU Saturation per Core
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of active PIDs on the system and the configured maximum allowed. Useful for detecting PID exhaustion risk. Requires --collector.processes in node_exporter
       fieldConfig:
         defaults:
@@ -5626,8 +5441,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_processes_pids{instance="$node",job="$job"}
         format: time_series
@@ -5638,8 +5452,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_processes_max_processes{instance="$node",job="$job"}
         format: time_series
@@ -5652,8 +5465,7 @@ spec:
       title: PIDs Number and Limit
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of active threads on the system and the configured thread limit. Useful for monitoring thread pressure. Requires --collector.processes in node_exporter
       fieldConfig:
         defaults:
@@ -5732,8 +5544,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_processes_threads{instance="$node",job="$job"}
         format: time_series
@@ -5744,8 +5555,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_processes_max_threads{instance="$node",job="$job"}
         format: time_series
@@ -5768,8 +5578,7 @@ spec:
     id: 346
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Per-second rate of context switches and hardware interrupts. High values may indicate intense CPU or I/O activity
       fieldConfig:
         defaults:
@@ -5831,8 +5640,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_context_switches_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5842,8 +5650,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_intr_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -5855,8 +5662,7 @@ spec:
       title: Context Switches / Interrupts
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: System load average over 1, 5, and 15 minutes. Reflects the number of active or waiting processes. Values above CPU core count may indicate overload
       fieldConfig:
         defaults:
@@ -5935,8 +5741,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_load1{instance="$node",job="$job"}
         format: time_series
@@ -5946,8 +5751,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_load5{instance="$node",job="$job"}
         format: time_series
@@ -5957,8 +5761,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_load15{instance="$node",job="$job"}
         format: time_series
@@ -5968,8 +5771,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: count(count(node_cpu_seconds_total{instance="$node",job="$job"}) by (cpu))
         format: time_series
@@ -5981,8 +5783,7 @@ spec:
       title: System Load
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Real-time CPU frequency scaling per core, including average minimum and maximum allowed scaling frequencies
       fieldConfig:
         defaults:
@@ -6082,8 +5883,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_cpu_scaling_frequency_hertz{instance="$node",job="$job"}
         format: time_series
@@ -6094,8 +5894,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: avg(node_cpu_scaling_frequency_max_hertz{instance="$node",job="$job"})
         format: time_series
@@ -6106,8 +5905,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: avg(node_cpu_scaling_frequency_min_hertz{instance="$node",job="$job"})
         format: time_series
@@ -6120,8 +5918,7 @@ spec:
       title: CPU Frequency Scaling
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of scheduling timeslices executed per CPU. Reflects how frequently the scheduler switches tasks on each core
       fieldConfig:
         defaults:
@@ -6182,8 +5979,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_schedstat_timeslices_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -6196,8 +5992,7 @@ spec:
       title: CPU Schedule Timeslices
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Breaks down hardware interrupts by type and device. Useful for diagnosing IRQ load on network, disk, or CPU interfaces. Requires --collector.interrupts to be enabled in node_exporter
       fieldConfig:
         defaults:
@@ -6259,8 +6054,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_interrupts_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -6273,8 +6067,7 @@ spec:
       title: IRQ Detail
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of bits of entropy currently available to the system's random number generators (e.g., /dev/random). Low values may indicate that random number generation could block or degrade performance of cryptographic operations
       fieldConfig:
         defaults:
@@ -6353,8 +6146,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_entropy_available_bits{instance="$node",job="$job"}
         format: time_series
@@ -6364,8 +6156,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_entropy_pool_size_bits{instance="$node",job="$job"}
         format: time_series
@@ -6387,8 +6178,7 @@ spec:
     id: 347
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Monitors hardware sensor temperatures and critical thresholds as exposed by Linux hwmon. Includes CPU, GPU, and motherboard sensors where available
       fieldConfig:
         defaults:
@@ -6461,8 +6251,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_hwmon_temp_celsius{instance="$node",job="$job"} * on(chip) group_left(chip_name) node_hwmon_chip_names{instance="$node",job="$job"}
         format: time_series
@@ -6473,8 +6262,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         expr: node_hwmon_temp_crit_alarm_celsius{instance="$node",job="$job"} * on(chip) group_left(chip_name) node_hwmon_chip_names{instance="$node",job="$job"}
         format: time_series
         hide: true
@@ -6484,8 +6272,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_hwmon_temp_crit_celsius{instance="$node",job="$job"} * on(chip) group_left(chip_name) node_hwmon_chip_names{instance="$node",job="$job"}
         format: time_series
@@ -6496,8 +6283,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         expr: node_hwmon_temp_crit_hyst_celsius{instance="$node",job="$job"} * on(chip) group_left(chip_name) node_hwmon_chip_names{instance="$node",job="$job"}
         format: time_series
         hide: true
@@ -6507,8 +6293,7 @@ spec:
         refId: D
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         expr: node_hwmon_temp_max_celsius{instance="$node",job="$job"} * on(chip) group_left(chip_name) node_hwmon_chip_names{instance="$node",job="$job"}
         format: time_series
         hide: true
@@ -6520,8 +6305,7 @@ spec:
       title: Hardware Temperature Monitor
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Shows how hard each cooling device (fan/throttle) is working relative to its maximum capacity
       fieldConfig:
         defaults:
@@ -6593,8 +6377,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: 100 * node_cooling_device_cur_state{instance="$node",job="$job"} / node_cooling_device_max_state{instance="$node",job="$job"}
         format: time_series
@@ -6607,8 +6390,7 @@ spec:
       title: Cooling Device Utilization
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Shows the online status of power supplies (e.g., AC, battery). A value of 1-Yes indicates the power supply is active/online
       fieldConfig:
         defaults:
@@ -6671,8 +6453,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_power_supply_online{instance="$node",job="$job"}
         format: time_series
@@ -6685,8 +6466,7 @@ spec:
       title: Power Supply
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Displays the current fan speeds (RPM) from hardware sensors via the hwmon interface
       fieldConfig:
         defaults:
@@ -6748,8 +6528,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_hwmon_fan_rpm{instance="$node",job="$job"} * on(chip) group_left(chip_name) node_hwmon_chip_names{instance="$node",job="$job"}
         format: time_series
@@ -6760,8 +6539,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_hwmon_fan_min_rpm{instance="$node",job="$job"} * on(chip) group_left(chip_name) node_hwmon_chip_names{instance="$node",job="$job"}
         format: time_series
@@ -6785,8 +6563,7 @@ spec:
     id: 348
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Current number of systemd units in each operational state, such as active, failed, inactive, or transitioning
       fieldConfig:
         defaults:
@@ -6888,8 +6665,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_systemd_units{instance="$node",job="$job",state="activating"}
         format: time_series
@@ -6900,8 +6676,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_systemd_units{instance="$node",job="$job",state="active"}
         format: time_series
@@ -6912,8 +6687,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_systemd_units{instance="$node",job="$job",state="deactivating"}
         format: time_series
@@ -6924,8 +6698,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_systemd_units{instance="$node",job="$job",state="failed"}
         format: time_series
@@ -6936,8 +6709,7 @@ spec:
         refId: D
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_systemd_units{instance="$node",job="$job",state="inactive"}
         format: time_series
@@ -6950,8 +6722,7 @@ spec:
       title: Systemd Units State
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Current number of active connections per systemd socket, as reported by the Node Exporter systemd collector
       fieldConfig:
         defaults:
@@ -7013,8 +6784,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_systemd_socket_current_connections{instance="$node",job="$job"}
         format: time_series
@@ -7027,8 +6797,7 @@ spec:
       title: Systemd Sockets Current
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of accepted connections per second for each systemd socket
       fieldConfig:
         defaults:
@@ -7090,8 +6859,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_systemd_socket_accepted_connections_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -7104,8 +6872,7 @@ spec:
       title: Systemd Sockets Accepted
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of systemd socket connection refusals per second, typically due to service unavailability or backlog overflow
       fieldConfig:
         defaults:
@@ -7167,8 +6934,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_systemd_socket_refused_connections_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -7191,8 +6957,7 @@ spec:
     id: 349
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of I/O operations completed per second for the device (after merges), including both reads and writes
       fieldConfig:
         defaults:
@@ -7268,8 +7033,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_reads_completed_total{instance="$node",job="$job"}[$__rate_interval])
         intervalFactor: 1
@@ -7278,8 +7042,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_writes_completed_total{instance="$node",job="$job"}[$__rate_interval])
         intervalFactor: 1
@@ -7290,8 +7053,7 @@ spec:
       title: Disk Read/Write IOps
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of bytes read from or written to the device per second
       fieldConfig:
         defaults:
@@ -7367,8 +7129,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_read_bytes_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -7378,8 +7139,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         exemplar: false
         expr: irate(node_disk_written_bytes_total{instance="$node",job="$job"}[$__rate_interval])
@@ -7393,8 +7153,7 @@ spec:
       title: Disk Read/Write Data
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Average time for requests issued to the device to be served. This includes the time spent by the requests in queue and the time spent servicing them.
       fieldConfig:
         defaults:
@@ -7470,8 +7229,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_read_time_seconds_total{instance="$node",job="$job"}[$__rate_interval]) / irate(node_disk_reads_completed_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7481,8 +7239,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_write_time_seconds_total{instance="$node",job="$job"}[$__rate_interval]) / irate(node_disk_writes_completed_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7494,8 +7251,7 @@ spec:
       title: Disk Average Wait Time
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Average queue length of the requests that were issued to the device
       fieldConfig:
         defaults:
@@ -7566,8 +7322,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_io_time_weighted_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7579,8 +7334,7 @@ spec:
       title: Average Queue Size
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of read and write requests merged per second that were queued to the device
       fieldConfig:
         defaults:
@@ -7656,8 +7410,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_reads_merged_total{instance="$node",job="$job"}[$__rate_interval])
         intervalFactor: 1
@@ -7666,8 +7419,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_writes_merged_total{instance="$node",job="$job"}[$__rate_interval])
         intervalFactor: 1
@@ -7678,8 +7430,7 @@ spec:
       title: Disk R/W Merged
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Percentage of time the disk spent actively processing I/O operations, including general I/O, discards (TRIM), and write cache flushes
       fieldConfig:
         defaults:
@@ -7750,8 +7501,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_io_time_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7761,8 +7511,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_discard_time_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7772,8 +7521,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_flush_requests_time_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7785,8 +7533,7 @@ spec:
       title: Time Spent Doing I/Os
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Per-second rate of discard (TRIM) and flush (write cache) operations. Useful for monitoring low-level disk activity on SSDs and advanced storage
       fieldConfig:
         defaults:
@@ -7856,8 +7603,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_discards_completed_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7867,8 +7613,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_discards_merged_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7878,8 +7623,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_flush_requests_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7891,8 +7635,7 @@ spec:
       title: Disk Ops Discards / Flush
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Shows how many disk sectors are discarded (TRIMed) per second. Useful for monitoring SSD behavior and storage efficiency
       fieldConfig:
         defaults:
@@ -7962,8 +7705,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_disk_discarded_sectors_total{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -7975,8 +7717,7 @@ spec:
       title: Disk Sectors Discarded Successfully
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of in-progress I/O requests at the time of sampling (active requests in the disk queue)
       fieldConfig:
         defaults:
@@ -8047,8 +7788,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_disk_io_now{instance="$node",job="$job"}
         interval: ""
@@ -8070,8 +7810,7 @@ spec:
     id: 350
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of file descriptors currently allocated system-wide versus the system limit. Important for detecting descriptor exhaustion risks
       fieldConfig:
         defaults:
@@ -8150,8 +7889,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filefd_maximum{instance="$node",job="$job"}
         format: time_series
@@ -8161,8 +7899,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filefd_allocated{instance="$node",job="$job"}
         format: time_series
@@ -8174,8 +7911,7 @@ spec:
       title: File Descriptor
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of free file nodes (inodes) available per mounted filesystem. A low count may prevent file creation even if disk space is available
       fieldConfig:
         defaults:
@@ -8237,8 +7973,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filesystem_files_free{instance="$node",job="$job",device!~'rootfs'}
         format: time_series
@@ -8250,8 +7985,7 @@ spec:
       title: File Nodes Free
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Indicates filesystems mounted in read-only mode or reporting device-level I/O errors.
       fieldConfig:
         defaults:
@@ -8314,8 +8048,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filesystem_readonly{instance="$node",job="$job",device!~'rootfs'}
         format: time_series
@@ -8325,8 +8058,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filesystem_device_error{instance="$node",job="$job",device!~'rootfs',fstype!~'tmpfs'}
         format: time_series
@@ -8339,8 +8071,7 @@ spec:
       title: Filesystem in ReadOnly / Error
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of file nodes (inodes) available per mounted filesystem. Reflects maximum file capacity regardless of disk size
       fieldConfig:
         defaults:
@@ -8402,8 +8133,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_filesystem_files{instance="$node",job="$job",device!~'rootfs'}
         format: time_series
@@ -8425,8 +8155,7 @@ spec:
     id: 351
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of network packets received and transmitted per second, by interface.
       fieldConfig:
         defaults:
@@ -8495,8 +8224,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_packets_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8507,8 +8235,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_transmit_packets_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8521,8 +8248,7 @@ spec:
       title: Network Traffic by Packets
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of packet-level errors for each network interface. Receive errors may indicate physical or driver issues; transmit errors may reflect collisions or hardware faults
       fieldConfig:
         defaults:
@@ -8591,8 +8317,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_errs_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8602,8 +8327,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_transmit_errs_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8615,8 +8339,7 @@ spec:
       title: Network Traffic Errors
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of dropped packets per network interface. Receive drops can indicate buffer overflow or driver issues; transmit drops may result from outbound congestion or queuing limits
       fieldConfig:
         defaults:
@@ -8685,8 +8408,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_drop_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8696,8 +8418,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_transmit_drop_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8709,8 +8430,7 @@ spec:
       title: Network Traffic Drop
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of compressed network packets received and transmitted per interface. These are common in low-bandwidth or special interfaces like PPP or SLIP
       fieldConfig:
         defaults:
@@ -8779,8 +8499,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_compressed_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8790,8 +8509,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_transmit_compressed_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8803,8 +8521,7 @@ spec:
       title: Network Traffic Compressed
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of incoming multicast packets received per network interface. Multicast is used by protocols such as mDNS, SSDP, and some streaming or cluster services
       fieldConfig:
         defaults:
@@ -8873,8 +8590,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_multicast_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8886,8 +8602,7 @@ spec:
       title: Network Traffic Multicast
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of received packets that could not be processed due to missing protocol or handler in the kernel. May indicate unsupported traffic or misconfiguration
       fieldConfig:
         defaults:
@@ -8956,8 +8671,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_nohandler_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -8969,8 +8683,7 @@ spec:
       title: Network Traffic NoHandler
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of frame errors on received packets, typically caused by physical layer issues such as bad cables, duplex mismatches, or hardware problems
       fieldConfig:
         defaults:
@@ -9039,8 +8752,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_frame_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -9052,8 +8764,7 @@ spec:
       title: Network Traffic Frame
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Tracks FIFO buffer overrun errors on network interfaces. These occur when incoming or outgoing packets are dropped due to queue or buffer overflows, often indicating congestion or hardware limits
       fieldConfig:
         defaults:
@@ -9122,8 +8833,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_receive_fifo_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -9133,8 +8843,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_transmit_fifo_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -9146,8 +8855,7 @@ spec:
       title: Network Traffic Fifo
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of packet collisions detected during transmission. Mostly relevant on half-duplex or legacy Ethernet networks
       fieldConfig:
         defaults:
@@ -9216,8 +8924,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_transmit_colls_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -9229,8 +8936,7 @@ spec:
       title: Network Traffic Collision
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of carrier errors during transmission. These typically indicate physical layer issues like faulty cabling or duplex mismatches
       fieldConfig:
         defaults:
@@ -9292,8 +8998,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: rate(node_network_transmit_carrier_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -9305,8 +9010,7 @@ spec:
       title: Network Traffic Carrier Errors
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of ARP entries per interface. Useful for detecting excessive ARP traffic or table growth due to scanning or misconfiguration
       fieldConfig:
         defaults:
@@ -9368,8 +9072,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_arp_entries{instance="$node",job="$job"}
         format: time_series
@@ -9381,8 +9084,7 @@ spec:
       title: ARP Entries
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Current and maximum connection tracking entries used by Netfilter (nf_conntrack). High usage approaching the limit may cause packet drops or connection issues
       fieldConfig:
         defaults:
@@ -9461,8 +9163,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_nf_conntrack_entries{instance="$node",job="$job"}
         format: time_series
@@ -9472,8 +9173,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_nf_conntrack_entries_limit{instance="$node",job="$job"}
         format: time_series
@@ -9485,8 +9185,7 @@ spec:
       title: NF Conntrack
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Operational and physical link status of each network interface. Values are Yes for 'up' or link present, and No for 'down' or no carrier."
       fieldConfig:
         defaults:
@@ -9548,8 +9247,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_network_up{operstate="up",instance="$node",job="$job"}
         format: time_series
@@ -9560,8 +9258,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_network_carrier{instance="$node",job="$job"}
         format: time_series
@@ -9571,8 +9268,7 @@ spec:
       title: Network Operational Status
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Maximum speed of each network interface as reported by the operating system. This is a static hardware capability, not current throughput
       fieldConfig:
         defaults:
@@ -9614,8 +9310,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_network_speed_bytes{instance="$node",job="$job"} * 8
         format: time_series
@@ -9627,8 +9322,7 @@ spec:
       title: Speed
       type: bargauge
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: MTU (Maximum Transmission Unit) in bytes for each network interface. Affects packet size and transmission efficiency
       fieldConfig:
         defaults:
@@ -9670,8 +9364,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_network_mtu_bytes{instance="$node",job="$job"}
         format: time_series
@@ -9693,8 +9386,7 @@ spec:
     id: 352
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Tracks TCP socket usage and memory per node
       fieldConfig:
         defaults:
@@ -9757,8 +9449,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_TCP_alloc{instance="$node",job="$job"}
         format: time_series
@@ -9769,8 +9460,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_TCP_inuse{instance="$node",job="$job"}
         format: time_series
@@ -9781,8 +9471,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_TCP_orphan{instance="$node",job="$job"}
         format: time_series
@@ -9793,8 +9482,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_TCP_tw{instance="$node",job="$job"}
         format: time_series
@@ -9807,8 +9495,7 @@ spec:
       title: Sockstat TCP
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of UDP and UDPLite sockets currently in use
       fieldConfig:
         defaults:
@@ -9871,8 +9558,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_UDPLITE_inuse{instance="$node",job="$job"}
         format: time_series
@@ -9883,8 +9569,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_UDP_inuse{instance="$node",job="$job"}
         format: time_series
@@ -9897,8 +9582,7 @@ spec:
       title: Sockstat UDP
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Total number of sockets currently in use across all protocols (TCP, UDP, UNIX, etc.), as reported by /proc/net/sockstat
       fieldConfig:
         defaults:
@@ -9961,8 +9645,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_sockets_used{instance="$node",job="$job"}
         format: time_series
@@ -9975,8 +9658,7 @@ spec:
       title: Sockstat Used
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of FRAG and RAW sockets currently in use. RAW sockets are used for custom protocols or tools like ping; FRAG sockets are used internally for IP packet defragmentation
       fieldConfig:
         defaults:
@@ -10039,8 +9721,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_FRAG_inuse{instance="$node",job="$job"}
         format: time_series
@@ -10051,8 +9732,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_RAW_inuse{instance="$node",job="$job"}
         format: time_series
@@ -10065,8 +9745,7 @@ spec:
       title: Sockstat FRAG / RAW
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: TCP/UDP socket memory usage in kernel (in pages)
       fieldConfig:
         defaults:
@@ -10129,8 +9808,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_TCP_mem{instance="$node",job="$job"}
         format: time_series
@@ -10141,8 +9819,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_UDP_mem{instance="$node",job="$job"}
         format: time_series
@@ -10155,8 +9832,7 @@ spec:
       title: TCP/UDP Kernel Buffer Memory Pages
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Kernel memory used by TCP, UDP, and IP fragmentation buffers
       fieldConfig:
         defaults:
@@ -10219,8 +9895,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_TCP_mem_bytes{instance="$node",job="$job"}
         format: time_series
@@ -10231,8 +9906,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_UDP_mem_bytes{instance="$node",job="$job"}
         format: time_series
@@ -10243,8 +9917,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_sockstat_FRAG_memory{instance="$node",job="$job"}
         interval: ""
@@ -10255,8 +9928,7 @@ spec:
       title: Sockstat Memory Size
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Packets processed and dropped by the softnet network stack per CPU. Drops may indicate CPU saturation or network driver limitations
       fieldConfig:
         defaults:
@@ -10325,8 +9997,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_softnet_processed_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10337,8 +10008,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_softnet_dropped_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10351,8 +10021,7 @@ spec:
       title: Softnet Packets
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: How often the kernel was unable to process all packets in the softnet queue before time ran out. Frequent squeezes may indicate CPU contention or driver inefficiency
       fieldConfig:
         defaults:
@@ -10416,8 +10085,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_softnet_times_squeezed_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10430,8 +10098,7 @@ spec:
       title: Softnet Out of Quota
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Tracks the number of packets processed or dropped by Receive Packet Steering (RPS), a mechanism to distribute packet processing across CPUs
       fieldConfig:
         defaults:
@@ -10504,8 +10171,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_softnet_received_rps_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10516,8 +10182,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_softnet_flow_limit_count_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10540,8 +10205,7 @@ spec:
     id: 353
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of octets sent and received at the IP layer, as reported by /proc/net/netstat
       fieldConfig:
         defaults:
@@ -10610,8 +10274,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_IpExt_InOctets{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10622,8 +10285,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_IpExt_OutOctets{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10635,8 +10297,7 @@ spec:
       title: Netstat IP In / Out Octets
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of TCP segments sent and received per second, including data and control segments
       fieldConfig:
         defaults:
@@ -10710,8 +10371,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Tcp_InSegs{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10722,8 +10382,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Tcp_OutSegs{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10736,8 +10395,7 @@ spec:
       title: TCP In / Out
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of UDP datagrams sent and received per second, based on /proc/net/netstat
       fieldConfig:
         defaults:
@@ -10805,8 +10463,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Udp_InDatagrams{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10817,8 +10474,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Udp_OutDatagrams{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10831,8 +10487,7 @@ spec:
       title: UDP In / Out
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of ICMP messages sent and received per second, including error and control messages
       fieldConfig:
         defaults:
@@ -10902,8 +10557,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Icmp_InMsgs{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10914,8 +10568,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Icmp_OutMsgs{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -10928,8 +10581,7 @@ spec:
       title: ICMP In / Out
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Tracks various TCP error and congestion-related events, including retransmissions, timeouts, dropped connections, and buffer issues
       fieldConfig:
         defaults:
@@ -10991,8 +10643,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_ListenOverflows{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11003,8 +10654,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_ListenDrops{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11015,8 +10665,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_TCPSynRetrans{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11027,8 +10676,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Tcp_RetransSegs{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -11036,8 +10684,7 @@ spec:
         range: true
         refId: D
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Tcp_InErrs{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -11045,8 +10692,7 @@ spec:
         range: true
         refId: E
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Tcp_OutRsts{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -11054,8 +10700,7 @@ spec:
         range: true
         refId: F
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_TCPRcvQDrop{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -11063,8 +10708,7 @@ spec:
         range: true
         refId: G
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_TCPOFOQueue{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -11072,8 +10716,7 @@ spec:
         range: true
         refId: H
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_TCPTimeouts{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -11083,8 +10726,7 @@ spec:
       title: TCP Errors
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of UDP and UDPLite datagram delivery errors, including missing listeners, buffer overflows, and protocol-specific issues
       fieldConfig:
         defaults:
@@ -11147,8 +10789,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Udp_InErrors{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11159,8 +10800,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Udp_NoPorts{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11171,8 +10811,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_UdpLite_InErrors{instance="$node",job="$job"}[$__rate_interval])
         interval: ""
@@ -11180,8 +10819,7 @@ spec:
         range: true
         refId: C
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Udp_RcvbufErrors{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11192,8 +10830,7 @@ spec:
         refId: D
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Udp_SndbufErrors{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11206,8 +10843,7 @@ spec:
       title: UDP Errors
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of incoming ICMP messages that contained protocol-specific errors, such as bad checksums or invalid lengths
       fieldConfig:
         defaults:
@@ -11275,8 +10911,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Icmp_InErrors{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11289,8 +10924,7 @@ spec:
       title: ICMP Errors
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of TCP SYN cookies sent, validated, and failed. These are used to protect against SYN flood attacks and manage TCP handshake resources under load
       fieldConfig:
         defaults:
@@ -11360,8 +10994,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_SyncookiesFailed{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11372,8 +11005,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_SyncookiesRecv{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11384,8 +11016,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_TcpExt_SyncookiesSent{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11398,8 +11029,7 @@ spec:
       title: TCP SynCookie
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of currently established TCP connections and the system's max supported limit. On Linux, MaxConn may return -1 to indicate a dynamic/unlimited configuration
       fieldConfig:
         defaults:
@@ -11478,8 +11108,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_netstat_Tcp_CurrEstab{instance="$node",job="$job"}
         format: time_series
@@ -11490,8 +11119,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_netstat_Tcp_MaxConn{instance="$node",job="$job"}
         format: time_series
@@ -11504,8 +11132,7 @@ spec:
       title: TCP Connections
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of UDP packets currently queued in the receive (RX) and transmit (TX) buffers. A growing queue may indicate a bottleneck
       fieldConfig:
         defaults:
@@ -11566,8 +11193,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_udp_queues{instance="$node",job="$job",ip="v4",queue="rx"}
         format: time_series
@@ -11578,8 +11204,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_udp_queues{instance="$node",job="$job",ip="v4",queue="tx"}
         format: time_series
@@ -11592,8 +11217,7 @@ spec:
       title: UDP Queue
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of TCP connection initiations per second. 'Active' opens are initiated by this host. 'Passive' opens are accepted from incoming connections
       fieldConfig:
         defaults:
@@ -11655,8 +11279,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Tcp_ActiveOpens{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11667,8 +11290,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(node_netstat_Tcp_PassiveOpens{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11681,8 +11303,7 @@ spec:
       title: TCP Direct Transition
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of TCP sockets in key connection states. Requires the --collector.tcpstat flag on node_exporter
       fieldConfig:
         defaults:
@@ -11745,8 +11366,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_tcp_connection_states{state="established",instance="$node",job="$job"}
         format: time_series
@@ -11757,8 +11377,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_tcp_connection_states{state="fin_wait2",instance="$node",job="$job"}
         format: time_series
@@ -11769,8 +11388,7 @@ spec:
         refId: B
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_tcp_connection_states{state="listen",instance="$node",job="$job"}
         format: time_series
@@ -11781,8 +11399,7 @@ spec:
         refId: C
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_tcp_connection_states{state="time_wait",instance="$node",job="$job"}
         format: time_series
@@ -11793,8 +11410,7 @@ spec:
         refId: D
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_tcp_connection_states{state="close_wait", instance="$node", job="$job"}
         format: time_series
@@ -11817,8 +11433,7 @@ spec:
     id: 354
     panels:
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Duration of each individual collector executed during a Node Exporter scrape. Useful for identifying slow or failing collectors
       fieldConfig:
         defaults:
@@ -11881,8 +11496,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_scrape_collector_duration_seconds{instance="$node",job="$job"}
         format: time_series
@@ -11895,8 +11509,7 @@ spec:
       title: Node Exporter Scrape Time
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Rate of CPU time used by the process exposing this metric (user + system mode)
       fieldConfig:
         defaults:
@@ -11957,8 +11570,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: irate(process_cpu_seconds_total{instance="$node",job="$job"}[$__rate_interval])
         format: time_series
@@ -11971,8 +11583,7 @@ spec:
       title: Exporter Process CPU Usage
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Tracks the memory usage of the process exposing this metric (e.g., node_exporter), including current virtual memory and maximum virtual memory limit
       fieldConfig:
         defaults:
@@ -12066,8 +11677,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: process_virtual_memory_bytes{instance="$node",job="$job"}
         interval: ""
@@ -12077,8 +11687,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: process_virtual_memory_max_bytes{instance="$node",job="$job"}
         interval: ""
@@ -12090,8 +11699,7 @@ spec:
       title: Exporter Processes Memory
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Number of file descriptors used by the exporter process versus its configured limit
       fieldConfig:
         defaults:
@@ -12185,8 +11793,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: process_max_fds{instance="$node",job="$job"}
         interval: ""
@@ -12196,8 +11803,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: process_open_fds{instance="$node",job="$job"}
         interval: ""
@@ -12209,8 +11815,7 @@ spec:
       title: Exporter File Descriptor Usage
       type: timeseries
     - datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       description: Shows whether each Node Exporter collector scraped successfully (1 = success, 0 = failure), and whether the textfile collector returned an error.
       fieldConfig:
         defaults:
@@ -12254,8 +11859,7 @@ spec:
       pluginVersion: 11.6.1
       targets:
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: node_scrape_collector_success{instance="$node",job="$job"}
         format: time_series
@@ -12266,8 +11870,7 @@ spec:
         refId: A
         step: 240
       - datasource:
-          type: prometheus
-          uid: 884da007-4124-4bc9-86fc-978fe586e325
+          name: ${datasource}
         editorMode: code
         expr: "1 - node_textfile_scrape_error{instance=\"$node\",job=\"$job\"}"
         format: time_series
@@ -12296,7 +11899,7 @@ spec:
       includeAll: false
       label: Datasource
       multi: false
-      name: DS_PROMETHEUS
+      name: datasource
       options: []
       query: prometheus
       refresh: 1
@@ -12308,8 +11911,7 @@ spec:
         text: ""
         value: ""
       datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       definition: ""
       hide: 0
       includeAll: false
@@ -12331,8 +11933,7 @@ spec:
         text: ""
         value: ""
       datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       definition: label_values(node_uname_info{job="$job"}, nodename)
       hide: 0
       includeAll: false
@@ -12354,8 +11955,7 @@ spec:
         text: ""
         value: ""
       datasource:
-        type: prometheus
-        uid: 884da007-4124-4bc9-86fc-978fe586e325
+        name: ${datasource}
       definition: label_values(node_uname_info{job="$job", nodename="$nodename"}, instance)
       hide: 0
       includeAll: false

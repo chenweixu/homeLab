@@ -1793,8 +1793,24 @@ spec:
     hideTimepicker: false
     timezone: browser
     to: now
-  title: Proxmox via Prometheus33
+  title: Proxmox via Prometheus
   variables:
+  - kind: DatasourceVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: default
+        value: default
+      hide: dontHide
+      includeAll: false
+      label: Data source
+      multi: false
+      name: datasource
+      options: []
+      pluginId: prometheus
+      refresh: never
+      regex: ""
+      skipUrlSync: false
   - kind: QueryVariable
     spec:
       allowCustomValue: true
