@@ -1,9 +1,6 @@
 apiVersion: dashboard.grafana.app/v2
 kind: Dashboard
 metadata:
-  annotations:
-    grafana.app/folder: tmp
-    grafana.app/saved-from-ui: Grafana v13.1.0-24866141508 (fbbeb461)
   labels: {}
   name: tempo-2
   namespace: default

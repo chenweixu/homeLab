@@ -1,0 +1,5619 @@
+apiVersion: dashboard.grafana.app/v1
+kind: Dashboard
+metadata:
+  name: otel-demo_otel-collector_dashboard
+  namespace: default
+spec:
+  annotations:
+    list:
+    - builtIn: 1
+      datasource:
+        type: grafana
+        uid: grafana
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      name: Annotations & Alerts
+      target:
+        limit: 100
+        matchAny: false
+        tags: []
+        type: dashboard
+      type: dashboard
+  description: Provides information about the status of the OpenTelemetry Collector
+  editable: true
+  fiscalYearStartMonth: 0
+  graphTooltip: 1
+  links: []
+  liveNow: true
+  panels:
+  - collapsed: false
+    gridPos:
+      h: 1
+      w: 24
+      x: 0
+      "y": 0
+    id: 94
+    title: Overview
+    type: row
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: OTel Collectors. Derived from the `otelcol.process.uptime` metric.
+    fieldConfig:
+      defaults:
+        custom:
+          align: auto
+          cellOptions:
+            type: auto
+          footer:
+            reducers: []
+          inspect: false
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+      overrides:
+      - matcher:
+          id: byName
+          options: Uptime
+        properties:
+        - id: unit
+          value: dtdurations
+        - id: custom.width
+          value: 84
+      - matcher:
+          id: byName
+          options: Namespace
+        properties:
+        - id: custom.width
+          value: 110
+      - matcher:
+          id: byName
+          options: Version
+        properties:
+        - id: custom.width
+          value: 85
+    gridPos:
+      h: 4
+      w: 17
+      x: 0
+      "y": 1
+    id: 57
+    options:
+      cellHeight: sm
+      showHeader: true
+      sortBy:
+      - desc: true
+        displayName: Service Name
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name", k8s_cluster_name=~"$k8s_cluster_name", k8s_node_name=~"$k8s_node_name", host_name=~"$host_name", service_instance_id=~"$service_instance_id", service_name=~"$service_name"}
+      format: table
+      instant: true
+      legendFormat: "{{service_name}} {{service_instance_id}}"
+      queryType: instant
+      range: false
+      refId: A
+    transformations:
+    - id: organize
+      options:
+        excludeByName:
+          Time: true
+          Value: false
+          __name__: true
+          instance: true
+          job: true
+        includeByName: {}
+        indexByName:
+          Time: 2
+          Value: 12
+          __name__: 3
+          host_name: 4
+          instance: 5
+          job: 6
+          k8s_cluster_name: 7
+          k8s_namespace_name: 8
+          k8s_node_name: 9
+          k8s_pod_name: 10
+          service_instance_id: 11
+          service_name: 0
+          service_version: 1
+        orderByMode: manual
+        renameByName:
+          Value: Uptime
+          host_name: Host
+          k8s_cluster_name: K8s cluster
+          k8s_namespace_name: Namespace
+          k8s_node_name: Node
+          k8s_pod_name: Pod
+          service_instance_id: Service Instance Id
+          service_name: Service Name
+          service_version: Version
+    type: table
+  - gridPos:
+      h: 6
+      w: 6
+      x: 17
+      "y": 1
+    id: 56
+    options:
+      alertInstanceLabelFilter: deployment_environment_name=~"$deployment_environment_name", k8s_cluster_name=~"$k8s_cluster_name", k8s_node_name=~"$k8s_node_name", host_name=~"$host_name", service_instance_id=~"$service_instance_id", service_name=~"$service_name"
+      alertName: OpenTelemetryCollector
+      dashboardAlerts: false
+      groupBy: []
+      groupMode: default
+      maxItems: 17
+      showInactiveAlerts: true
+      sortOrder: 1
+      statColorMode: none
+      statThresholds:
+        mode: absolute
+        steps:
+        - color: green
+          value: 0
+        - color: red
+          value: 80
+      statValueMappings: []
+      stateFilter:
+        error: true
+        firing: true
+        noData: true
+        normal: false
+        pending: true
+        recovering: true
+      viewMode: list
+    pluginVersion: 13.1.0-24866141508
+    title: Alerts
+    type: alertlist
+  - gridPos:
+      h: 3
+      w: 2
+      x: 0
+      "y": 5
+    id: 63
+    options:
+      code:
+        language: plaintext
+        showLineNumbers: false
+        showMiniMap: false
+      content: Receivers
+      mode: markdown
+    pluginVersion: 13.1.0-24866141508
+    type: text
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Span Rate
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 2
+      "y": 5
+    id: 64
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum(rate(otelcol_receiver_accepted_spans_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+        +
+        sum(rate(otelcol_receiver_refused_spans_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Span Rate
+      queryType: range
+      range: true
+      refId: spans_rate
+    title: Spans
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Span Errors
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 5
+      "y": 5
+    id: 65
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: "1\n- \nsum(\n  rate(\n    otelcol_receiver_accepted_spans_total{\n      deployment_environment_name=~\"$deployment_environment_name\",\n      k8s_cluster_name=~\"$k8s_cluster_name\",\n      k8s_node_name=~\"$k8s_node_name\",\n      host_name=~\"$host_name\",\n      service_instance_id=~\"$service_instance_id\",\n      service_name=~\"$service_name\"\n    }[$__rate_interval]\n  )\n)\n/\n(\n  sum(\n    rate(\n      otelcol_receiver_accepted_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n  +\n  sum(\n    rate(\n      otelcol_receiver_refused_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n  +\n  sum(\n    rate(\n      otelcol_receiver_failed_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n)"
+      instant: false
+      legendFormat: Span Errors
+      queryType: range
+      range: true
+      refId: span_errors
+    title: Span Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregate ingestion rate across all receivers by telemetry type
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 7
+      "y": 5
+    id: 66
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum(rate(otelcol_receiver_accepted_log_records_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+        +
+        sum(rate(otelcol_receiver_refused_log_records_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Logs
+      queryType: range
+      range: true
+      refId: logs_rate
+    title: Logs
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 10
+      "y": 5
+    id: 67
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_receiver_accepted_log_records_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_receiver_accepted_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_receiver_refused_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_receiver_failed_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Logs
+      queryType: range
+      range: true
+      refId: logs_error
+    title: Log Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregate ingestion rate across all receivers by telemetry type
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 12
+      "y": 5
+    id: 68
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum(rate(otelcol_receiver_accepted_metric_points_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+        +
+        sum(rate(otelcol_receiver_refused_metric_points_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Metrics
+      queryType: range
+      range: true
+      refId: metrics_rate
+    title: Metrics
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 15
+      "y": 5
+    id: 69
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_receiver_accepted_metric_points_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_receiver_accepted_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_receiver_refused_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_receiver_failed_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Metrics
+      queryType: range
+      range: true
+      refId: metrics_errors
+    title: Metric Errors
+    type: gauge
+  - gridPos:
+      h: 3
+      w: 2
+      x: 0
+      "y": 8
+    id: 80
+    options:
+      code:
+        language: plaintext
+        showLineNumbers: false
+        showMiniMap: false
+      content: Processors
+      mode: markdown
+    pluginVersion: 13.1.0-24866141508
+    type: text
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Span processors inbound rate, aggregated across all processors
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: traces
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 2
+      "y": 8
+    id: 88
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "traces"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: rate
+    title: Spans
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Drop Rate
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 5
+      "y": 8
+    id: 89
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        (
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_incoming_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "traces"
+              }[$__rate_interval]
+            )
+          )
+        -
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_outgoing_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "traces"
+              }[$__rate_interval]
+            )
+          )
+        )
+        /
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "traces"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: Drop Rate
+      queryType: range
+      range: true
+      refId: drop_rate
+    title: Drop Rate
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Logs processors inbound rate, aggregated across all processors
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 7
+      "y": 8
+    id: 90
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "logs"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: rate
+    title: Logs
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Drop Rate
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 10
+      "y": 8
+    id: 91
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        (
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_incoming_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "logs"
+              }[$__rate_interval]
+            )
+          )
+        -
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_outgoing_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "logs"
+              }[$__rate_interval]
+            )
+          )
+        )
+        /
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "logs"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: Drop Rate
+      queryType: range
+      range: true
+      refId: drop_rate
+    title: Drop Rate
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Metrics processors inbound rate, aggregated across all processors
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 12
+      "y": 8
+    id: 92
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "metrics"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: rate
+    title: Metrics
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Drop Rate
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 15
+      "y": 8
+    id: 93
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        (
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_incoming_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "metrics"
+              }[$__rate_interval]
+            )
+          )
+        -
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_outgoing_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "metrics"
+              }[$__rate_interval]
+            )
+          )
+        )
+        /
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "metrics"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: Drop Rate
+      queryType: range
+      range: true
+      refId: drop_rate
+    title: Drop Rate
+    type: gauge
+  - gridPos:
+      h: 3
+      w: 2
+      x: 0
+      "y": 11
+    id: 87
+    options:
+      code:
+        language: plaintext
+        showLineNumbers: false
+        showMiniMap: false
+      content: Exporters
+      mode: markdown
+    pluginVersion: 13.1.0-24866141508
+    type: text
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregated spans export rate across all exporters
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 2
+      "y": 11
+    id: 74
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: sum(rate(otelcol_exporter_sent_spans_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Spans
+      queryType: range
+      range: true
+      refId: A
+    title: Spans
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Span Errors
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 5
+      "y": 11
+    id: 82
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: "1\n- \nsum(\n  rate(\n    otelcol_receiver_accepted_spans_total{\n      deployment_environment_name=~\"$deployment_environment_name\",\n      k8s_cluster_name=~\"$k8s_cluster_name\",\n      k8s_node_name=~\"$k8s_node_name\",\n      host_name=~\"$host_name\",\n      service_instance_id=~\"$service_instance_id\",\n      service_name=~\"$service_name\"\n    }[$__rate_interval]\n  )\n)\n/\n(\n  sum(\n    rate(\n      otelcol_receiver_accepted_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n  +\n  sum(\n    rate(\n      otelcol_receiver_refused_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n  +\n  sum(\n    rate(\n      otelcol_receiver_failed_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n)"
+      instant: false
+      legendFormat: Span Errors
+      queryType: range
+      range: true
+      refId: span_errors
+    title: Span Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregated logs export rate across all exporters
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 7
+      "y": 11
+    id: 76
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: sum(rate(otelcol_exporter_sent_log_records_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Logs
+      queryType: range
+      range: true
+      refId: B
+    title: Logs
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 10
+      "y": 11
+    id: 77
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_exporter_sent_log_records_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_exporter_sent_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_exporter_send_failed_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Logs
+      queryType: range
+      range: true
+      refId: logs_error
+    title: Logs Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregate metrics export rate across all exporters
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 12
+      "y": 11
+    id: 78
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: sum(rate(otelcol_exporter_sent_metric_points_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Metrics
+      queryType: range
+      range: true
+      refId: C
+    title: Metrics
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 15
+      "y": 11
+    id: 79
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_exporter_sent_metric_points_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_exporter_sent_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_exporter_send_failed_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Metrics
+      queryType: range
+      range: true
+      refId: metrics_errors
+    title: Metrics Errors
+    type: gauge
+  - collapsed: true
+    gridPos:
+      h: 1
+      w: 24
+      x: 0
+      "y": 14
+    id: 95
+    panels:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      description: OTel Collectors. Derived from the `otelcol.process.uptime` metric.
+      fieldConfig:
+        defaults:
+          custom:
+            align: auto
+            cellOptions:
+              type: auto
+            footer:
+              reducers: []
+            inspect: false
+          thresholds:
+            mode: absolute
+            steps:
+            - color: green
+              value: 0
+            - color: red
+              value: 80
+        overrides:
+        - matcher:
+            id: byName
+            options: Uptime
+          properties:
+          - id: unit
+            value: dtdurations
+        - matcher:
+            id: byName
+            options: Namespace
+          properties:
+          - id: custom.width
+            value: 110
+        - matcher:
+            id: byName
+            options: Version
+          properties:
+          - id: custom.width
+            value: 85
+      gridPos:
+        h: 3
+        w: 24
+        x: 0
+        "y": 15
+      id: 54
+      options:
+        cellHeight: sm
+        showHeader: true
+        sortBy:
+        - desc: true
+          displayName: Service Name
+      pluginVersion: 13.1.0-24866141508
+      targets:
+      - datasource:
+          type: prometheus
+          uid: ${prometheus_datasource}
+        editorMode: code
+        expr: otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name", k8s_cluster_name=~"$k8s_cluster_name", k8s_node_name=~"$k8s_node_name", host_name=~"$host_name", service_instance_id=~"$service_instance_id", service_name=~"$service_name"}
+        format: table
+        instant: true
+        legendFormat: __auto
+        queryType: instant
+        range: false
+        refId: A
+      transformations:
+      - id: organize
+        options:
+          excludeByName:
+            Time: true
+            Value: false
+            __name__: true
+            instance: true
+            job: true
+          includeByName: {}
+          indexByName:
+            Time: 2
+            Value: 12
+            __name__: 3
+            host_name: 4
+            instance: 5
+            job: 6
+            k8s_cluster_name: 7
+            k8s_namespace_name: 8
+            k8s_node_name: 9
+            k8s_pod_name: 10
+            service_instance_id: 11
+            service_name: 0
+            service_version: 1
+          orderByMode: manual
+          renameByName:
+            Value: Uptime
+            host_name: Host
+            k8s_cluster_name: K8s cluster
+            k8s_namespace_name: Namespace
+            k8s_node_name: Node
+            k8s_pod_name: Pod
+            service_instance_id: Service Instance Id
+            service_name: Service Name
+            service_version: Version
+      type: table
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      description: CPU consumption rate of the OpenTelemetry collector process
+      fieldConfig:
+        defaults:
+          color:
+            mode: thresholds
+          thresholds:
+            mode: absolute
+            steps:
+            - color: green
+              value: 0
+            - color: red
+              value: 80
+          unit: percentunit
+      gridPos:
+        h: 3
+        w: 5
+        x: 0
+        "y": 18
+      id: 50
+      options:
+        colorMode: value
+        graphMode: area
+        justifyMode: auto
+        orientation: auto
+        percentChangeColorMode: standard
+        reduceOptions:
+          calcs:
+          - lastNotNull
+          fields: ""
+          values: false
+        showPercentChange: false
+        textMode: auto
+        wideLayout: true
+      pluginVersion: 13.1.0-24866141508
+      targets:
+      - datasource:
+          type: prometheus
+          uid: ${prometheus_datasource}
+        editorMode: code
+        expr: rate(otelcol_process_cpu_seconds_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval])
+        instant: false
+        legendFormat: "{{service_name}} {{service_instance_id}}"
+        queryType: range
+        range: true
+        refId: A
+      title: CPU Usage
+      type: stat
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      description: Resident memory consumed by the OpenTelemetry collector process
+      fieldConfig:
+        defaults:
+          color:
+            mode: thresholds
+          min: 0
+          thresholds:
+            mode: absolute
+            steps:
+            - color: green
+              value: 0
+            - color: red
+              value: 80
+          unit: bytes
+      gridPos:
+        h: 3
+        w: 5
+        x: 5
+        "y": 18
+      id: 52
+      options:
+        colorMode: value
+        graphMode: area
+        justifyMode: auto
+        orientation: auto
+        percentChangeColorMode: standard
+        reduceOptions:
+          calcs:
+          - lastNotNull
+          fields: ""
+          values: false
+        showPercentChange: false
+        textMode: auto
+        wideLayout: true
+      pluginVersion: 13.1.0-24866141508
+      targets:
+      - datasource:
+          type: prometheus
+          uid: ${prometheus_datasource}
+        editorMode: code
+        expr: otelcol_process_memory_rss_bytes{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}
+        instant: false
+        legendFormat: "{{service_name}} {{service_instance_id}}"
+        queryType: range
+        range: true
+        refId: A
+      title: Memory Usage (RSS)
+      type: stat
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      description: Total uptime of the OpenTelemetry collector process
+      fieldConfig:
+        defaults:
+          color:
+            mode: thresholds
+          thresholds:
+            mode: absolute
+            steps:
+            - color: red
+              value: 0
+            - color: yellow
+              value: 300
+            - color: green
+              value: 3600
+          unit: s
+      gridPos:
+        h: 3
+        w: 2
+        x: 10
+        "y": 18
+      id: 51
+      options:
+        colorMode: value
+        graphMode: none
+        justifyMode: auto
+        orientation: auto
+        percentChangeColorMode: standard
+        reduceOptions:
+          calcs:
+          - lastNotNull
+          fields: ""
+          values: false
+        showPercentChange: false
+        textMode: auto
+        wideLayout: true
+      pluginVersion: 13.1.0-24866141508
+      targets:
+      - datasource:
+          type: prometheus
+          uid: ${prometheus_datasource}
+        editorMode: code
+        expr: otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}
+        instant: false
+        legendFormat: "{{service_name}} {{service_instance_id}}"
+        queryType: range
+        range: true
+        refId: A
+      title: Uptime
+      type: stat
+    title: Collector
+    type: row
+  - collapsed: false
+    gridPos:
+      h: 1
+      w: 24
+      x: 0
+      "y": 15
+    id: 96
+    title: Receivers
+    type: row
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Span Rate
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 0
+      "y": 16
+    id: 39
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum(rate(otelcol_receiver_accepted_spans_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+        +
+        sum(rate(otelcol_receiver_refused_spans_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Span Rate
+      queryType: range
+      range: true
+      refId: spans_rate
+    title: Span Rate
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Span Errors
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 3
+      "y": 16
+    id: 40
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: "1\n- \nsum(\n  rate(\n    otelcol_receiver_accepted_spans_total{\n      deployment_environment_name=~\"$deployment_environment_name\",\n      k8s_cluster_name=~\"$k8s_cluster_name\",\n      k8s_node_name=~\"$k8s_node_name\",\n      host_name=~\"$host_name\",\n      service_instance_id=~\"$service_instance_id\",\n      service_name=~\"$service_name\"\n    }[$__rate_interval]\n  )\n)\n/\n(\n  sum(\n    rate(\n      otelcol_receiver_accepted_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n  +\n  sum(\n    rate(\n      otelcol_receiver_refused_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n  +\n  sum(\n    rate(\n      otelcol_receiver_failed_spans_total{\n        deployment_environment_name=~\"$deployment_environment_name\",\n        k8s_cluster_name=~\"$k8s_cluster_name\",\n        k8s_node_name=~\"$k8s_node_name\",\n        host_name=~\"$host_name\",\n        service_instance_id=~\"$service_instance_id\",\n        service_name=~\"$service_name\"\n      }[$__rate_interval]\n    )\n  )\n)"
+      instant: false
+      legendFormat: Span Errors
+      queryType: range
+      range: true
+      refId: span_errors
+    title: Span Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregate ingestion rate across all receivers by telemetry type
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 5
+      "y": 16
+    id: 59
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum(rate(otelcol_receiver_accepted_log_records_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+        +
+        sum(rate(otelcol_receiver_refused_log_records_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Logs
+      queryType: range
+      range: true
+      refId: logs_rate
+    title: Logs
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 8
+      "y": 16
+    id: 61
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_receiver_accepted_log_records_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_receiver_accepted_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_receiver_refused_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_receiver_failed_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Logs
+      queryType: range
+      range: true
+      refId: logs_error
+    title: Log Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregate ingestion rate across all receivers by telemetry type
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 10
+      "y": 16
+    id: 60
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum(rate(otelcol_receiver_accepted_metric_points_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+        +
+        sum(rate(otelcol_receiver_refused_metric_points_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Metrics
+      queryType: range
+      range: true
+      refId: metrics_rate
+    title: Metrics
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 13
+      "y": 16
+    id: 62
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_receiver_accepted_metric_points_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_receiver_accepted_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_receiver_refused_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_receiver_failed_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Metrics
+      queryType: range
+      range: true
+      refId: metrics_errors
+    title: Metric Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Detailed breakdown by receiver and telemetry type
+    fieldConfig:
+      defaults:
+        custom:
+          align: auto
+          cellOptions:
+            type: auto
+          filterable: false
+          footer:
+            reducers: []
+          inspect: false
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: short
+      overrides:
+      - matcher:
+          id: byRegexp
+          options: .*Rate.*
+        properties:
+        - id: custom.cellOptions
+          value:
+            type: sparkline
+        - id: unit
+          value: cps
+      - matcher:
+          id: byRegexp
+          options: ".*\\%"
+        properties:
+        - id: unit
+          value: percentunit
+    gridPos:
+      h: 10
+      w: 24
+      x: 0
+      "y": 19
+    id: 41
+    options:
+      cellHeight: sm
+      showHeader: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (signal_type_receiver) (
+          label_join(
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_accepted_spans_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+                +
+                rate(
+                  otelcol_receiver_refused_spans_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "traces",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_accepted_log_records_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+                +
+                rate(
+                  otelcol_receiver_refused_log_records_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "logs",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_accepted_metric_points_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+                +
+                rate(
+                  otelcol_receiver_refused_metric_points_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "metrics",
+              "",
+              ""
+            )
+            ,
+            "signal_type_receiver",
+            "-",
+            "signal_type",
+            "receiver"
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: accepted_rate
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (signal_type_receiver) (
+          label_join(
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_refused_spans_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "traces",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_refused_log_records_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "logs",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_refused_metric_points_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "metrics",
+              "",
+              ""
+            )
+            ,
+            "signal_type_receiver",
+            "-",
+            "signal_type",
+            "receiver"
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: refused_rate
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (signal_type_receiver) (
+          label_join(
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_failed_spans_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "traces",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_failed_log_records_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "logs",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (receiver) (
+                rate(
+                  otelcol_receiver_failed_metric_points_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "metrics",
+              "",
+              ""
+            )
+            ,
+            "signal_type_receiver",
+            "-",
+            "signal_type",
+            "receiver"
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: failed_rate
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (signal_type_receiver) (
+          label_join(
+            label_replace(
+              (
+                sum by (receiver) (
+                  rate(
+                    otelcol_receiver_refused_spans_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_failed_spans_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+                /
+                sum by (receiver) (
+                  rate(
+                    otelcol_receiver_accepted_spans_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_refused_spans_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_failed_spans_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+              ) * 100,
+              "signal_type",
+              "traces",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              (
+                sum by (receiver) (
+                  rate(
+                    otelcol_receiver_refused_log_records_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_failed_log_records_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+                /
+                sum by (receiver) (
+                  rate(
+                    otelcol_receiver_accepted_log_records_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_refused_log_records_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_failed_log_records_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+              ) * 100,
+              "signal_type",
+              "logs",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              (
+                sum by (receiver) (
+                  rate(
+                    otelcol_receiver_refused_metric_points_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_failed_metric_points_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+                /
+                sum by (receiver) (
+                  rate(
+                    otelcol_receiver_accepted_metric_points_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_refused_metric_points_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_receiver_failed_metric_points_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+              ) * 100,
+              "signal_type",
+              "metrics",
+              "",
+              ""
+            )
+            ,
+            "signal_type_receiver",
+            "-",
+            "signal_type",
+            "receiver"
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: error_pct
+    title: Receivers
+    transformations:
+    - id: timeSeriesTable
+      options:
+        accepted_rate:
+          timeField: Time
+        error_pct:
+          timeField: Time
+        errors:
+          timeField: Time
+        failed_pct:
+          timeField: Time
+        failed_rate:
+          timeField: Time
+        refused_rate:
+          timeField: Time
+        rps:
+          timeField: Time
+        spans_errors:
+          timeField: Time
+        spans_rps:
+          timeField: Time
+    - id: joinByField
+      options:
+        byField: signal_type_receiver
+        mode: outer
+    - id: organize
+      options:
+        excludeByName:
+          Time: true
+        includeByName: {}
+        indexByName:
+          "Trend #accepted_rate": 1
+          "Trend #failed_pct": 4
+          "Trend #failed_rate": 3
+          "Trend #refused_rate": 2
+          signal_type_receiver: 0
+        renameByName:
+          "Trend #accepted_rate": Accepted Rate
+          "Trend #error_pct": Error %
+          "Trend #errors": Error %
+          "Trend #failed_pct": Error %
+          "Trend #failed_rate": Failed Rate
+          "Trend #refused_rate": Refused Rate
+          "Trend #rps": Accepted Rate
+          "Trend #spans_errors": Error
+          "Trend #spans_rps": Rate
+          "Value #A": Spans Rate
+          "Value #B": Spans Failure %
+          "Value #C": Logs Rate
+          "Value #D": Logs Failure %
+          "Value #E": Metrics Rate
+          "Value #F": Metrics Failure %
+          receiver: Receiver
+          signal_type_receiver: Receiver
+    type: table
+  - collapsed: false
+    gridPos:
+      h: 1
+      w: 24
+      x: 0
+      "y": 29
+    id: 97
+    title: Processors
+    type: row
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Span processors inbound rate, aggregated across all processors
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: traces
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 0
+      "y": 30
+    id: 81
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "traces"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: rate
+    title: Spans
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Drop Rate
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 3
+      "y": 30
+    id: 75
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        (
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_incoming_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "traces"
+              }[$__rate_interval]
+            )
+          )
+        -
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_outgoing_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "traces"
+              }[$__rate_interval]
+            )
+          )
+        )
+        /
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "traces"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: Drop Rate
+      queryType: range
+      range: true
+      refId: drop_rate
+    title: Drop Rate
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Logs processors inbound rate, aggregated across all processors
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 5
+      "y": 30
+    id: 83
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "logs"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: rate
+    title: Logs
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Drop Rate
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 8
+      "y": 30
+    id: 84
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        (
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_incoming_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "logs"
+              }[$__rate_interval]
+            )
+          )
+        -
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_outgoing_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "logs"
+              }[$__rate_interval]
+            )
+          )
+        )
+        /
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "logs"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: Drop Rate
+      queryType: range
+      range: true
+      refId: drop_rate
+    title: Drop Rate
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Metrics processors inbound rate, aggregated across all processors
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        decimals: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 10
+      "y": 30
+    id: 85
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "metrics"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: rate
+    title: Metrics
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Drop Rate
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 13
+      "y": 30
+    id: 86
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        (
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_incoming_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "metrics"
+              }[$__rate_interval]
+            )
+          )
+        -
+          sum by (otel_signal) (
+            rate(
+              otelcol_processor_outgoing_items_total{
+                deployment_environment_name =~ "$deployment_environment_name",
+                k8s_cluster_name           =~ "$k8s_cluster_name",
+                k8s_node_name              =~ "$k8s_node_name",
+                host_name                  =~ "$host_name",
+                service_instance_id        =~ "$service_instance_id",
+                service_name               =~ "$service_name",
+                otel_signal                =  "metrics"
+              }[$__rate_interval]
+            )
+          )
+        )
+        /
+        sum by (otel_signal) (
+          rate(
+            otelcol_processor_incoming_items_total{
+              deployment_environment_name =~ "$deployment_environment_name",
+              k8s_cluster_name           =~ "$k8s_cluster_name",
+              k8s_node_name              =~ "$k8s_node_name",
+              host_name                  =~ "$host_name",
+              service_instance_id        =~ "$service_instance_id",
+              service_name               =~ "$service_name",
+              otel_signal                =  "metrics"
+            }[$__rate_interval]
+          )
+        )
+      instant: false
+      legendFormat: Drop Rate
+      queryType: range
+      range: true
+      refId: drop_rate
+    title: Drop Rate
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        custom:
+          align: auto
+          cellOptions:
+            type: auto
+          footer:
+            reducers: []
+          inspect: false
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+      overrides:
+      - matcher:
+          id: byRegexp
+          options: .*Rate.*
+        properties:
+        - id: unit
+          value: cps
+      - matcher:
+          id: byRegexp
+          options: ".*\\%"
+        properties:
+        - id: unit
+          value: percentunit
+        - id: decimals
+          value: 1
+    gridPos:
+      h: 8
+      w: 12
+      x: 0
+      "y": 33
+    id: 49
+    options:
+      cellHeight: sm
+      frameIndex: 0
+      showHeader: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (otel_signal_processor)(
+          label_join(
+            (
+              sum by(processor, otel_signal) (
+                rate(otelcol_processor_outgoing_items_total{
+                  deployment_environment_name=~"$deployment_environment_name",
+                  k8s_cluster_name=~"$k8s_cluster_name",
+                  k8s_node_name=~"$k8s_node_name",
+                  host_name=~"$host_name",
+                  service_instance_id=~"$service_instance_id",
+                  service_name=~"$service_name"
+                }[$__rate_interval])
+              )
+              -
+              sum by(processor, otel_signal) (
+                rate(otelcol_processor_incoming_items_total{
+                  deployment_environment_name=~"$deployment_environment_name",
+                  k8s_cluster_name=~"$k8s_cluster_name",
+                  k8s_node_name=~"$k8s_node_name",
+                  host_name=~"$host_name",
+                  service_instance_id=~"$service_instance_id",
+                  service_name=~"$service_name"
+                }[$__rate_interval])
+              )
+            )
+            /
+            sum by(processor, otel_signal) (
+              rate(otelcol_processor_incoming_items_total{
+                  deployment_environment_name=~"$deployment_environment_name",
+                  k8s_cluster_name=~"$k8s_cluster_name",
+                  k8s_node_name=~"$k8s_node_name",
+                  host_name=~"$host_name",
+                  service_instance_id=~"$service_instance_id",
+                  service_name=~"$service_name"
+              }[$__rate_interval])
+            ),
+            "otel_signal_processor",
+            "-",
+            "otel_signal",
+            "processor"
+          )
+        )
+      instant: false
+      queryType: range
+      range: true
+      refId: discarded_pct
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (otel_signal_processor)(
+          label_join(
+            sum by(processor, otel_signal) (
+              rate(otelcol_processor_incoming_items_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval])
+            ),
+            "otel_signal_processor",
+            "-",
+            "otel_signal",
+            "processor"
+          )
+        )
+      instant: false
+      queryType: range
+      range: true
+      refId: inbound_rate
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      expr: |-
+        sum by (otel_signal_processor)(
+          label_join(
+            sum by(processor, otel_signal) (
+              rate(otelcol_processor_outgoing_items_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval])
+            ),
+            "otel_signal_processor",
+            "-",
+            "otel_signal",
+            "processor"
+          )
+        )
+      instant: false
+      queryType: range
+      range: true
+      refId: outbound_rate
+    title: Processors
+    transformations:
+    - id: timeSeriesTable
+      options:
+        discarded_pct:
+          timeField: Time
+        inbound_rate:
+          timeField: Time
+    - id: joinByField
+      options:
+        byField: otel_signal_processor
+        mode: outer
+    - id: organize
+      options:
+        excludeByName: {}
+        includeByName: {}
+        indexByName:
+          "Trend #discarded_pct": 2
+          "Trend #inbound_rate": 1
+          "Trend #outbound_rate": 3
+          otel_signal_processor: 0
+        renameByName:
+          "Trend #discarded_pct": Discarded %
+          "Trend #inbound_rate": Inbound Rate
+          "Trend #outbound_rate": Outbound Rate
+          otel_signal_processor: Processor
+          otel_signal_receiver: ""
+    type: table
+  - collapsed: false
+    gridPos:
+      h: 1
+      w: 24
+      x: 0
+      "y": 41
+    id: 98
+    title: Exporters
+    type: row
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregated spans export rate across all exporters
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 0
+      "y": 42
+    id: 43
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: sum(rate(otelcol_exporter_sent_spans_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Spans
+      queryType: range
+      range: true
+      refId: A
+    title: Spans
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 3
+      "y": 42
+    id: 44
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_exporter_sent_spans_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_exporter_sent_spans_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_exporter_send_failed_spans_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Spans
+      queryType: range
+      range: true
+      refId: spans_error
+    title: Span Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregated logs export rate across all exporters
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 5
+      "y": 42
+    id: 70
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: sum(rate(otelcol_exporter_sent_log_records_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Logs
+      queryType: range
+      range: true
+      refId: B
+    title: Logs
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 8
+      "y": 42
+    id: 72
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_exporter_sent_log_records_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_exporter_sent_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_exporter_send_failed_log_records_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Logs
+      queryType: range
+      range: true
+      refId: logs_error
+    title: Logs Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Aggregate metrics export rate across all exporters
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: ops
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 3
+      x: 10
+      "y": 42
+    id: 71
+    options:
+      colorMode: value
+      graphMode: area
+      justifyMode: auto
+      orientation: auto
+      percentChangeColorMode: standard
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      showPercentChange: false
+      textMode: auto
+      wideLayout: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: sum(rate(otelcol_exporter_sent_metric_points_total{deployment_environment_name=~"$deployment_environment_name",k8s_cluster_name=~"$k8s_cluster_name",k8s_node_name=~"$k8s_node_name",host_name=~"$host_name",service_instance_id=~"$service_instance_id",service_name=~"$service_name"}[$__rate_interval]))
+      instant: false
+      legendFormat: Metrics
+      queryType: range
+      range: true
+      refId: C
+    title: Metrics
+    type: stat
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    fieldConfig:
+      defaults:
+        color:
+          mode: thresholds
+        max: 1
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+        unit: percentunit
+      overrides:
+      - matcher:
+          id: byName
+          options: Spans
+        properties:
+        - id: color
+          value:
+            fixedColor: blue
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Logs
+        properties:
+        - id: color
+          value:
+            fixedColor: green
+            mode: fixed
+      - matcher:
+          id: byName
+          options: Metrics
+        properties:
+        - id: color
+          value:
+            fixedColor: purple
+            mode: fixed
+    gridPos:
+      h: 3
+      w: 2
+      x: 13
+      "y": 42
+    id: 73
+    options:
+      barShape: flat
+      barWidthFactor: 0.5
+      effects:
+        barGlow: false
+        centerGlow: false
+        gradient: false
+      endpointMarker: point
+      minVizHeight: 75
+      minVizWidth: 75
+      orientation: auto
+      reduceOptions:
+        calcs:
+        - lastNotNull
+        fields: ""
+        values: false
+      segmentCount: 1
+      segmentSpacing: 0.3
+      shape: gauge
+      showThresholdLabels: false
+      showThresholdMarkers: true
+      sizing: auto
+      sparkline: false
+      textMode: auto
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        1
+        -
+        sum(
+          rate(
+            otelcol_exporter_sent_metric_points_total{
+              deployment_environment_name=~"$deployment_environment_name",
+              k8s_cluster_name=~"$k8s_cluster_name",
+              k8s_node_name=~"$k8s_node_name",
+              host_name=~"$host_name",
+              service_instance_id=~"$service_instance_id",
+              service_name=~"$service_name"
+            }[$__rate_interval]
+          )
+        )
+        /
+        (
+          sum(
+            rate(
+              otelcol_exporter_sent_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+          +
+          sum(
+            rate(
+              otelcol_exporter_send_failed_metric_points_total{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }[$__rate_interval]
+            )
+          )
+        )
+      instant: false
+      legendFormat: Metrics
+      queryType: range
+      range: true
+      refId: metrics_errors
+    title: Metrics Errors
+    type: gauge
+  - datasource:
+      type: prometheus
+      uid: ${prometheus_datasource}
+    description: Detailed breakdown by exporter and telemetry type
+    fieldConfig:
+      defaults:
+        custom:
+          align: auto
+          cellOptions:
+            type: auto
+          filterable: false
+          footer:
+            reducers: []
+          inspect: false
+        thresholds:
+          mode: absolute
+          steps:
+          - color: green
+            value: 0
+          - color: red
+            value: 80
+      overrides:
+      - matcher:
+          id: byRegexp
+          options: .*Rate.*
+        properties:
+        - id: custom.cellOptions
+          value:
+            type: sparkline
+        - id: unit
+          value: cps
+      - matcher:
+          id: byRegexp
+          options: .*%
+        properties:
+        - id: unit
+          value: percentunit
+    gridPos:
+      h: 10
+      w: 24
+      x: 0
+      "y": 45
+    id: 45
+    options:
+      cellHeight: sm
+      showHeader: true
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (signal_type_exporter) (
+          label_join(
+            label_replace(
+              sum by (exporter) (
+                rate(
+                  otelcol_exporter_sent_spans_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+                +
+                rate(
+                  otelcol_exporter_send_failed_spans_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "traces",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (exporter) (
+                rate(
+                  otelcol_exporter_sent_log_records_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+                +
+                rate(
+                  otelcol_exporter_send_failed_log_records_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "logs",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (exporter) (
+                rate(
+                  otelcol_exporter_sent_metric_points_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+                +
+                rate(
+                  otelcol_exporter_send_failed_metric_points_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              ),
+              "signal_type",
+              "metrics",
+              "",
+              ""
+            )
+            ,
+            "signal_type_exporter",
+            "-",
+            "signal_type",
+            "exporter"
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: rps
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (signal_type_exporter) (
+          label_join(
+            label_replace(
+              sum by (exporter) (
+                rate(
+                  otelcol_exporter_send_failed_spans_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              )
+              /
+              (
+                sum by (exporter) (
+                  rate(
+                    otelcol_exporter_sent_spans_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_exporter_send_failed_spans_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+              )
+              * 100
+              ,
+              "signal_type",
+              "traces",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (exporter) (
+                rate(
+                  otelcol_exporter_send_failed_log_records_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              )
+              /
+              (
+                sum by (exporter) (
+                  rate(
+                    otelcol_exporter_sent_log_records_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_exporter_send_failed_log_records_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+              )
+              * 100
+              ,
+              "signal_type",
+              "logs",
+              "",
+              ""
+            )
+            or
+            label_replace(
+              sum by (exporter) (
+                rate(
+                  otelcol_exporter_send_failed_metric_points_total{
+                    deployment_environment_name=~"$deployment_environment_name",
+                    k8s_cluster_name=~"$k8s_cluster_name",
+                    k8s_node_name=~"$k8s_node_name",
+                    host_name=~"$host_name",
+                    service_instance_id=~"$service_instance_id",
+                    service_name=~"$service_name"
+                  }[$__rate_interval]
+                )
+              )
+              /
+              (
+                sum by (exporter) (
+                  rate(
+                    otelcol_exporter_sent_metric_points_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                  +
+                  rate(
+                    otelcol_exporter_send_failed_metric_points_total{
+                      deployment_environment_name=~"$deployment_environment_name",
+                      k8s_cluster_name=~"$k8s_cluster_name",
+                      k8s_node_name=~"$k8s_node_name",
+                      host_name=~"$host_name",
+                      service_instance_id=~"$service_instance_id",
+                      service_name=~"$service_name"
+                    }[$__rate_interval]
+                  )
+                )
+              )
+              * 100
+              ,
+              "signal_type",
+              "metrics",
+              "",
+              ""
+            )
+            ,
+            "signal_type_exporter",
+            "-",
+            "signal_type",
+            "exporter"
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: errors
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (signal_type_exporter) (
+          label_join(
+            sum by (exporter, data_type) (
+              otelcol_exporter_queue_size{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }
+            )
+            ,
+            "signal_type_exporter",
+            "-",
+            "data_type",
+            "exporter"
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: queue_size
+    - datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      editorMode: code
+      expr: |-
+        sum by (signal_type_exporter) (
+          label_join(
+            sum by (exporter, data_type) (
+              otelcol_exporter_queue_size{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }
+              /
+              otelcol_exporter_queue_capacity{
+                deployment_environment_name=~"$deployment_environment_name",
+                k8s_cluster_name=~"$k8s_cluster_name",
+                k8s_node_name=~"$k8s_node_name",
+                host_name=~"$host_name",
+                service_instance_id=~"$service_instance_id",
+                service_name=~"$service_name"
+              }
+            )
+            ,
+            "signal_type_exporter",
+            "-",
+            "data_type",
+            "exporter"
+          )
+        )
+      instant: false
+      legendFormat: __auto
+      queryType: range
+      range: true
+      refId: queue_size_pct
+    title: Exporters
+    transformations:
+    - id: timeSeriesTable
+      options:
+        errors:
+          timeField: Time
+        queue_size:
+          timeField: Time
+        rps:
+          timeField: Time
+    - id: joinByField
+      options:
+        byField: signal_type_exporter
+        mode: outer
+    - id: organize
+      options:
+        excludeByName: {}
+        includeByName: {}
+        indexByName: {}
+        renameByName:
+          "Trend #errors": Errors %
+          "Trend #queue_size": Queue size
+          "Trend #queue_size_pct": Queue saturation %
+          "Trend #rps": Rate
+          signal_type_exporter: Exporter
+    type: table
+  - collapsed: false
+    gridPos:
+      h: 1
+      w: 24
+      x: 0
+      "y": 55
+    id: 99
+    title: Logs
+    type: row
+  - datasource:
+      type: prometheus
+      uid: efkxkiik8ecqoe
+    description: Logs from OpenTelemetry Collector filtered by dashboard variables
+    gridPos:
+      h: 10
+      w: 24
+      x: 0
+      "y": 56
+    id: 42
+    options:
+      dedupStrategy: none
+      detailsMode: sidebar
+      enableInfiniteScrolling: false
+      enableLogDetails: true
+      prettifyLogMessage: false
+      showCommonLabels: false
+      showControls: false
+      showFieldSelector: false
+      showLabels: false
+      showLevel: true
+      showLogAttributes: true
+      showTime: true
+      sortOrder: Ascending
+      timestampResolution: ms
+      unwrappedColumns: false
+      wrapLogMessage: false
+    pluginVersion: 13.1.0-24866141508
+    targets:
+    - alias: ""
+      bucketAggs:
+      - field: observedTimestamp
+        id: "2"
+        settings:
+          interval: auto
+        type: date_histogram
+      datasource:
+        type: prometheus
+        uid: efkxkiik8ecqoe
+      format: table
+      luceneQueryType: Metric
+      metrics:
+      - id: "1"
+        type: count
+      query: search source=otel-logs-* | where resource.service.name="$service_name" | fields @timestamp, resource.service.name, resource.service.instance.id, resource.host.name, severity.text, body
+      queryType: PPL
+      refId: A
+      timeField: observedTimestamp
+    title: OpenTelemetry Collector Logs
+    type: logs
+  preload: false
+  refresh: ""
+  schemaVersion: 42
+  tags:
+  - opentelemetry
+  - opentelemetry-collector
+  templating:
+    list:
+    - allowCustomValue: true
+      current:
+        text: Prometheus
+        value: webstore-metrics
+      description: |-
+        OpenTelemetry metrics.
+        Send metrics using the Prometheus OTLP endpoint activating `keep_identifying_resource_attributes` and resource attribute promotion (aka `promote_resource_attributes`) including `service.name`, service.namespace`, `service.instance.id`, and `deployment.environment.name`
+      hide: 0
+      includeAll: false
+      label: Metrics
+      multi: false
+      name: prometheus_datasource
+      options: []
+      query: prometheus
+      refresh: 1
+      regex: (?!grafanacloud-usage|grafanacloud-ml-metrics).+
+      skipUrlSync: false
+      type: datasource
+    - allowCustomValue: false
+      current:
+        text: OpenSearch
+        value: webstore-logs
+      description: OpenTelemetry logs.
+      hide: 0
+      includeAll: false
+      label: Logs
+      multi: false
+      name: opensearch_datasource
+      options: []
+      query: grafana-opensearch-datasource
+      refresh: 1
+      regex: (?!grafanacloud-.*-alert-state-history|grafanacloud-.*-usage-insights).+
+      skipUrlSync: false
+      type: datasource
+    - allValue: .*
+      allowCustomValue: true
+      current:
+        text:
+        - All
+        value:
+        - $__all
+      datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      definition: label_values(otelcol_process_uptime_seconds_total,deployment_environment)
+      description: |-
+        Deployment environment (e.g. "production").
+        Resource attribute `deployment.environment.name` via `target_info`
+      hide: 0
+      includeAll: true
+      label: Environment
+      multi: true
+      name: deployment_environment_name
+      options: []
+      query:
+        qryType: 1
+        query: label_values(otelcol_process_uptime_seconds_total,deployment_environment)
+        refId: PrometheusVariableQueryEditor-VariableQuery
+      refresh: 2
+      regex: ""
+      regexApplyTo: value
+      skipUrlSync: false
+      sort: 1
+      staticOptions:
+      - text: <<not defined>>
+        value: <<not defined>>
+      staticOptionsOrder: after
+      type: query
+    - allValue: .*
+      allowCustomValue: true
+      current:
+        text:
+        - All
+        value:
+        - $__all
+      datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      definition: label_values(otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name"},k8s_cluster_name)
+      description: Resource attribute `k8s.cluster.name`
+      hide: 0
+      includeAll: true
+      label: Kubernetes cluster
+      multi: true
+      name: k8s_cluster_name
+      options: []
+      query:
+        qryType: 1
+        query: label_values(otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name"},k8s_cluster_name)
+        refId: PrometheusVariableQueryEditor-VariableQuery
+      refresh: 1
+      regex: ""
+      regexApplyTo: value
+      skipUrlSync: false
+      sort: 0
+      staticOptions:
+      - text: <<not defined>>
+        value: <<not defined>>
+      staticOptionsOrder: after
+      type: query
+    - allValue: .*
+      allowCustomValue: true
+      current:
+        text:
+        - All
+        value:
+        - $__all
+      datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      definition: label_values(otelcol_process_cpu_seconds_total{k8s_cluster_name=~"$k8s_cluster_name"},k8s_node_name)
+      description: "`k8s.node.name`"
+      hide: 0
+      includeAll: true
+      label: K8s node
+      multi: true
+      name: k8s_node_name
+      options: []
+      query:
+        qryType: 1
+        query: label_values(otelcol_process_cpu_seconds_total{k8s_cluster_name=~"$k8s_cluster_name"},k8s_node_name)
+        refId: PrometheusVariableQueryEditor-VariableQuery
+      refresh: 1
+      regex: ""
+      regexApplyTo: value
+      skipUrlSync: false
+      sort: 0
+      staticOptions:
+      - text: <<not defined>>
+        value: <<not defined>>
+      staticOptionsOrder: after
+      type: query
+    - allValue: .*
+      allowCustomValue: true
+      current:
+        text: All
+        value: $__all
+      datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      definition: label_values(otelcol_process_uptime_seconds_total,host_name)
+      description: "`host.name`"
+      hide: 0
+      includeAll: true
+      label: Host
+      multi: false
+      name: host_name
+      options: []
+      query:
+        qryType: 1
+        query: label_values(otelcol_process_uptime_seconds_total,host_name)
+        refId: PrometheusVariableQueryEditor-VariableQuery
+      refresh: 1
+      regex: ""
+      regexApplyTo: value
+      skipUrlSync: false
+      sort: 0
+      staticOptions:
+      - text: <<not defined>>
+        value: <<not defined>>
+      type: query
+    - allValue: .*
+      allowCustomValue: true
+      current:
+        text: All
+        value: $__all
+      datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      definition: label_values(otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name", k8s_cluster_name=~"$k8s_cluster_name", k8s_node_name=~"$k8s_node_name", host_name=~"$host_name"},service_instance_id)
+      description: "`service.instance.id`"
+      hide: 0
+      includeAll: true
+      label: Instance
+      multi: false
+      name: service_instance_id
+      options: []
+      query:
+        qryType: 1
+        query: label_values(otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name", k8s_cluster_name=~"$k8s_cluster_name", k8s_node_name=~"$k8s_node_name", host_name=~"$host_name"},service_instance_id)
+        refId: PrometheusVariableQueryEditor-VariableQuery
+      refresh: 1
+      regex: ""
+      regexApplyTo: value
+      skipUrlSync: false
+      sort: 0
+      type: query
+    - allValue: .*
+      allowCustomValue: true
+      current:
+        text: otelcol-contrib
+        value: otelcol-contrib
+      datasource:
+        type: prometheus
+        uid: ${prometheus_datasource}
+      definition: label_values(otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name", k8s_cluster_name=~"$k8s_cluster_name", k8s_node_name=~"$k8s_node_name", host_name=~"$host_name"},service_name)
+      description: "`service.name`"
+      hide: 0
+      includeAll: true
+      label: Service
+      multi: false
+      name: service_name
+      options: []
+      query:
+        qryType: 1
+        query: label_values(otelcol_process_uptime_seconds_total{deployment_environment_name=~"$deployment_environment_name", k8s_cluster_name=~"$k8s_cluster_name", k8s_node_name=~"$k8s_node_name", host_name=~"$host_name"},service_name)
+        refId: PrometheusVariableQueryEditor-VariableQuery
+      refresh: 1
+      regex: ""
+      regexApplyTo: value
+      skipUrlSync: false
+      sort: 0
+      type: query
+  time:
+    from: now-30m
+    to: now
+  timepicker:
+    refresh_intervals:
+    - 10s
+    - 30s
+    - 1m
+    - 5m
+    - 15m
+    - 30m
+    - 1h
+    - 2h
+    - 1d
+  timezone: browser
+  title: OpenTelemetry Collector
+  weekStart: ""

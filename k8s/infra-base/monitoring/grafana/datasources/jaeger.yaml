@@ -1,0 +1,24 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: jaeger
+  namespace: monitoring
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      app: grafana
+  datasource:
+    name: Prometheus
+    type: jaeger
+    access: proxy
+    url: http://jaeger.monitoring.svc.cluster.local:16686/jaeger/ui
+    isDefault: false
+    jsonData:
+      tracesToLogsV2:
+        spanStartTimeShift: "-20m"
+        spanEndTimeShift: "20m"
+        filterByTraceID: true
+        filterBySpanID: true
+        customQuery: true
+        query: traceId:"$${__trace.traceId}" AND spanId:"$${__span.spanId}"

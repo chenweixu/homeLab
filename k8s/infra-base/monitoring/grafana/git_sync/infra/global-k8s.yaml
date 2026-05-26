@@ -100,7 +100,7 @@ spec:
                   group: prometheus
                   kind: DataQuery
                   spec:
-                    expr: sum(kubelet_running_containers{cluster="$cluster", job="kubelet", metrics_path="/metrics", instance=~"$instance"})
+                    expr: sum(kubelet_running_containers{job="kubelet", metrics_path="/metrics", instance=~"$instance"})
                     instant: true
                   version: v0
                 refId: A
@@ -131,8 +131,8 @@ spec:
             element:
               kind: ElementReference
               name: panel-1
-            height: 5
-            width: 5
+            height: 4
+            width: 4
             x: 0
             "y": 0
         - kind: GridLayoutItem
@@ -140,19 +140,19 @@ spec:
             element:
               kind: ElementReference
               name: panel-2
-            height: 5
-            width: 5
+            height: 4
+            width: 4
             x: 0
-            "y": 0
+            "y": 5
         - kind: GridLayoutItem
           spec:
             element:
               kind: ElementReference
               name: panel-3
-            height: 5
-            width: 5
+            height: 4
+            width: 4
             x: 0
-            "y": 0
+            "y": 9
   links: []
   liveNow: false
   preferences:
