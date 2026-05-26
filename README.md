@@ -99,7 +99,7 @@ kubectl apply -k k8s/sets
 
 创建私有仓库认证secret
 ```sh
-
+# 两个 ns, cwx 和 monitoring
 kubectl create secret docker-registry harbor-registry-chenwx-secret \
     --docker-server=harbor.chenwx.top \
     --docker-username=${USERNAME} \

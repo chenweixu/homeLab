@@ -34,22 +34,22 @@ spec:
         - name: http
           containerPort: 9104
           protocol: TCP
-        readinessProbe:
-          httpGet:
-            port: 9104
-            path: /health
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 30
-          failureThreshold: 10
-        livenessProbe:
-          httpGet:
-            port: 9104
-            path: /health
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 1
+        # readinessProbe:
+        #   httpGet:
+        #     port: 9104
+        #     path: /health
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        #   timeoutSeconds: 30
+        #   failureThreshold: 10
+        # livenessProbe:
+        #   httpGet:
+        #     port: 9104
+        #     path: /health
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        #   timeoutSeconds: 3
+        #   failureThreshold: 1
 
         resources:
           limits:

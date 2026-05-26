@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: cwx
+  name: netshoot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netshoot
+  template:
+    metadata:
+      labels:
+        app: netshoot
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: netshoot
+          image: harbor.chenwx.top/ghcr.io/nicolaka/netshoot:v0.15
+          command: ["sleep", "360000"]
+          resources:
+            limits:
+              # cpu: "50m"
+              memory: "100Mi"

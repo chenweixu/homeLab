@@ -1,0 +1,873 @@
+apiVersion: dashboard.grafana.app/v2
+kind: Dashboard
+metadata:
+  labels: {}
+  name: Prometheus-Overview
+  namespace: default
+spec:
+  annotations:
+  - kind: AnnotationQuery
+    spec:
+      builtIn: true
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      legacyOptions:
+        type: dashboard
+      name: Annotations & Alerts
+      query:
+        datasource:
+          name: "-- Grafana --"
+        group: grafana
+        kind: DataQuery
+        spec: {}
+        version: v0
+  cursorSync: "Off"
+  editable: true
+  elements:
+    panel-11:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: prometheus_tsdb_head_series{cluster=~"$cluster",job=~"$job",instance=~"$instance"}
+                    format: time_series
+                    legendFormat: "{{cluster}} {{job}} {{instance}} head series"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 11
+        links: []
+        title: Head Series
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  lineWidth: 0
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                min: 0
+                unit: short
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-12:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: prometheus_tsdb_head_chunks{cluster=~"$cluster",job=~"$job",instance=~"$instance"}
+                    format: time_series
+                    legendFormat: "{{cluster}} {{job}} {{instance}} head chunks"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 12
+        links: []
+        title: Head Chunks
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  lineWidth: 0
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                min: 0
+                unit: short
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-14:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: rate(prometheus_engine_query_duration_seconds_count{cluster=~"$cluster",job=~"$job",instance=~"$instance",slice="inner_eval"}[5m])
+                    format: time_series
+                    legendFormat: "{{cluster}} {{job}} {{instance}}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 14
+        links: []
+        title: Query Rate
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  lineWidth: 0
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                min: 0
+                unit: short
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-15:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: max by (slice) (prometheus_engine_query_duration_seconds{quantile="0.9",cluster=~"$cluster", job=~"$job",instance=~"$instance"}) * 1e3
+                    format: time_series
+                    legendFormat: "{{slice}}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 15
+        links: []
+        title: Stage Duration
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  lineWidth: 0
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                min: 0
+                unit: ms
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-2:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: count by (cluster, job, instance, version) (prometheus_build_info{cluster=~"$cluster", job=~"$job", instance=~"$instance"})
+                    format: table
+                    instant: true
+                    legendFormat: ""
+                  version: v0
+                refId: A
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: "max by (cluster, job, instance) (time() - process_start_time_seconds{cluster=~\"$cluster\", job=~\"$job\", instance=~\"$instance\"})"
+                    format: table
+                    instant: true
+                    legendFormat: ""
+                  version: v0
+                refId: B
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 2
+        links: []
+        title: Prometheus Stats
+        vizConfig:
+          group: table
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                decimals: 2
+                displayName: ""
+                unit: short
+              overrides:
+              - matcher:
+                  id: byName
+                  options: Time
+                properties:
+                - id: displayName
+                  value: Time
+                - id: custom.align
+                - id: custom.hidden
+                  value: "true"
+              - matcher:
+                  id: byName
+                  options: cluster
+                properties:
+                - id: custom.align
+                - id: unit
+                  value: short
+                - id: decimals
+                  value: 2
+                - id: displayName
+                  value: Cluster
+              - matcher:
+                  id: byName
+                  options: job
+                properties:
+                - id: custom.align
+                - id: unit
+                  value: short
+                - id: decimals
+                  value: 2
+                - id: displayName
+                  value: Job
+              - matcher:
+                  id: byName
+                  options: instance
+                properties:
+                - id: displayName
+                  value: Instance
+                - id: custom.align
+                - id: unit
+                  value: short
+                - id: decimals
+                  value: 2
+              - matcher:
+                  id: byName
+                  options: version
+                properties:
+                - id: displayName
+                  value: Version
+                - id: custom.align
+                - id: unit
+                  value: short
+                - id: decimals
+                  value: 2
+              - matcher:
+                  id: byName
+                  options: "Value #A"
+                properties:
+                - id: displayName
+                  value: Count
+                - id: custom.align
+                - id: unit
+                  value: short
+                - id: decimals
+                  value: 2
+                - id: custom.hidden
+                  value: "true"
+              - matcher:
+                  id: byName
+                  options: "Value #B"
+                properties:
+                - id: displayName
+                  value: Uptime
+                - id: custom.align
+                - id: unit
+                  value: s
+            options: {}
+          version: v11.4.0
+    panel-4:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum(rate(prometheus_target_sync_length_seconds_sum{cluster=~"$cluster",job=~"$job",instance=~"$instance"}[5m])) by (cluster, job, scrape_job, instance) * 1e3
+                    format: time_series
+                    legendFormat: "{{cluster}}:{{job}}:{{instance}}:{{scrape_job}}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 4
+        links: []
+        title: Target Sync
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                min: 0
+                unit: ms
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-5:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum by (cluster, job, instance) (prometheus_sd_discovered_targets{cluster=~"$cluster", job=~"$job",instance=~"$instance"})
+                    format: time_series
+                    legendFormat: "{{cluster}}:{{job}}:{{instance}}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 5
+        links: []
+        title: Targets
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  lineWidth: 0
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                min: 0
+                unit: short
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-7:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: rate(prometheus_target_interval_length_seconds_sum{cluster=~"$cluster", job=~"$job",instance=~"$instance"}[5m]) / rate(prometheus_target_interval_length_seconds_count{cluster=~"$cluster", job=~"$job",instance=~"$instance"}[5m]) * 1e3
+                    format: time_series
+                    legendFormat: "{{cluster}}:{{job}}:{{instance}} {{interval}} configured"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 7
+        links: []
+        title: Average Scrape Interval Duration
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                min: 0
+                unit: ms
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-8:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum by (cluster, job, instance) (rate(prometheus_target_scrapes_exceeded_body_size_limit_total{cluster=~"$cluster",job=~"$job",instance=~"$instance"}[1m]))
+                    format: time_series
+                    legendFormat: "exceeded body size limit: {{cluster}} {{job}} {{instance}}"
+                  version: v0
+                refId: A
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum by (cluster, job, instance) (rate(prometheus_target_scrapes_exceeded_sample_limit_total{cluster=~"$cluster",job=~"$job",instance=~"$instance"}[1m]))
+                    format: time_series
+                    legendFormat: "exceeded sample limit: {{cluster}} {{job}} {{instance}}"
+                  version: v0
+                refId: B
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum by (cluster, job, instance) (rate(prometheus_target_scrapes_sample_duplicate_timestamp_total{cluster=~"$cluster",job=~"$job",instance=~"$instance"}[1m]))
+                    format: time_series
+                    legendFormat: "duplicate timestamp: {{cluster}} {{job}} {{instance}}"
+                  version: v0
+                refId: C
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum by (cluster, job, instance) (rate(prometheus_target_scrapes_sample_out_of_bounds_total{cluster=~"$cluster",job=~"$job",instance=~"$instance"}[1m]))
+                    format: time_series
+                    legendFormat: "out of bounds: {{cluster}} {{job}} {{instance}}"
+                  version: v0
+                refId: D
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum by (cluster, job, instance) (rate(prometheus_target_scrapes_sample_out_of_order_total{cluster=~"$cluster",job=~"$job",instance=~"$instance"}[1m]))
+                    format: time_series
+                    legendFormat: "out of order: {{cluster}} {{job}} {{instance}}"
+                  version: v0
+                refId: E
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 8
+        links: []
+        title: Scrape failures
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  lineWidth: 0
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                min: 0
+                unit: short
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-9:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: rate(prometheus_tsdb_head_samples_appended_total{cluster=~"$cluster", job=~"$job",instance=~"$instance"}[5m])
+                    format: time_series
+                    legendFormat: "{{cluster}} {{job}} {{instance}}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 9
+        links: []
+        title: Appended Samples
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  lineWidth: 0
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                min: 0
+                unit: short
+              overrides: []
+            options:
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+  layout:
+    kind: RowsLayout
+    spec:
+      rows:
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-2
+                  height: 7
+                  width: 24
+                  x: 0
+                  "y": 0
+          title: Prometheus Stats
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-4
+                  height: 7
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-5
+                  height: 7
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: Discovery
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-7
+                  height: 7
+                  width: 8
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-8
+                  height: 7
+                  width: 8
+                  x: 8
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-9
+                  height: 7
+                  width: 8
+                  x: 16
+                  "y": 0
+          title: Retrieval
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-11
+                  height: 7
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-12
+                  height: 7
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: Storage
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-14
+                  height: 7
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-15
+                  height: 7
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: Query
+  links: []
+  liveNow: false
+  preload: false
+  tags:
+  - prometheus-mixin
+  timeSettings:
+    autoRefresh: ""
+    autoRefreshIntervals:
+    - 60s
+    fiscalYearStartMonth: 0
+    from: now-1h
+    hideTimepicker: false
+    timezone: utc
+    to: now
+  title: Prometheus / Overview
+  variables:
+  - kind: DatasourceVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: default
+        value: default
+      hide: dontHide
+      includeAll: false
+      label: Data source
+      multi: false
+      name: datasource
+      options: []
+      pluginId: prometheus
+      refresh: never
+      regex: ""
+      skipUrlSync: false
+  - kind: QueryVariable
+    spec:
+      allValue: .*
+      allowCustomValue: true
+      current:
+        text:
+        - $__all
+        value:
+        - $__all
+      hide: hideVariable
+      includeAll: true
+      label: cluster
+      multi: true
+      name: cluster
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(prometheus_build_info{}, cluster)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalDesc
+  - kind: QueryVariable
+    spec:
+      allValue: .+
+      allowCustomValue: true
+      current:
+        text: ""
+        value: ""
+      hide: dontHide
+      includeAll: true
+      label: job
+      multi: true
+      name: job
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(prometheus_build_info{cluster=~"$cluster"}, job)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalDesc
+  - kind: QueryVariable
+    spec:
+      allValue: .+
+      allowCustomValue: true
+      current:
+        text: ""
+        value: ""
+      hide: dontHide
+      includeAll: true
+      label: instance
+      multi: true
+      name: instance
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(prometheus_build_info{cluster=~"$cluster", job=~"$job"}, instance)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalDesc
