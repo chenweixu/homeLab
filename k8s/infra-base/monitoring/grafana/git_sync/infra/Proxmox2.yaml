@@ -1,11 +1,8 @@
 apiVersion: dashboard.grafana.app/v2
 kind: Dashboard
 metadata:
-  annotations:
-    grafana.app/folder: "host"
-    grafana.app/saved-from-ui: Grafana v13.1.0-24866141508 (fbbeb461)
   labels: {}
-  name: Proxmox-via-Prometheus
+  name: Proxmox2
   namespace: default
 spec:
   annotations:
@@ -1796,7 +1793,7 @@ spec:
     hideTimepicker: false
     timezone: browser
     to: now
-  title: Proxmox via Prometheus33
+  title: Proxmox via Prometheus2
   variables:
   - kind: QueryVariable
     spec:

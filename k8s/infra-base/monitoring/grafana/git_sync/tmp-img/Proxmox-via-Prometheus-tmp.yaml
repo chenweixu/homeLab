@@ -2,7 +2,7 @@ apiVersion: dashboard.grafana.app/v1
 kind: Dashboard
 metadata:
   labels: {}
-  name: Proxmox-via-Prometheus
+  name: Proxmox-via-Prometheus-tmp
   namespace: default
 spec:
   annotations:
@@ -1436,4 +1436,4 @@ spec:
     - 2h
     - 1d
   timezone: browser
-  title: Proxmox via Prometheus33
+  title: Proxmox via Prometheus-tmp
