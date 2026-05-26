@@ -91,7 +91,6 @@ cp keys/sealed-secrets/sealed-secrets.key ~/.kubeseal/cert.pem
 ```
 
 
-
 deploy service
 ```sh
 kubectl apply -k k8s/sets
@@ -106,4 +105,14 @@ kubectl create secret docker-registry harbor-registry-chenwx-secret \
     --docker-username=${USERNAME} \
     --docker-password=${PASSWORD} -n cwx --dry-run=client -o yaml > secret-plaintext.yaml
 
+```
+
+argocd
+```sh
+argocd app list
+argocd proj list
+
+# 特殊情况下删除资源
+kubectl patch app root-infra -n argocd -p '{"metadata":{"finalizers":[]}}' --type=merge
+kubectl -n argocd delete applications.argoproj.io auth
 ```

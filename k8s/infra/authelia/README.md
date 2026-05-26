@@ -19,16 +19,12 @@ DROP DATABASE authelia;
 ```
 
 ```sh
+# install
+kustomize build --enable-helm ./ | kubectl apply -f -
+kustomize build --enable-helm k8s/infra/authelia | kubectl apply -f -
 
-# kustomize build --enable-helm k8s/infra/authelia | kubectl apply -f -
-
-
-helm install authelia authelia/authelia \
-    --version 0.11.5 \
-    -n authelia \
-    -f k8s/infra/authelia/values.yaml
-
-helm upgrade authelia authelia/authelia \
+# install2
+helm upgrade --install authelia authelia/authelia \
     --version 0.11.5 \
     -n authelia \
     -f k8s/infra/authelia/values.yaml

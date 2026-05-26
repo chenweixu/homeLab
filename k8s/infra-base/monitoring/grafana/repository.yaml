@@ -1,0 +1,24 @@
+apiVersion: provisioning.grafana.app/v0alpha1
+kind: Repository
+metadata:
+  annotations: {}
+  labels: null
+  name: homeLab
+  namespace: default
+spec:
+  git:
+    branch: main
+    path: k8s/infra-base/monitoring/grafana/git_sync
+    tokenUser: chenwx
+    url: https://git.chenwx.top/chenwx/homeLab.git
+  sync:
+    enabled: true
+    intervalSeconds: 60
+    target: folder
+  title: homeLab
+  type: git
+  workflows:
+  - write
+  - branch
+secure:
+  token: { create: "xxxxxx" }
