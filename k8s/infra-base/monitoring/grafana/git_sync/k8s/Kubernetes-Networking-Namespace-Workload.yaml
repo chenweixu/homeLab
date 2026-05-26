@@ -1,0 +1,1108 @@
+apiVersion: dashboard.grafana.app/v2
+kind: Dashboard
+metadata:
+  labels: {}
+  name: Kubernetes-Networking-Namespace-Workload
+  namespace: default
+spec:
+  annotations:
+  - kind: AnnotationQuery
+    spec:
+      builtIn: true
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      legacyOptions:
+        type: dashboard
+      name: Annotations & Alerts
+      query:
+        datasource:
+          name: "-- Grafana --"
+        group: grafana
+        kind: DataQuery
+        spec: {}
+        version: v0
+  cursorSync: "Off"
+  editable: true
+  elements:
+    panel-1:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(sum((8 * rate(container_network_receive_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 1
+        links: []
+        title: Current Rate of Bits Received
+        vizConfig:
+          group: bargauge
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  fixedColor: green
+                  mode: fixed
+                unit: bps
+              overrides: []
+            options:
+              displayMode: basic
+              showUnfilled: false
+          version: v11.4.0
+    panel-10:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(sum(rate(container_network_receive_packets_dropped_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval])
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 10
+        links: []
+        title: Rate of Received Packets Dropped
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  spanNulls: true
+                unit: pps
+              overrides: []
+            options:
+              legend:
+                asTable: true
+                calcs:
+                - lastNotNull
+                displayMode: table
+                placement: right
+                showLegend: true
+              tooltip:
+                mode: single
+          version: v11.4.0
+    panel-11:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(sum(rate(container_network_transmit_packets_dropped_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval])
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 11
+        links: []
+        title: Rate of Transmitted Packets Dropped
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  spanNulls: true
+                unit: pps
+              overrides: []
+            options:
+              legend:
+                asTable: true
+                calcs:
+                - lastNotNull
+                displayMode: table
+                placement: right
+                showLegend: true
+              tooltip:
+                mode: single
+          version: v11.4.0
+    panel-2:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(sum((8 * rate(container_network_transmit_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 2
+        links: []
+        title: Current Rate of Bits Transmitted
+        vizConfig:
+          group: bargauge
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                color:
+                  fixedColor: green
+                  mode: fixed
+                unit: bps
+              overrides: []
+            options:
+              displayMode: basic
+              showUnfilled: false
+          version: v11.4.0
+    panel-3:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(
+                        sum by (workload, workload_type) (
+                          (8 * rate(container_network_receive_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                          * on (cluster, namespace, pod) group_left
+                          kube_pod_info{cluster="$cluster",namespace="$namespace",host_network="false"}
+                          * on (cluster, namespace, pod) group_left (workload, workload_type)
+                          namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}
+                        )
+                      )
+                    format: table
+                    instant: true
+                  version: v0
+                refId: A
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(
+                        sum by (workload, workload_type) (
+                          (8 * rate(container_network_transmit_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                          * on (cluster, namespace, pod) group_left
+                          kube_pod_info{cluster="$cluster",namespace="$namespace",host_network="false"}
+                          * on (cluster, namespace, pod) group_left (workload, workload_type)
+                          namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}
+                        )
+                      )
+                    format: table
+                    instant: true
+                  version: v0
+                refId: B
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(
+                        avg by (workload, workload_type) (
+                          (8 * rate(container_network_receive_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                          * on (cluster, namespace, pod) group_left
+                          kube_pod_info{cluster="$cluster",namespace="$namespace",host_network="false"}
+                          * on (cluster, namespace, pod) group_left (workload, workload_type)
+                          namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}
+                        )
+                      )
+                    format: table
+                    instant: true
+                  version: v0
+                refId: C
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(
+                        avg by (workload, workload_type) (
+                          (8 * rate(container_network_transmit_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                          * on (cluster, namespace, pod) group_left
+                          kube_pod_info{cluster="$cluster",namespace="$namespace",host_network="false"}
+                          * on (cluster, namespace, pod) group_left (workload, workload_type)
+                          namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}
+                        )
+                      )
+                    format: table
+                    instant: true
+                  version: v0
+                refId: D
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(
+                        sum by (workload, workload_type) (
+                          (1 * rate(container_network_receive_packets_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                          * on (cluster, namespace, pod) group_left
+                          kube_pod_info{cluster="$cluster",namespace="$namespace",host_network="false"}
+                          * on (cluster, namespace, pod) group_left (workload, workload_type)
+                          namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}
+                        )
+                      )
+                    format: table
+                    instant: true
+                  version: v0
+                refId: E
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(
+                        sum by (workload, workload_type) (
+                          (1 * rate(container_network_transmit_packets_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                          * on (cluster, namespace, pod) group_left
+                          kube_pod_info{cluster="$cluster",namespace="$namespace",host_network="false"}
+                          * on (cluster, namespace, pod) group_left (workload, workload_type)
+                          namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}
+                        )
+                      )
+                    format: table
+                    instant: true
+                  version: v0
+                refId: F
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(
+                        sum by (workload, workload_type) (
+                          (1 * rate(container_network_receive_packets_dropped_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                          * on (cluster, namespace, pod) group_left
+                          kube_pod_info{cluster="$cluster",namespace="$namespace",host_network="false"}
+                          * on (cluster, namespace, pod) group_left (workload, workload_type)
+                          namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}
+                        )
+                      )
+                    format: table
+                    instant: true
+                  version: v0
+                refId: G
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(
+                        sum by (workload, workload_type) (
+                          (1 * rate(container_network_transmit_packets_dropped_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                          * on (cluster, namespace, pod) group_left
+                          kube_pod_info{cluster="$cluster",namespace="$namespace",host_network="false"}
+                          * on (cluster, namespace, pod) group_left (workload, workload_type)
+                          namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}
+                        )
+                      )
+                    format: table
+                    instant: true
+                  version: v0
+                refId: H
+            queryOptions: {}
+            transformations:
+            - group: joinByField
+              kind: Transformation
+              spec:
+                options:
+                  byField: workload
+                  mode: outer
+            - group: organize
+              kind: Transformation
+              spec:
+                options:
+                  excludeByName:
+                    Time: true
+                    Time 1: true
+                    Time 2: true
+                    Time 3: true
+                    Time 4: true
+                    Time 5: true
+                    Time 6: true
+                    Time 7: true
+                    Time 8: true
+                    workload_type 2: true
+                    workload_type 3: true
+                    workload_type 4: true
+                    workload_type 5: true
+                    workload_type 6: true
+                    workload_type 7: true
+                    workload_type 8: true
+                  indexByName:
+                    Time 1: 0
+                    Time 2: 1
+                    Time 3: 2
+                    Time 4: 3
+                    Time 5: 4
+                    Time 6: 5
+                    Time 7: 6
+                    Time 8: 7
+                    "Value #A": 10
+                    "Value #B": 11
+                    "Value #C": 12
+                    "Value #D": 13
+                    "Value #E": 14
+                    "Value #F": 15
+                    "Value #G": 16
+                    "Value #H": 17
+                    workload: 8
+                    workload_type 1: 9
+                    workload_type 2: 18
+                    workload_type 3: 19
+                    workload_type 4: 20
+                    workload_type 5: 21
+                    workload_type 6: 22
+                    workload_type 7: 23
+                    workload_type 8: 24
+                  renameByName:
+                    "Value #A": Rx Bits
+                    "Value #B": Tx Bits
+                    "Value #C": Rx Bits (Avg)
+                    "Value #D": Tx Bits (Avg)
+                    "Value #E": Rx Packets
+                    "Value #F": Tx Packets
+                    "Value #G": Rx Packets Dropped
+                    "Value #H": Tx Packets Dropped
+                    workload: Workload
+                    workload_type 1: Type
+        description: ""
+        id: 3
+        links: []
+        title: Current Status
+        vizConfig:
+          group: table
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults: {}
+              overrides:
+              - matcher:
+                  id: byRegexp
+                  options: /Bits/
+                properties:
+                - id: unit
+                  value: bps
+              - matcher:
+                  id: byRegexp
+                  options: /Packets/
+                properties:
+                - id: unit
+                  value: pps
+              - matcher:
+                  id: byName
+                  options: Workload
+                properties:
+                - id: links
+                  value:
+                  - title: Drill down
+                    url: /d/728bf77cc1166d2f3133bf25846876cc/kubernetes-networking-workload?${datasource:queryparam}&var-cluster=${cluster}&var-namespace=${namespace}&var-type=${__data.fields.Type}&var-workload=${__data.fields.Workload}
+            options: {}
+          version: v11.4.0
+    panel-4:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(sum((8 * rate(container_network_receive_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 4
+        links: []
+        title: Receive Bandwidth
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  spanNulls: true
+                unit: bps
+              overrides: []
+            options:
+              legend:
+                asTable: true
+                calcs:
+                - lastNotNull
+                displayMode: table
+                placement: right
+                showLegend: true
+              tooltip:
+                mode: single
+          version: v11.4.0
+    panel-5:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(sum((8 * rate(container_network_transmit_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 5
+        links: []
+        title: Transmit Bandwidth
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  spanNulls: true
+                unit: bps
+              overrides: []
+            options:
+              legend:
+                asTable: true
+                calcs:
+                - lastNotNull
+                displayMode: table
+                placement: right
+                showLegend: true
+              tooltip:
+                mode: single
+          version: v11.4.0
+    panel-6:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(avg((8 * rate(container_network_receive_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 6
+        links: []
+        title: "Average Container Bandwidth by Workload: Received"
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  spanNulls: true
+                unit: bps
+              overrides: []
+            options:
+              legend:
+                asTable: true
+                calcs:
+                - lastNotNull
+                displayMode: table
+                placement: right
+                showLegend: true
+              tooltip:
+                mode: single
+          version: v11.4.0
+    panel-7:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(avg((8 * rate(container_network_transmit_bytes_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval]))
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 7
+        links: []
+        title: "Average Container Bandwidth by Workload: Transmitted"
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  spanNulls: true
+                unit: bps
+              overrides: []
+            options:
+              legend:
+                asTable: true
+                calcs:
+                - lastNotNull
+                displayMode: table
+                placement: right
+                showLegend: true
+              tooltip:
+                mode: single
+          version: v11.4.0
+    panel-8:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(sum(rate(container_network_receive_packets_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval])
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 8
+        links: []
+        title: Rate of Received Packets
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  spanNulls: true
+                unit: pps
+              overrides: []
+            options:
+              legend:
+                asTable: true
+                calcs:
+                - lastNotNull
+                displayMode: table
+                placement: right
+                showLegend: true
+              tooltip:
+                mode: single
+          version: v11.4.0
+    panel-9:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sort_desc(sum(rate(container_network_transmit_packets_total{cluster="$cluster",namespace="$namespace"}[$__rate_interval])
+                      * on (cluster,namespace,pod) group_left ()
+                          topk by (cluster,namespace,pod) (
+                            1,
+                            max by (cluster,namespace,pod) (kube_pod_info{host_network="false"})
+                          )
+                      * on (cluster,namespace,pod)
+                      group_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster",namespace="$namespace", workload=~".+", workload_type=~"$type"}) by (workload))
+                    legendFormat: __auto
+                  version: v0
+                refId: A
+            queryOptions:
+              interval: 1m
+            transformations: []
+        description: ""
+        id: 9
+        links: []
+        title: Rate of Transmitted Packets
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  spanNulls: true
+                unit: pps
+              overrides: []
+            options:
+              legend:
+                asTable: true
+                calcs:
+                - lastNotNull
+                displayMode: table
+                placement: right
+                showLegend: true
+              tooltip:
+                mode: single
+          version: v11.4.0
+  layout:
+    kind: GridLayout
+    spec:
+      items:
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-1
+          height: 9
+          width: 12
+          x: 0
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-2
+          height: 9
+          width: 12
+          x: 12
+          "y": 0
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-3
+          height: 9
+          width: 24
+          x: 0
+          "y": 9
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-4
+          height: 9
+          width: 12
+          x: 0
+          "y": 18
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-5
+          height: 9
+          width: 12
+          x: 12
+          "y": 18
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-6
+          height: 9
+          width: 12
+          x: 0
+          "y": 27
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-7
+          height: 9
+          width: 12
+          x: 12
+          "y": 27
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-8
+          height: 9
+          width: 12
+          x: 0
+          "y": 36
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-9
+          height: 9
+          width: 12
+          x: 12
+          "y": 36
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-10
+          height: 9
+          width: 12
+          x: 0
+          "y": 45
+      - kind: GridLayoutItem
+        spec:
+          element:
+            kind: ElementReference
+            name: panel-11
+          height: 9
+          width: 12
+          x: 12
+          "y": 45
+  links:
+  - asDropdown: true
+    icon: ""
+    includeVars: true
+    keepTime: true
+    tags:
+    - kubernetes-mixin
+    targetBlank: false
+    title: Kubernetes
+    tooltip: ""
+    type: dashboards
+  liveNow: false
+  preload: false
+  tags:
+  - kubernetes-mixin
+  timeSettings:
+    autoRefresh: 10s
+    autoRefreshIntervals:
+    - 5s
+    - 10s
+    - 30s
+    - 1m
+    - 5m
+    - 15m
+    - 30m
+    - 1h
+    - 2h
+    - 1d
+    fiscalYearStartMonth: 0
+    from: now-1h
+    hideTimepicker: false
+    timezone: utc
+    to: now
+  title: Kubernetes / Networking / Namespace (Workload)
+  variables:
+  - kind: DatasourceVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: default
+        value: default
+      hide: dontHide
+      includeAll: false
+      label: Data source
+      multi: false
+      name: datasource
+      options: []
+      pluginId: prometheus
+      refresh: never
+      regex: ""
+      skipUrlSync: false
+  - kind: QueryVariable
+    spec:
+      allValue: .*
+      allowCustomValue: true
+      current:
+        text: ""
+        value: ""
+      hide: hideVariable
+      includeAll: false
+      label: cluster
+      multi: false
+      name: cluster
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(up{job="kubelet", metrics_path="/metrics/cadvisor"}, cluster)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: kube-system
+        value: kube-system
+      hide: dontHide
+      includeAll: false
+      label: namespace
+      multi: false
+      name: namespace
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(container_network_receive_packets_total{cluster="$cluster"}, namespace)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: ""
+        value: ""
+      hide: dontHide
+      includeAll: true
+      label: workload_type
+      multi: false
+      name: type
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(namespace_workload_pod:kube_pod_owner:relabel{cluster="$cluster", namespace="$namespace", workload=~".+"}, workload_type)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc

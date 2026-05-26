@@ -1,0 +1,694 @@
+apiVersion: dashboard.grafana.app/v2
+kind: Dashboard
+metadata:
+  labels: {}
+  name: Node-Exporter-USE-Method-Cluster
+  namespace: default
+spec:
+  annotations:
+  - kind: AnnotationQuery
+    spec:
+      builtIn: true
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      legacyOptions:
+        type: dashboard
+      name: Annotations & Alerts
+      query:
+        datasource:
+          name: "-- Grafana --"
+        group: grafana
+        kind: DataQuery
+        spec: {}
+        version: v0
+  cursorSync: Crosshair
+  editable: true
+  elements:
+    panel-11:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      instance_device:node_disk_io_time_seconds:rate5m{job="node-exporter", cluster=~"$cluster"}
+                      / scalar(count(instance_device:node_disk_io_time_seconds:rate5m{job="node-exporter", cluster=~"$cluster"}))
+                    legendFormat: "{{ instance }} {{device}}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 11
+        links: []
+        title: Disk IO Utilisation
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: percentunit
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-12:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      instance_device:node_disk_io_time_weighted_seconds:rate5m{job="node-exporter", cluster=~"$cluster"}
+                      / scalar(count(instance_device:node_disk_io_time_weighted_seconds:rate5m{job="node-exporter", cluster=~"$cluster"}))
+                    legendFormat: "{{ instance }} {{device}}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 12
+        links: []
+        title: Disk IO Saturation
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: percentunit
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-14:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sum without (device) (
+                        max without (fstype, mountpoint) ((
+                          node_filesystem_size_bytes{job="node-exporter", fstype!="", mountpoint!="", cluster=~"$cluster"}
+                          -
+                          node_filesystem_avail_bytes{job="node-exporter", fstype!="", mountpoint!="", cluster=~"$cluster"}
+                        ) != 0)
+                      )
+                      / scalar(sum(max without (fstype, mountpoint) (node_filesystem_size_bytes{job="node-exporter", fstype!="", mountpoint!="", cluster=~"$cluster"})))
+                    legendFormat: "{{ instance }}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 14
+        links: []
+        title: Disk Space Utilisation
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: percentunit
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-2:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      ((
+                        instance:node_cpu_utilisation:rate5m{job="node-exporter", cluster=~"$cluster"}
+                        *
+                        instance:node_num_cpu:sum{job="node-exporter", cluster=~"$cluster"}
+                      ) != 0 )
+                      / scalar(sum(instance:node_num_cpu:sum{job="node-exporter", cluster=~"$cluster"}))
+                    legendFormat: "{{ instance }}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 2
+        links: []
+        title: CPU Utilisation
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: percentunit
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-3:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      (
+                        instance:node_load1_per_cpu:ratio{job="node-exporter", cluster=~"$cluster"}
+                        / scalar(count(instance:node_load1_per_cpu:ratio{job="node-exporter", cluster=~"$cluster"}))
+                      )  != 0
+                    legendFormat: "{{ instance }}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 3
+        links: []
+        title: CPU Saturation (Load1 per CPU)
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: percentunit
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-5:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      (
+                        instance:node_memory_utilisation:ratio{job="node-exporter", cluster=~"$cluster"}
+                        / scalar(count(instance:node_memory_utilisation:ratio{job="node-exporter", cluster=~"$cluster"}))
+                      ) != 0
+                    legendFormat: "{{ instance }}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 5
+        links: []
+        title: Memory Utilisation
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: percentunit
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-6:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: instance:node_vmstat_pgmajfault:rate5m{job="node-exporter", cluster=~"$cluster"}
+                    legendFormat: "{{ instance }}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 6
+        links: []
+        title: Memory Saturation (Major Page Faults)
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: rds
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-8:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: instance:node_network_receive_bytes_excluding_lo:rate5m{job="node-exporter", cluster=~"$cluster"} != 0
+                    legendFormat: "{{ instance }} Receive"
+                  version: v0
+                refId: A
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: instance:node_network_transmit_bytes_excluding_lo:rate5m{job="node-exporter", cluster=~"$cluster"} != 0
+                    legendFormat: "{{ instance }} Transmit"
+                  version: v0
+                refId: B
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 8
+        links: []
+        title: Network Utilisation (Bytes Receive/Transmit)
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: Bps
+              overrides:
+              - matcher:
+                  id: byRegexp
+                  options: /Transmit/
+                properties:
+                - id: custom.transform
+                  value: negative-Y
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+    panel-9:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: instance:node_network_receive_drop_excluding_lo:rate5m{job="node-exporter", cluster=~"$cluster"} != 0
+                    legendFormat: "{{ instance }} Receive"
+                  version: v0
+                refId: A
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: ${datasource}
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: instance:node_network_transmit_drop_excluding_lo:rate5m{job="node-exporter", cluster=~"$cluster"} != 0
+                    legendFormat: "{{ instance }} Transmit"
+                  version: v0
+                refId: B
+            queryOptions: {}
+            transformations: []
+        description: ""
+        id: 9
+        links: []
+        title: Network Saturation (Drops Receive/Transmit)
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 100
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: Bps
+              overrides:
+              - matcher:
+                  id: byRegexp
+                  options: /Transmit/
+                properties:
+                - id: custom.transform
+                  value: negative-Y
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+                sort: desc
+          version: v11.4.0
+  layout:
+    kind: RowsLayout
+    spec:
+      rows:
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-2
+                  height: 7
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-3
+                  height: 7
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: CPU
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-5
+                  height: 7
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-6
+                  height: 7
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: Memory
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-8
+                  height: 7
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-9
+                  height: 7
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: Network
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-11
+                  height: 7
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-12
+                  height: 7
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: Disk IO
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-14
+                  height: 7
+                  width: 24
+                  x: 0
+                  "y": 0
+          title: Disk Space
+  links: []
+  liveNow: false
+  preload: false
+  tags:
+  - node-exporter-mixin
+  timeSettings:
+    autoRefresh: 30s
+    autoRefreshIntervals:
+    - 5s
+    - 10s
+    - 30s
+    - 1m
+    - 5m
+    - 15m
+    - 30m
+    - 1h
+    - 2h
+    - 1d
+    fiscalYearStartMonth: 0
+    from: now-1h
+    hideTimepicker: false
+    timezone: utc
+    to: now
+  title: Node Exporter / USE Method / Cluster
+  variables:
+  - kind: DatasourceVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: ""
+        value: ""
+      hide: dontHide
+      includeAll: false
+      multi: false
+      name: datasource
+      options: []
+      pluginId: prometheus
+      refresh: never
+      regex: ""
+      skipUrlSync: false
+  - kind: QueryVariable
+    spec:
+      allValue: .*
+      allowCustomValue: true
+      current:
+        text: ""
+        value: ""
+      hide: hideVariable
+      includeAll: true
+      multi: false
+      name: cluster
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(node_time_seconds, cluster)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc

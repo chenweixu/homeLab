@@ -1,0 +1,444 @@
+apiVersion: dashboard.grafana.app/v2
+kind: Dashboard
+metadata:
+  annotations:
+    grafana.app/folder: tmp
+    grafana.app/saved-from-ui: Grafana v13.1.0-24866141508 (fbbeb461)
+  labels: {}
+  name: alertmanager-overview
+  namespace: default
+spec:
+  annotations:
+  - kind: AnnotationQuery
+    spec:
+      builtIn: true
+      enable: true
+      hide: true
+      iconColor: rgba(0, 211, 255, 1)
+      legacyOptions:
+        type: dashboard
+      name: Annotations & Alerts
+      query:
+        datasource:
+          name: "-- Grafana --"
+        group: grafana
+        kind: DataQuery
+        spec: {}
+        version: v0
+  cursorSync: Crosshair
+  editable: true
+  elements:
+    panel-2:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum(alertmanager_alerts{namespace=~"$namespace",service=~"$service"}) by (namespace,service,instance)
+                    intervalFactor: 2
+                    legendFormat: "{{instance}}"
+                  version: v0
+                refId: A
+            queryOptions: {}
+            transformations: []
+        description: current set of alerts stored in the Alertmanager
+        id: 2
+        links: []
+        title: Alerts
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: none
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+          version: v11.4.0
+    panel-3:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum(rate(alertmanager_alerts_received_total{namespace=~"$namespace",service=~"$service"}[$__rate_interval])) by (namespace,service,instance)
+                    intervalFactor: 2
+                    legendFormat: "{{instance}} Received"
+                  version: v0
+                refId: A
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum(rate(alertmanager_alerts_invalid_total{namespace=~"$namespace",service=~"$service"}[$__rate_interval])) by (namespace,service,instance)
+                    intervalFactor: 2
+                    legendFormat: "{{instance}} Invalid"
+                  version: v0
+                refId: B
+            queryOptions: {}
+            transformations: []
+        description: rate of successful and invalid alerts received by the Alertmanager
+        id: 3
+        links: []
+        title: Alerts receive rate
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: ops
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+          version: v11.4.0
+    panel-5:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum(rate(alertmanager_notifications_total{namespace=~"$namespace",service=~"$service", integration="$integration"}[$__rate_interval])) by (integration,namespace,service,instance)
+                    intervalFactor: 2
+                    legendFormat: "{{instance}} Total"
+                  version: v0
+                refId: A
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: sum(rate(alertmanager_notifications_failed_total{namespace=~"$namespace",service=~"$service", integration="$integration"}[$__rate_interval])) by (integration,namespace,service,instance)
+                    intervalFactor: 2
+                    legendFormat: "{{instance}} Failed"
+                  version: v0
+                refId: B
+            queryOptions: {}
+            transformations: []
+        description: rate of successful and invalid notifications sent by the Alertmanager
+        id: 5
+        links: []
+        title: "$integration: Notifications Send Rate"
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: ops
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+          version: v11.4.0
+    panel-6:
+      kind: Panel
+      spec:
+        data:
+          kind: QueryGroup
+          spec:
+            queries:
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      histogram_quantile(0.99,
+                        sum(rate(alertmanager_notification_latency_seconds_bucket{namespace=~"$namespace",service=~"$service", integration="$integration"}[$__rate_interval])) by (le,namespace,service,instance)
+                      )
+                    intervalFactor: 2
+                    legendFormat: "{{instance}} 99th Percentile"
+                  version: v0
+                refId: A
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      histogram_quantile(0.50,
+                        sum(rate(alertmanager_notification_latency_seconds_bucket{namespace=~"$namespace",service=~"$service", integration="$integration"}[$__rate_interval])) by (le,namespace,service,instance)
+                      )
+                    intervalFactor: 2
+                    legendFormat: "{{instance}} Median"
+                  version: v0
+                refId: B
+            - kind: PanelQuery
+              spec:
+                hidden: false
+                query:
+                  datasource:
+                    name: $datasource
+                  group: prometheus
+                  kind: DataQuery
+                  spec:
+                    expr: |
+                      sum(rate(alertmanager_notification_latency_seconds_sum{namespace=~"$namespace",service=~"$service", integration="$integration"}[$__rate_interval])) by (namespace,service,instance)
+                      /
+                      sum(rate(alertmanager_notification_latency_seconds_count{namespace=~"$namespace",service=~"$service", integration="$integration"}[$__rate_interval])) by (namespace,service,instance)
+                    intervalFactor: 2
+                    legendFormat: "{{instance}} Average"
+                  version: v0
+                refId: C
+            queryOptions: {}
+            transformations: []
+        description: latency of notifications sent by the Alertmanager
+        id: 6
+        links: []
+        title: "$integration: Notification Duration"
+        vizConfig:
+          group: timeseries
+          kind: VizConfig
+          spec:
+            fieldConfig:
+              defaults:
+                custom:
+                  fillOpacity: 10
+                  showPoints: never
+                  stacking:
+                    mode: normal
+                unit: s
+              overrides: []
+            options:
+              legend:
+                showLegend: false
+              tooltip:
+                mode: multi
+          version: v11.4.0
+  layout:
+    kind: RowsLayout
+    spec:
+      rows:
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-2
+                  height: 7
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-3
+                  height: 7
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: Alerts
+      - kind: RowsLayoutRow
+        spec:
+          collapse: false
+          layout:
+            kind: GridLayout
+            spec:
+              items:
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-5
+                  height: 7
+                  repeat:
+                    mode: variable
+                    value: integration
+                  width: 12
+                  x: 0
+                  "y": 0
+              - kind: GridLayoutItem
+                spec:
+                  element:
+                    kind: ElementReference
+                    name: panel-6
+                  height: 7
+                  repeat:
+                    mode: variable
+                    value: integration
+                  width: 12
+                  x: 12
+                  "y": 0
+          title: Notifications
+  links: []
+  liveNow: false
+  preload: false
+  tags:
+  - alertmanager-mixin
+  timeSettings:
+    autoRefresh: ""
+    autoRefreshIntervals:
+    - 30s
+    fiscalYearStartMonth: 0
+    from: now-1h
+    hideTimepicker: false
+    timezone: utc
+    to: now
+  title: Alertmanager / Overview
+  variables:
+  - kind: DatasourceVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: Prometheus
+        value: Prometheus
+      hide: dontHide
+      includeAll: false
+      label: Data Source
+      multi: false
+      name: datasource
+      options: []
+      pluginId: prometheus
+      refresh: never
+      regex: ""
+      skipUrlSync: false
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: ""
+        value: ""
+      hide: dontHide
+      includeAll: false
+      label: namespace
+      multi: false
+      name: namespace
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(alertmanager_alerts, namespace)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: ""
+        value: ""
+      hide: dontHide
+      includeAll: false
+      label: service
+      multi: false
+      name: service
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(alertmanager_alerts, service)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc
+  - kind: QueryVariable
+    spec:
+      allowCustomValue: true
+      current:
+        text: $__all
+        value: $__all
+      hide: hideVariable
+      includeAll: true
+      multi: false
+      name: integration
+      options: []
+      query:
+        datasource:
+          name: ${datasource}
+        group: prometheus
+        kind: DataQuery
+        spec:
+          __legacyStringValue: label_values(alertmanager_notifications_total{integration=~".*"}, integration)
+        version: v0
+      refresh: onTimeRangeChanged
+      regex: ""
+      skipUrlSync: false
+      sort: alphabeticalAsc

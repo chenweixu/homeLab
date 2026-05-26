@@ -54,7 +54,7 @@ spec:
                     - color: red
                       value: 0
                     - color: green    # >10 绿
-                      value: 10
+                      value: 5
               overrides: []
             options:
               colorMode: value        # 根据值改变颜色
