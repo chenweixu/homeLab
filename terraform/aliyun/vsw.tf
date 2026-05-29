@@ -6,9 +6,9 @@ resource "alicloud_vswitch" "sw-core" {
   ipv6_cidr_block_mask = 255
   is_default           = null
   tags                 = {}
-  vpc_id       = alicloud_vpc.vpc1.id
-  vswitch_name = "sw-core"
-  zone_id      = var.general_instance_zone
+  vpc_id               = alicloud_vpc.vpc1.id
+  vswitch_name         = "sw-core"
+  zone_id              = var.general_instance_zone
   timeouts {
     create = null
     delete = null
@@ -23,9 +23,9 @@ resource "alicloud_vswitch" "ack" {
   ipv6_cidr_block_mask = null
   is_default           = null
   tags                 = {}
-  vpc_id       = alicloud_vpc.vpc1.id
-  vswitch_name = "sw-ack"
-  zone_id      = var.general_instance_zone
+  vpc_id               = alicloud_vpc.vpc1.id
+  vswitch_name         = "sw-ack"
+  zone_id              = var.general_instance_zone
 }
 
 

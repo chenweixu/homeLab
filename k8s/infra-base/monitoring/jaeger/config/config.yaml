@@ -29,6 +29,7 @@ extensions:
       traces: some_storage
       metrics: some_storage
       traces_archive: another_storage
+      max_clock_skew_adjust: 0s
     # ui:
     #   config_file: ./cmd/jaeger/config-ui.json
 

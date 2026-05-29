@@ -56,7 +56,7 @@ spec:
         create_directory: true
 
     receivers:
-      # otel 主机指标采集
+
       hostmetrics:
         collection_interval: 10s
         root_path: /hostfs
@@ -72,72 +72,80 @@ spec:
               match_type: strict        # 匹配类型
               fs_types: [ext4, xfs]     # 限制文件系统类型
 
-       # 通用容器日志采集(排除 Java 应用)
+
       filelog/pod:
         include:
           - /var/log/pods/**/*.log
+
         exclude:
-          # 排除 opentelemetry 命名空间下的日志
-          - /var/log/pods/monitoring_*/*/*.log
-          # 排除特定的java日志
-          - /var/log/pods/cwx_web6-*/*/*.log
+          # 排除 opentelemetry 命名空间下所有 Collector 的日志
+          - /var/log/pods/opentelemetry_*/*/*.log
+          - /var/log/pods/cwx_web6_*/*/*.log
 
         include_file_path: true
         start_at: end
         storage: file_storage
 
         operators:
-          - id: container-parser
-            type: container
 
-          # 添加日志类型标签
+          # # 从路径提取所有 k8s 元数据
+          # - id: extract_k8s_metadata
+          #   type: regex_parser
+          #   regex: '^/var/log/pods/(?P<namespace>[^_]+)_(?P<pod_name>[^_]+)_(?P<uid>[^/]+)/(?P<container_name>[^/]+)/'
+          #   parse_from: attributes["log.file.path"]
+
+          # # 添加到 resource attributes
+          # - id: add_namespace
+          #   type: add
+          #   field: resource["k8s.namespace.name"]
+          #   value: EXPR(attributes["namespace"])
+
+          # - id: add_pod_name
+          #   type: add
+          #   field: resource["k8s.pod.name"]
+          #   value: EXPR(attributes["pod_name"])
+
+          # - id: add_container
+          #   type: add
+          #   field: resource["k8s.container.name"]
+          #   value: EXPR(attributes["container_name"])
+
+
+          # 1. 首先用正则表达式从文件路径提取 uid
+          - id: parse_k8s_path
+            type: regex_parser
+            regex: '^/var/log/pods/[^_]+_[^_]+_(?P<uid>[^/]+)/'
+            parse_from: attributes["log.file.path"]
+
+          # 2. 使用 add 操作，将 uid 添加到 resource 的 attributes
+          - id: add_pod_uid_to_resource
+            type: add
+            field: resource["k8s.pod.uid"]    # 注意：resource["key"] 语法
+            value: EXPR(attributes["uid"])
+
           - id: add_log_type_pod
             type: add
             field: attributes.log_type
             value: pod
 
-      # Java 应用日志采集(带堆栈合并)
-      filelog/java:
-        include:
-          - /var/log/pods/cwx_web6-*/*/*.log
 
-        encoding: utf-8
-        poll_interval: 300ms
-        include_file_path: true
-        start_at: end
-        storage: file_storage
-        include_file_name: false
-        preserve_trailing_whitespaces: true
-        preserve_leading_whitespaces: false
-        operators:
-          # 自动解析容器日志格式; 自动添加了 uid 等属性
-          - id: container-parser
-            type: container
-
-          # Java 堆栈合并
-          - type: recombine
-            combine_field: body
-            # 如果日志行以非空白字符开头, 判定为新日志的第一行
-            is_first_entry: body matches "^[^\\s]"
-            source_identifier: attributes["log.file.path"]
-
-          # 添加日志类型标签
-          - id: add_log_type_pod
-            type: add
-            field: attributes.log_type
-            value: pod
-
-      filelog/host:
+      filelog/system:
         include:
           - /var/log/syslog   # Ubuntu/Debian
           # - /var/log/messages  # CentOS/RHEL
         start_at: end
         storage: file_storage
+
         operators:
-          - id: add_log_type
+          - id: add_log_type_host
             type: add
             field: attributes.log_type
             value: host
+          # # 添加主机名
+          # - id: add_hostname_from_env
+          #   type: add
+          #   field: attributes.host.name
+          #   value: EXPR(env("NODE_NAME"))
 
 
     processors:
@@ -154,26 +162,9 @@ spec:
         detectors: [env]
         timeout: 5s
 
-      resource:
-        attributes:
-        - key: cloud.availability_zone
-          value: "zone-1"
-          action: upsert
-        - key: host.name
-          value: "${env:NODE_NAME}"
-          action: upsert
-
     exporters:
-      debug:
-        verbosity: detailed
-        sampling_initial: 2
-        sampling_thereafter: 10
-
-      # debug/java:
-      #   verbosity: detailed
-
-      # 转发到 Collector gateway
-      otlp_grpc:
+      # 转发到中央 Collector
+      otlp_grpc/pod:
         endpoint: "collector-gateway-collector:4317"
         tls:
           insecure: true
@@ -185,21 +176,29 @@ spec:
           insecure: true
         compression: gzip
 
+      debug:
+        verbosity: detailed
+        sampling_initial: 2
+        sampling_thereafter: 10
+
+      debug/java:
+        verbosity: detailed
+
     service:
       extensions: [file_storage]
       pipelines:
 
         logs/pod:
-          receivers: [filelog/pod, filelog/java]
+          receivers: [filelog/pod]
           processors: [memory_limiter, batch]
-          exporters: [otlp_grpc]
+          exporters: [otlp_grpc/pod]
 
         logs/host:
-          receivers: [filelog/host]
-          processors: [memory_limiter, resourcedetection, resource, batch]
-          exporters: [otlp_grpc/host, debug]
+          receivers: [filelog/system]
+          processors: [memory_limiter, resourcedetection, batch]
+          exporters: [otlp_grpc/host]
 
         metrics/hostmetrics:
           receivers: [hostmetrics]
           processors: [resourcedetection, batch]
-          exporters: [otlp_grpc]
+          exporters: [otlp_grpc/pod]

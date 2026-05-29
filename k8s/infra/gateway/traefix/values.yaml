@@ -86,7 +86,7 @@ logs:
       serviceName: "traefix-k8s"
       grpc:
         enabled: true
-        endpoint: "collector-gateway-collector.opentelemetry.svc:4317"
+        endpoint: "collector-gateway-collector.monitoring.svc:4317"
         insecure: true
 
 
@@ -101,7 +101,7 @@ tracing:
     enabled: true
     grpc:
       enabled: true
-      endpoint: "collector-gateway-collector.opentelemetry.svc:4317"
+      endpoint: "collector-gateway-collector.monitoring.svc:4317"
       insecure: true
 
 

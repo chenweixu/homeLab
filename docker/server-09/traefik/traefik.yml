@@ -56,6 +56,11 @@ tracing:
   #   http:
   #     endpoint: http://192.168.5.8:4318/v1/traces
 
+  # otlp:
+  #   http:
+  #     endpoint: https://jaeger-otlp-http.chenwx.top/v1/traces
+
   otlp:
-    http:
-      endpoint: https://jaeger-otlp-http.chenwx.top/v1/traces
+    grpc:
+      endpoint: "192.168.5.30:4317"
+      insecure: true

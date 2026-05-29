@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jaeger
-  namespace: cwx
+  namespace: monitoring
 spec:
   replicas: 1
   selector:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: jaeger
-        image: harbor.chenwx.top/public/cr.jaegertracing.io/jaegertracing/jaeger:2.17.0
+        image: harbor.chenwx.top/docker.io/jaegertracing/jaeger:2.18.0
         imagePullPolicy: IfNotPresent
         restartPolicy: Always
 

@@ -3,13 +3,13 @@
 apiVersion: opentelemetry.io/v1alpha1
 kind: Instrumentation
 metadata:
-  name: cwx-instrumentation
-  namespace: cwx
+  name: instrumentation
+  namespace: monitoring
 spec:
 
   # 默认 endpoint
   exporter:
-    endpoint: http://collector-gateway-collector.opentelemetry.svc.cluster.local:4317
+    endpoint: http://collector-gateway-collector.monitoring.svc.cluster.local:4317
 
   # 传播器, 用于传递追踪上下文(必填, 默认 tracecontext+baggage)
   propagators:
@@ -31,7 +31,7 @@ spec:
     env:
       # 默认用 HTTP 4317 端口
       - name: OTEL_EXPORTER_OTLP_ENDPOINT
-        value: http://collector-gateway-collector.opentelemetry.svc.cluster.local:4317
+        value: http://collector-gateway-collector.monitoring.svc.cluster.local:4317
 
       - name: OTEL_EXPORTER_OTLP_PROTOCOL
         value: grpc

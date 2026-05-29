@@ -2,7 +2,7 @@ apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: collector-gateway
-  namespace: opentelemetry
+  namespace: monitoring
 spec:
   mode: deployment
   replicas: 1
@@ -81,33 +81,41 @@ spec:
         compression: gzip
         headers:
           # 控制哪些字段作为筛选条件
-          VL-Stream-Fields: "k8s.namespace.name,k8s.pod.name,log_type, host.name"
+          VL-Stream-Fields: "k8s.namespace.name,k8s.pod.name,log_type,host.name,host"
           X-Scope-OrgID: "homelab"
 
       # 可选: debug 用于测试
       debug:
         verbosity: detailed
-        sampling_initial: 2
-        sampling_thereafter: 10
+        # sampling_initial: 2
+        # sampling_thereafter: 10
 
       otlphttp/victoriametrics:
         compression: gzip
         encoding: proto
         metrics_endpoint: http://192.168.5.9:8428/opentelemetry/v1/metrics
 
+      otlphttp/prometheus-metrics:
+        compression: gzip
+        # metrics_endpoint: http://prometheus-stack-kube-prom-prometheus.monitoring.svc.cluster.local:9090/api/v1/otlp
+        metrics_endpoint: http://prometheus-stack-kube-prom-prometheus.monitoring.svc.cluster.local:9090/api/v1/otlp/v1/metrics
 
-      otlp/jaeger:
-        endpoint: jaeger.cwx.svc.cluster.local:4317
-        tls:
-          insecure: true
+
+      # otlp/jaeger:
+      #   endpoint: jaeger.monitoring.svc.cluster.local:4317
+      #   tls:
+      #     insecure: true
 
       otlp/tempo:
-        endpoint: 192.168.5.11:4317
+        endpoint: tempo:4317
         tls:
           insecure: true
 
       otlphttp/loki:
-        endpoint: http://192.168.5.9:3100/otlp
+        # endpoint: http://192.168.5.9:3100/otlp
+        endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp
+        headers:
+          X-Scope-OrgID: "homelab"
 
     service:
       pipelines:
@@ -116,20 +124,22 @@ spec:
         logs/pods:
           receivers: [otlp/pod]
           processors: [k8sattributes, attributes, memory_limiter, batch]
-          exporters: [debug, otlphttp/victorialogs, otlphttp/loki]
+          # exporters: [debug, otlphttp/victorialogs, otlphttp/loki]
+          exporters: [otlphttp/victorialogs, otlphttp/loki]
 
         # 主机日志 pipeline
         logs/host:
           receivers: [otlp/host]
           processors: [attributes, memory_limiter, batch]
-          exporters: [otlphttp/victorialogs]
+          exporters: [debug, otlphttp/victorialogs, otlphttp/loki]
 
         metrics:
           receivers: [otlp/pod]
           processors: [attributes, memory_limiter, batch]
-          exporters: [otlphttp/victoriametrics]
+          exporters: [otlphttp/victoriametrics,otlphttp/prometheus-metrics]
 
         traces:
           receivers: [otlp/pod]
           processors: [attributes, memory_limiter, batch]
-          exporters: [otlp/jaeger, otlp/tempo]
+          exporters: [otlp/tempo]
+          # exporters: [otlp/jaeger, debug]

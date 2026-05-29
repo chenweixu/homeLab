@@ -12,3 +12,5 @@ services:
       - ./cert/:/cert/
     environment:
       NGINX_ENTRYPOINT_QUIET_LOGS: off
+    # extra_hosts:
+    #   - "jaeger-grpc.chenwx.top:192.168.5.30"

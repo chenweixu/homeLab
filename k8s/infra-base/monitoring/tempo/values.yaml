@@ -1,0 +1,8 @@
+
+tempo:
+  registry: harbor.chenwx.top/docker.io
+  repository: grafana/tempo
+  tag: "2.9.0"
+
+serviceMonitor:
+  enabled: true

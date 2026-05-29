@@ -6,12 +6,15 @@ terraform.tfstate
 terraform.tfstate.*
 terraform.tfvars
 backend.hcl
+backend-config.tfvars
 
 keys/
 secrets/
 tmp/
 
 CLAUDE.md
+AGENTS.md
+.claude
 
 .env
 secret-plaintext.yaml

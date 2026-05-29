@@ -9,7 +9,13 @@
       "Bash(kubeseal *)",
       "Bash(python3 -m json.tool)",
       "Bash(kill %1)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(helm *)",
+      "Bash(kubectl get *)",
+      "Read(//tmp/**)",
+      "Bash(python3 *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(wait)"
     ]
   }
 }

@@ -28,11 +28,7 @@ helm show values traefik/traefik --version 39.0.7 > traefik-defaults.yaml
 helm template traefik traefik/traefik --namespace cwx \
     -f k8s/services_admin/traefix/values.yaml --dry-run
 
-
-helm install traefik traefik/traefik --version 39.0.7 --namespace cwx \
-    -f k8s/services_admin/traefix/values.yaml
-
-helm upgrade traefik traefik/traefik --version 39.0.7 --namespace cwx \
+helm upgrade --install traefik traefik/traefik --version 39.0.7 --namespace cwx \
     -f k8s/services_admin/traefix/values.yaml
 
 # 从本地 oci 仓库更新

@@ -10,7 +10,7 @@ variable "api_token" {
   default   = ""
 }
 
-variable "prometheus_url" {type = string}
-variable "tempo_url" {type = string}
-variable "jaeger_url" {type = string}
-variable "loki_url" {type = string}
+variable "prometheus_url" { type = string }
+variable "tempo_url" { type = string }
+variable "jaeger_url" { type = string }
+variable "loki_url" { type = string }

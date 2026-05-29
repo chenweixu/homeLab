@@ -12,7 +12,7 @@ helm push kube-prometheus-stack-84.1.0.tgz oci://harbor.chenwx.top/public
 rm kube-prometheus-stack-84.1.0.tgz
 helm pull oci://harbor.chenwx.top/public/kube-prometheus-stack --version 84.1.0
 
-helm show values prometheus-community/kube-prometheus-stack  --version 84.1.0 > values.yaml
+helm show values prometheus-community/kube-prometheus-stack  --version 84.1.0 > dafult-values.yaml
 
 ```
 

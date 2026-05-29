@@ -11,6 +11,6 @@ terraform {
 
 provider "elasticstack" {
   elasticsearch {
-    endpoints = [var.es_endpoints,]
+    endpoints = [var.es_endpoints, ]
   }
 }

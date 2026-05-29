@@ -19,6 +19,8 @@ spec:
   version: 13.1.0
   deployment:
     spec:
+      strategy:
+        type: Recreate
       template:
         spec:
           containers:
@@ -43,7 +45,7 @@ spec:
                   memory: "512Mi"
                   cpu: "200m"
                 limits:
-                  memory: "512Mi"
+                  memory: "640Mi"
                   cpu: "500m"
 
           volumes:

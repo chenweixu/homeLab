@@ -14,14 +14,25 @@ terraform {
     }
   }
 
-  backend "pg" {
-    schema_name = "homeLab-proxmox"
+  backend "s3" {
+    bucket = "terraform"
+    key    = "homeLab/proxmox/terraform.tfstate"
+    region = "us-east-1"
+    endpoints = {
+      s3 = "https://minio.chenwx.top"
+    }
+    skip_requesting_account_id  = true
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
+    force_path_style            = true
+    use_lockfile                = true
+    encrypt                     = false
   }
 
 }
 
 provider "vault" {
-  address      = var.vault_address
+  address = var.vault_address
   auth_login {
 
     path = "auth/approle/login"
@@ -45,17 +56,9 @@ ephemeral "vault_kv_secret_v2" "pve_creds" {
 
 
 provider "proxmox" {
-  #   endpoint  = var.proxmox_endpoint
-
-  endpoint = ephemeral.vault_kv_secret_v2.pve_creds.data["api_address"]
-
-  # api_token = var.proxmox_api_token
+  endpoint  = ephemeral.vault_kv_secret_v2.pve_creds.data["api_address"]
   api_token = "${ephemeral.vault_kv_secret_v2.pve_creds.data["api_id"]}=${ephemeral.vault_kv_secret_v2.pve_creds.data["api_secret"]}"
-
-  # 是否使用自签名证书
-  insecure = true
-
-  # 某些操作需要 SSH, 可以配置 SSH 连接
+  insecure  = true
   ssh {
     agent       = true
     username    = "root"

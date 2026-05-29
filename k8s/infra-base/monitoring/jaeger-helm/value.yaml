@@ -1,0 +1,73 @@
+
+jaeger:
+  image:
+    registry: "harbor.chenwx.top/docker.io"
+    repository: jaegertracing/jaeger
+    tag: "2.18.0"
+
+userconfig:
+  service:
+    extensions: [jaeger_storage, jaeger_query, healthcheckv2]
+    pipelines:
+      traces:
+        receivers: [otlp]
+        #processors: [batch]
+        exporters: [jaeger_storage_exporter]
+    telemetry:
+      resource:
+        service.name: jaeger
+      metrics:
+        level: detailed
+        readers:
+          - pull:
+              exporter:
+                prometheus:
+                  host: 0.0.0.0
+                  port: 8888
+  extensions:
+    healthcheckv2:
+      use_v2: true
+      http:
+        endpoint: 0.0.0.0:13133
+    jaeger_query:
+      storage:
+        traces: primary_store_elasticsearch
+        traces_archive: archive_store_elasticsearch
+
+    jaeger_storage:
+      backends:
+        primary_store_elasticsearch:
+          elasticsearch:
+            server_urls: ["http://elasticsearch-0.elasticsearch.cwx.svc.cluster.local:9200"]
+            # auth:
+            #   basic:
+            #     username: elastic
+            #     password: changeme
+        archive_store_elasticsearch:
+          elasticsearch:
+            server_urls: ["http://elasticsearch-0.elasticsearch.cwx.svc.cluster.local:9200"]
+            # auth:
+            #   basic:
+            #     username: elastic
+            #     password: changeme
+  exporters:
+    jaeger_storage_exporter:
+      trace_storage: primary_store_elasticsearch
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+
+
+storage:
+  type: elasticsearch
+  elasticsearch:
+    tls:
+      enabled: false
+      secretName: ""
+      mountPath: ""
+      subPath: ""
+    url: http://elasticsearch-0.elasticsearch.cwx.svc.cluster.local:9200

@@ -24,7 +24,7 @@ variable "proxmox_cluster_name" {
 }
 
 variable "proxmox_ssh_key_path" {
-  type      = string
+  type        = string
   description = "Proxmox server ssh key"
   default     = ""
 }
@@ -70,24 +70,24 @@ variable "vault_secret_id" {
 variable "servers" {
   description = "K8s nodes configuration"
   type = map(object({
-    name = string
-    ip   = string
-    cpu  = number
-    ram  = number
-    disk = number
+    name        = string
+    ip          = string
+    cpu         = number
+    ram         = number
+    disk        = number
     target_node = string
   }))
   default = {}
 }
 
 variable "ssh_public_key_path" {
-  type      = string
+  type        = string
   description = "IP of Proxmox server (mandatory)"
   default     = ""
 }
 
 variable "net_work_gateway_address" {
-  type      = string
+  type        = string
   description = "IP of Proxmox server (mandatory)"
   default     = "192.168.5.254"
 }

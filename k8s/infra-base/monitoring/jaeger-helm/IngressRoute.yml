@@ -14,40 +14,40 @@ spec:
           namespace: monitoring
           port: 16686
 ---
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: jaeger-otlp-grpc
-  namespace: monitoring
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`jaeger-grpc.chenwx.top`)
-      services:
-        - name: jaeger
-          namespace: monitoring
-          port: 4317
-          scheme: h2c
-  # tls:
-  #   secretName: chenwx-top-online-tls
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: jaeger-otlp-http
-  namespace: monitoring
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`jaeger-otlp-http.chenwx.top`)
-      kind: Rule
-      services:
-        - name: jaeger
-          namespace: monitoring
-          port: 4318
+# apiVersion: traefik.io/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: jaeger-otlp-grpc
+#   namespace: monitoring
+# spec:
+#   entryPoints:
+#     - websecure
+#   routes:
+#     - kind: Rule
+#       match: Host(`jaeger-grpc.chenwx.top`)
+#       services:
+#         - name: jaeger
+#           namespace: monitoring
+#           port: 4317
+#           scheme: h2c
+#   # tls:
+#   #   secretName: chenwx-top-online-tls
+# ---
+# apiVersion: traefik.io/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: jaeger-otlp-http
+#   namespace: monitoring
+# spec:
+#   entryPoints:
+#     - websecure
+#   routes:
+#     - match: Host(`jaeger-otlp-http.chenwx.top`)
+#       kind: Rule
+#       services:
+#         - name: jaeger
+#           namespace: monitoring
+#           port: 4318
 
 
 # ---

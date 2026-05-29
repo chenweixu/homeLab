@@ -10,12 +10,7 @@ helm search repo grafana
 
 helm show values grafana/loki --version 7.0.0 > default-values.yaml
 
-
-helm upgrade --install loki grafana/loki \
-  --namespace monitoring \
-  --values values.yaml \
-  --version 7.0.0 --dry-run
-
+# --dry-run
 helm upgrade --install loki grafana/loki \
   --namespace monitoring \
   --values values.yaml \

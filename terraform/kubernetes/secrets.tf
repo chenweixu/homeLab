@@ -1,6 +1,6 @@
 
 resource "kubernetes_secret_v1" "sealed-secrets-key" {
-  type       = "kubernetes.io/tls"
+  type = "kubernetes.io/tls"
   metadata {
     name      = "sealed-secrets-bootstrap-key"
     namespace = "kube-system"

@@ -8,7 +8,7 @@ resource "vault_auth_backend" "userpass" {
 resource "vault_generic_endpoint" "admin" {
   depends_on = [vault_auth_backend.userpass]
 
-  path      = "auth/userpass/users/admin"
+  path = "auth/userpass/users/admin"
 
   # 这里只写密码; 如果 var.admin_password 没传, 这里会报错, 强制在第一次部署时必须提供密码;
   data_json = jsonencode({
@@ -29,7 +29,7 @@ resource "vault_identity_entity" "admin_identity" {
 
 # 绑定用户和身份
 resource "vault_identity_entity_alias" "admin" {
-  name           = "admin"  # 对应 userpass 里的用户名
+  name           = "admin" # 对应 userpass 里的用户名
   mount_accessor = vault_auth_backend.userpass.accessor
   canonical_id   = vault_identity_entity.admin_identity.id
 }
