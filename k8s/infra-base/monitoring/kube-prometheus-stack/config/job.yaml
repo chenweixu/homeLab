@@ -30,8 +30,6 @@
   static_configs:
     - targets: ["192.168.5.5:9100"]
       labels: {zone: 'home', name: 'h5'}
-    - targets: ["192.168.5.6:9100"]
-      labels: {zone: 'home', name: 'h6'}
     - targets: ["192.168.5.9:9100"]
       labels: {zone: 'home', name: 'pve-1'}
     - targets: ["192.168.5.10:9100"]

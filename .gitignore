@@ -1,6 +1,6 @@
 
 private-README.md
-
+reports/
 .terraform/
 terraform.tfstate
 terraform.tfstate.*

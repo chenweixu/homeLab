@@ -15,7 +15,8 @@
       "Read(//tmp/**)",
       "Bash(python3 *)",
       "Bash(echo \"EXIT: $?\")",
-      "Bash(wait)"
+      "Bash(wait)",
+      "Bash(bash k8s-cluster-check-script.sh)"
     ]
   }
 }
