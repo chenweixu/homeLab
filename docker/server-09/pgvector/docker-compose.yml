@@ -1,6 +1,6 @@
 volumes:
   pg_db:
-    name: pg_db_18
+    name: pg_db_18_pgvector
     external: true
 
 networks:
@@ -9,9 +9,9 @@ networks:
     external: true
 
 services:
-  postgres:
-    container_name: postgres
-    image: harbor.chenwx.top/docker.io/postgres:18.4
+  pgvector:
+    container_name: pgvector
+    image: harbor.chenwx.top/docker.io/pgvector/pgvector:0.8.2-pg18-trixie
     restart: unless-stopped
     networks:
       - core
@@ -20,7 +20,7 @@ services:
       POSTGRES_USER: dba
       POSTGRES_DB: dba
     ports:
-      - 5432:5432/tcp
+      - 15432:5432/tcp
     volumes:
       - pg_db:/var/lib/postgresql
       - /home/wait/tmp:/tmpdata

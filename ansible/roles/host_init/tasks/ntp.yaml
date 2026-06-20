@@ -1,0 +1,51 @@
+---
+# NTP 配置 - 仅 Red Hat 系列, Ubuntu/Debian 跳过
+
+- name: 配置 NTP (Red Hat 系列)
+  when: ansible_os_family == "RedHat"
+  block:
+    - name: 安装 chrony
+      ansible.builtin.yum:
+        name: chrony
+        state: present
+
+    - name: 注释 chrony.conf 中已有的 pool 行
+      ansible.builtin.replace:
+        path: /etc/chrony.conf
+        regexp: '^(pool.*)'
+        replace: '#\1'
+      register: chrony_replace
+
+    - name: 添加阿里云 NTP pool
+      ansible.builtin.lineinfile:
+        path: /etc/chrony.conf
+        line: 'pool ntp1.aliyun.com iburst'
+        state: present
+      register: chrony_pool
+
+    - name: 重启 chronyd (如有配置变更)
+      ansible.builtin.systemd:
+        name: chronyd
+        state: restarted
+      when: chrony_replace is changed or chrony_pool is changed
+
+    - name: 确保 chronyd 开机自启并运行
+      ansible.builtin.systemd:
+        name: chronyd
+        state: started
+        enabled: yes
+
+    - name: 设置时区为 Asia/Shanghai
+      ansible.builtin.file:
+        src: /usr/share/zoneinfo/Asia/Shanghai
+        dest: /etc/localtime
+        state: link
+        force: true
+
+    - name: 写入 /etc/timezone
+      ansible.builtin.copy:
+        content: 'Asia/Shanghai'
+        dest: /etc/timezone
+        owner: root
+        group: root
+        mode: '0644'

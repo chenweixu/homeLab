@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+  namespace: cwx
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      containers:
+      - name: ollama
+        image: harbor.chenwx.top/docker.io/ollama/ollama:0.30.10
+        ports:
+        - containerPort: 11434
+        resources:
+          requests:
+            cpu: "2000m"
+            memory: "2Gi"
+          limits:
+            cpu: "4000m"
+            memory: "4Gi"
+            # nvidia.com/gpu: "0"
+        volumeMounts:
+        - name: ollama-volume
+          mountPath: /root/.ollama
+          subPath: ollama
+        tty: true
+
+      volumes:
+        - name: ollama-volume
+          persistentVolumeClaim:
+            claimName: cwx-nfs-k8s

@@ -1,0 +1,34 @@
+
+image:
+  repository: harbor.chenwx.top/ghcr.io/zxh326/kite
+  tag: v0.12.3
+
+# 从外部 SealedSecret 注入敏感环境变量
+extraEnvs:
+  - name: KITE_SUPERUSER_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: kite-secret
+        key: superuser-password
+
+config:
+  enabled: true
+  superUser:
+    username: "admin"
+    password: "${KITE_SUPERUSER_PASSWORD}"
+
+gateway:
+  enabled: true
+  name: "traefik-gateway"
+  httpRoutes:
+    - name: kite
+      annotations: {}
+      hostnames:
+        - kite.chenwx.top
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          timeouts:
+            request: "120s"

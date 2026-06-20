@@ -49,3 +49,6 @@
     name: nfs-common
     state: present
     update_cache: true
+
+- name: 配置 NTP 服务
+  ansible.builtin.include_tasks: ntp.yaml

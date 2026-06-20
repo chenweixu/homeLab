@@ -6,6 +6,9 @@ ansible all -m ping -u ubuntu --private-key ../keys/ssh/cwx_id_ed25519
 # 查看待执行任务列表
 ansible-playbook playbook.yml --list-tasks
 
+# 单独增加一个节点
+ansible-playbook 3-add-k8s-node.yml --limit node-72
+
 ```
 
 ## k8s 新增节点
