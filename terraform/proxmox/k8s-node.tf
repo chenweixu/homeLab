@@ -65,22 +65,3 @@ output "vm_details" {
     }
   }
 }
-
-
-
-# # debug out
-# resource "local_file" "debug_file_out" {
-#   content = <<-EOF
-# [test]
-# 192.168.1.15
-
-# [k8s]
-# %{for vm in var.servers~}
-# ${vm.name}   ansible_host=${split("/", vm.ip)[0]}
-# %{endfor~}
-
-# EOF
-
-#   filename        = "${path.module}/../../debug.log"
-#   file_permission = "0644"
-# }
