@@ -67,6 +67,7 @@ output "vm_details" {
 }
 
 
+
 # # debug out
 # resource "local_file" "debug_file_out" {
 #   content = <<-EOF

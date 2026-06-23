@@ -2,7 +2,7 @@ name: terraform-proxmox-plan
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
     paths:
       - 'terraform/proxmox/**'
       - 'terraform/modules/proxmox_vm/**'
