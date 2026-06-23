@@ -18,5 +18,6 @@ AGENTS.md
 
 .env
 secret-plaintext.yaml
+.kubeconfig
 
 default-values.yaml

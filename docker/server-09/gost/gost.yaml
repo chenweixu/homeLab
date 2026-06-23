@@ -1,0 +1,22 @@
+services:
+  - name: proxy-forward
+    addr: ":15732"          # 本地监听端口，同时支持 HTTP/HTTPS/SOCKS5
+    handler:
+      type: auto            # 自动检测协议类型
+      chain: upstream-socks5
+    listener:
+      type: tcp
+chains:
+  - name: upstream-socks5
+    hops:
+      - name: hop-0
+        nodes:
+          - name: pc-socks5
+            addr: "192.168.5.4:15732"
+            connector:
+              type: socks5
+              # auth:
+              #   username: "用户名"
+              #   password: "密码"
+            dialer:
+              type: tcp

@@ -1,0 +1,18 @@
+networks:
+  core:
+    external: true
+
+services:
+
+  gogost:
+    image: harbor.chenwx.top/docker.io/gogost/gost:3.2.7-nightly.20260622
+    restart: always
+    container_name: gogost
+    networks:
+      - core
+    ports:
+      - 15732:15732
+    volumes:
+      - ./gost.yaml:/etc/gost/gost.yaml
+    command:
+      ["-C", "/etc/gost/gost.yaml"]

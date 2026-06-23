@@ -5,6 +5,10 @@ terraform {
       source  = "aliyun/alicloud"
       version = "1.272.1"
     }
+    vault = {
+      source  = "hashicorp/vault"
+      version = "5.8.0"
+    }
   }
 
   backend "s3" {
@@ -25,3 +29,15 @@ terraform {
 }
 
 provider "alicloud" {}
+
+
+provider "vault" {
+  address = var.vault_address
+  auth_login {
+    path = "auth/approle/login"
+    parameters = {
+      role_id   = var.vault_role_id
+      secret_id = var.vault_secret_id
+    }
+  }
+}

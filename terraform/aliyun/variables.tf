@@ -1,8 +1,18 @@
 
-variable "oss_bucket_name" {
-  description = "oss bucket name"
+variable "vault_address" {
   type        = string
-  default     = ""
+  description = "Vault address"
+  default     = "https://localhost:8200"
+}
+
+variable "vault_role_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "vault_secret_id" {
+  type      = string
+  sensitive = true
 }
 
 variable "cert_ram_user_name" {

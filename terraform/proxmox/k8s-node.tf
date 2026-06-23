@@ -1,9 +1,5 @@
 
-data "local_file" "ssh_public_key" {
-  filename = var.ssh_public_key_path
-}
-
-
+# SSH 公钥从 Vault 读取，不再依赖本地文件
 module "vm_k8s_nodes" {
   source = "../modules/proxmox_vm"
 
@@ -12,7 +8,7 @@ module "vm_k8s_nodes" {
   target_node   = each.value.target_node
   template_name = "template-ubuntu-2404-v2"
 
-  ssh_public_key_ubuntu = data.local_file.ssh_public_key.content
+  ssh_public_key_ubuntu = data.vault_generic_secret.ssh_public_key.data["key"]
 
   vm_name          = each.value.name
   cpu_core         = each.value.cpu
@@ -46,7 +42,7 @@ resource "local_file" "ssh_config" {
 %{for vm in var.servers~}
 Host ${vm.name}
     HostName    ${split("/", vm.ip)[0]}
-    IdentityFile ${replace(var.ssh_public_key_path, ".pub", "")}
+    IdentityFile ${var.ssh_local_private_key_path}
     PreferredAuthentications publickey
     User root
     Port 22
@@ -69,3 +65,21 @@ output "vm_details" {
     }
   }
 }
+
+
+# # debug out
+# resource "local_file" "debug_file_out" {
+#   content = <<-EOF
+# [test]
+# 192.168.1.15
+
+# [k8s]
+# %{for vm in var.servers~}
+# ${vm.name}   ansible_host=${split("/", vm.ip)[0]}
+# %{endfor~}
+
+# EOF
+
+#   filename        = "${path.module}/../../debug.log"
+#   file_permission = "0644"
+# }

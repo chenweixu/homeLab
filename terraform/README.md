@@ -16,6 +16,8 @@ terraform plan
 
 terraform apply
 
+terraform force-unlock 27f1e418-3e4f-d1ad-3ae0-0355c79267c7     # 解锁
+
 # 迁移数据源
 terraform init -migrate-state
 terraform init -migrate-state -backend-config=backend-config.tfvars

@@ -2,6 +2,12 @@
 # 获取当前账号信息
 data "alicloud_account" "current" {}
 
+# 从 Vault 获取 aliyun 相关配置
+data "vault_kv_secret_v2" "aliyun_creds" {
+  mount = "homelab"
+  name  = "infra/aliyun"
+}
+
 # 输出账号 ID, 方便调试
 output "current_account_id" {
   value = data.alicloud_account.current.id
@@ -9,7 +15,7 @@ output "current_account_id" {
 
 
 resource "alicloud_oss_bucket" "bucket" {
-  bucket = var.oss_bucket_name
+  bucket = data.vault_kv_secret_v2.aliyun_creds.data["oss_bucket_name"]
 
   # 还有文件时, 不能删除bucket
   force_destroy = false
@@ -34,7 +40,7 @@ resource "alicloud_oss_bucket" "bucket" {
         Effect    = "Allow"
         Principal = ["*"]
         Resource = [
-          "acs:oss:*:${data.alicloud_account.current.id}:${var.oss_bucket_name}/public/*",
+          "acs:oss:*:${data.alicloud_account.current.id}:${data.vault_kv_secret_v2.aliyun_creds.data["oss_bucket_name"]}/public/*",
         ]
       },
     ]

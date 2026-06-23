@@ -1,0 +1,25 @@
+networks:
+  core:
+    external: true
+
+services:
+
+  shellcrash:
+    image: harbor.chenwx.top/docker.io/juewuy/shellcrash:1.9.4release
+    restart: always
+    container_name: shellcrash
+    networks:
+      - core
+    ports:
+      - 7890:7890
+      # - 9999:9999
+
+    labels:
+      - "service_name=crash"
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.crash.entrypoints=https"
+      - "traefik.http.routers.crash.service=crash"
+      - "traefik.http.routers.crash.rule=Host(`crash.chenwx.top`)"
+      - "traefik.http.routers.crash.tls=true"
+      - "traefik.http.services.crash.loadbalancer.server.port=9999"

@@ -5,7 +5,6 @@ resource "vault_policy" "terraform" {
   policy = file("policies/terraform.hcl")
 }
 
-
 # 创建权限策略
 resource "vault_policy" "admin" {
   name   = "admin"
@@ -17,11 +16,8 @@ resource "vault_policy" "kvuser" {
   policy = file("policies/kvuser.hcl")
 }
 
-
-
-
-# 声明 admin-readonly 策略
-resource "vault_policy" "admin_readonly" {
-  name   = "admin-readonly"
-  policy = file("policies/admin-readonly-policy.hcl")
-}
+# # 声明 readonly 策略
+# resource "vault_policy" "readonly" {
+#   name   = "admin-readonly"
+#   policy = file("policies/readonly-policy.hcl")
+# }

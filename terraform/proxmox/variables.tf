@@ -5,34 +5,31 @@ variable "vault_address" {
   default     = "https://localhost:8200"
 }
 
-variable "postgres_dsn" {
-  type        = string
-  description = "postgres dsn"
-  default     = ""
-}
-
-variable "proxmox_endpoint" {
-  type        = string
-  description = "IP of Proxmox server (mandatory)"
-  default     = ""
-}
-
-variable "proxmox_cluster_name" {
+variable "vault_role_id" {
   type      = string
   sensitive = true
-  default   = ""
 }
 
-variable "proxmox_ssh_key_path" {
+variable "vault_secret_id" {
+  type      = string
+  sensitive = true
+}
+
+
+variable "vault_ssh_key_path" {
   type        = string
-  description = "Proxmox server ssh key"
+  description = "Vault KV v2 path for Proxmox SSH keys (contains private_key and public_key)"
   default     = ""
 }
 
+variable "vault_kubeconfig_path" {
+  type        = string
+  description = "Vault KV v2 path for kubeconfig (contains config key)"
+  default     = "infra/kubernetes/config"
+}
 
 #===================================================================
-
-variable "proxmox_api_token" {
+variable "proxmox_cluster_name" {
   type      = string
   sensitive = true
   default   = ""
@@ -57,15 +54,6 @@ variable "image_url" {
   default     = ""
 }
 
-variable "vault_role_id" {
-  type      = string
-  sensitive = true
-}
-
-variable "vault_secret_id" {
-  type      = string
-  sensitive = true
-}
 
 variable "servers" {
   description = "K8s nodes configuration"
@@ -80,14 +68,14 @@ variable "servers" {
   default = {}
 }
 
-variable "ssh_public_key_path" {
+variable "ssh_local_private_key_path" {
   type        = string
-  description = "IP of Proxmox server (mandatory)"
+  description = "Local filesystem path to SSH private key, used in generated SSH config (not read by Terraform)"
   default     = ""
 }
 
 variable "net_work_gateway_address" {
   type        = string
   description = "IP of Proxmox server (mandatory)"
-  default     = "192.168.5.254"
+  default     = ""
 }
