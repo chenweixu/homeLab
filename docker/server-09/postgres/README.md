@@ -1,5 +1,15 @@
 
--- psql -U dba -d dba
+
+```sh
+docker run --rm -it harbor.chenwx.top/docker.io/postgres:18.4 bash
+docker run --rm -it harbor.chenwx.top/chenwx/postgres-cwx:18.4 bash
+
+docker build -t harbor.chenwx.top/chenwx/postgres-cwx:18.4 -f dockerfile .
+```
+
+
+## pre-sql
+```sql
 
 CREATE DATABASE gatus OWNER wait;
 GRANT ALL PRIVILEGES ON DATABASE gatus TO wait;
@@ -31,3 +41,9 @@ CREATE DATABASE nocodb OWNER wait;
 GRANT ALL PRIVILEGES ON DATABASE nocodb TO wait;
 
 CREATE DATABASE test OWNER wait;
+
+-- pg vector db
+CREATE DATABASE ops_data OWNER wait;
+GRANT ALL PRIVILEGES ON DATABASE ops_data TO wait;
+
+```

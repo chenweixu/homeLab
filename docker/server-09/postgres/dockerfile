@@ -1,0 +1,15 @@
+FROM harbor.chenwx.top/docker.io/postgres:18.4
+USER root
+
+RUN apt-get update && apt-get install -y \
+    postgresql-18-pgvector \
+    postgresql-18-postgis-3 \
+    postgresql-18-http \
+    postgresql-18-cron \
+    postgresql-18-timescaledb \
+    postgresql-18-pg-stat-plans \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+USER postgres
+
+pg_stat_plans

@@ -11,7 +11,8 @@ networks:
 services:
   postgres:
     container_name: postgres
-    image: harbor.chenwx.top/docker.io/postgres:18.4
+    image: harbor.chenwx.top/chenwx/postgres-cwx:18.4
+    # image: harbor.chenwx.top/docker.io/postgres:18.4
     restart: unless-stopped
     networks:
       - core
@@ -33,4 +34,4 @@ services:
       - "-c"
       - "work_mem=16MB"
       - "-c"
-      - "shared_preload_libraries=pg_stat_statements"
+      - "shared_preload_libraries=pg_stat_statements, pg_cron, vector, pg_stat_plans"
